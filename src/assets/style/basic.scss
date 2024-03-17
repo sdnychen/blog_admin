@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "SourceHanSans";
+}
+
+html {
+  font-size: 10px;
+}
+
+// 定义思源黑体
+@font-face {
+  font-family: "SourceHanSans";
+  src: url("/public/font/SourceHanSansCN-VF.otf.woff2");
+}

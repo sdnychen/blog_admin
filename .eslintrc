@@ -1,0 +1,105 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:vue/vue3-essential"
+  ],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module"
+  },
+  "plugins": [],
+  "rules": {
+    "constructor-super": "error",
+    "for-direction": "error",
+    "getter-return": "error",
+    "no-await-in-loop": "error",
+    "no-class-assign": "error",
+    "no-compare-neg-zero": "error",
+    "no-const-assign": "error",
+    "no-constructor-return": "error",
+    "no-dupe-args": "error",
+    "no-dupe-else-if": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-setter-return": "error",
+    "no-unused-private-class-members": "error",
+    "no-unused-vars": "error",
+    "no-use-before-define": "error",
+
+    "consistent-this": ["error", "that"],
+    "eqeqeq": "error",
+    "no-delete-var": "error",
+    "no-console": "off",
+    "no-empty": "error",
+    "no-eval": "error",
+    "no-extra-semi": "error",
+    "no-proto": "error",
+    "no-unused-labels": "error",
+    "no-var": "error",
+    "no-warning-comments": "off",
+    "no-with": "error",
+    "prefer-const": "error",
+    "require-yield": "error",
+    "spaced-comment": ["error", "always"],
+
+    "array-bracket-spacing": "error",
+    "array-element-newline": ["error", "consistent"],
+    "arrow-spacing": "error", // 箭头函数的箭头前后空格
+    "block-spacing": ["error", "never"],
+    "brace-style": "error",
+    "comma-dangle": "error", // 对象尾随','
+    "comma-spacing": ["error", {
+      "before": false,
+      "after": true
+    }],
+    "comma-style": "error",
+    "computed-property-spacing": "error",
+    // "dot-location": "error",
+    "eol-last": "error", // 以换行符结束
+    "func-call-spacing": "error", // 函数括号前的空格
+    "function-call-argument-newline": ["error", "consistent"],
+    "function-paren-newline": ["error", "consistent"],
+    "generator-star-spacing": ["error", {
+      "before": false,
+      "after": true
+    }], // 生成器函数'*'的位置
+    "indent": ["error", 2],
+    "key-spacing": "error",
+    "keyword-spacing": "error",
+    "linebreak-style": "error", // 换行符
+    "no-mixed-spaces-and-tabs": "error",
+    "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
+    "no-multiple-empty-lines": ["error", {
+      "max": 1,
+      "maxEOF": 0,
+      "maxBOF": 0
+    }],
+    "no-tabs": "error",
+    "no-trailing-spaces": "error", // 不允许行末空格
+    "no-whitespace-before-property": "error",
+    "nonblock-statement-body-position": "error",
+    // "object-curly-spacing": "error",
+    "operator-linebreak": "error",
+    "quotes": ["error", "double", {
+      "avoidEscape": false,
+      "allowTemplateLiterals": true
+    }],
+    "rest-spread-spacing": "error",
+    "semi": ["error", "never"],
+    "space-before-blocks": "error", // 函数块前的空格
+    "space-before-function-paren": ["error", "never"], // 函数参数括号之前的空格
+    "space-in-parens": "error", // 参数括号内的空格
+    "space-infix-ops": "error", // 运算符周围空格
+    "space-unary-ops": "error", // 单词运算符（new）/单数运算符(++)的空格
+    "switch-colon-spacing": "error", // switch 语句中的 case 和 default 子句周围的间距
+    "template-curly-spacing": "error",
+
+    "vue/singleline-html-element-content-newline": "off"
+  },
+  "ignorePatterns": []
+}
