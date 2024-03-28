@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { GlobalThemeOverrides } from "naive-ui"
-import LayoutrLogo from "./LayoutrLogo.vue"
+import LayoutrLogo from "./LayoutLogo.vue"
 import LayoutMenu from "./LayoutMenu.vue"
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -31,6 +31,9 @@ const themeOverrides: GlobalThemeOverrides = {
         <div class="header">
           header
         </div>
+        <div class="content">
+          <RouterView />
+        </div>
         <div class="footer">
           footer
         </div>
@@ -56,9 +59,9 @@ const themeOverrides: GlobalThemeOverrides = {
   .logo {
     height: $header-height;
   }
-  .aside {
+  // .aside {
 
-  }
+  // }
 }
 .right {
   flex: 1;
@@ -73,4 +76,4 @@ const themeOverrides: GlobalThemeOverrides = {
     background-color: getColor(main-bg-color);
   }
 }
-</style>
+</style>./LayoutLogo.vue

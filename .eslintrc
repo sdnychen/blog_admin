@@ -99,7 +99,8 @@
     "switch-colon-spacing": "error", // switch 语句中的 case 和 default 子句周围的间距
     "template-curly-spacing": "error",
 
-    "vue/singleline-html-element-content-newline": "off"
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/multi-word-component-names": "off"
   },
   "ignorePatterns": []
 }

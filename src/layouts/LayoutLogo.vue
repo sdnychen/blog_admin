@@ -4,7 +4,7 @@
 <template>
   <div class="logo-box">
     <span class="logo-img">
-      <img src="/public/favicon.ico" alt="">
+      <img src="/favicon.ico" alt="">
     </span>
     <span class="logo-title">
       Admin
