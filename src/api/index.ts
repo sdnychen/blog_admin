@@ -1,21 +1,24 @@
 import service from "./request"
 
-export const get = (url: string, params: any) => {
-  return service.get(url, {
-    params
-  })
+// interface Resulve {
+//   success: boolean,
+//   code: number,
+//   msg: string,
+//   data: any
+// }
+
+export const get = (url: string, params?: object) => {
+  return service.get(url, {params})
 }
 
-export const post = (url: string, params: any) => {
+export const post = (url: string, params?: object) => {
   return service.post(url, params)
 }
 
-export const put = (url: string, params: any) => {
+export const put = (url: string, params?: object) => {
   return service.put(url, params)
 }
 
-export const del = (url: string, params: any) => {
-  return service.delete(url, {
-    params
-  })
+export const del = (url: string, params?: object) => {
+  return service.delete(url, {params})
 }

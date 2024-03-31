@@ -1,24 +1,38 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue"
+import { ref, reactive, onMounted } from "vue"
 import type { FormValidationError } from "naive-ui"
-// import { ArrowBackCircle } from "@vicons/ionicons5"
+import { Reload } from "@vicons/ionicons5"
 import userApi from "@/api/apis/userApi"
+
+// 验证码图片
+const verifyImg = ref("")
+// 验证码加载
+const loadingVerify = ref(false)
+
+// 获取验证码
+const getVerify = () => {
+  loadingVerify.value = true
+  userApi.getVerifyImg().then(res => {
+    verifyImg.value = res ? res as unknown as string : ""
+    loadingVerify.value = false
+  })
+}
 
 // 登录表单
 interface LoginForm {
   account: string,
   password: string,
-  verification: string
+  verify: string
 }
 const loginForm: LoginForm = reactive({
   account: "",
   password: "",
-  verification: ""
+  verify: ""
 })
 const rules = reactive({
-  account: { required: true, message: "请输入用户名/邮箱", trigger: "blur" },
+  account: { required: true, message: "请输入邮箱", trigger: "blur" },
   password: { required: true, message: "请输入密码", trigger: "blur" },
-  verification: { required: true, message: "请输入验证码", trigger: "blur" }
+  verify: { required: true, message: "请输入验证码", trigger: "blur" }
 })
 
 // 页面跳转
@@ -35,12 +49,17 @@ const handleLogin = () => {
   loginFormRef.value?.validate((res: Array<FormValidationError>) => {
     if (!res) {
       userApi.login(loginForm).then(res => {
-        console.log(res)
+        if (res) {
+          console.log(res)
+        }
       })
-      console.log("11111")
     }
   })
 }
+
+onMounted(() => {
+  getVerify()
+})
 
 </script>
 
@@ -48,43 +67,45 @@ const handleLogin = () => {
   <div class="page">
     <div class="left" />
     <div class="right">
-      <ClientOnly>
-        <div class="form-box">
-          <div class="title">登录</div>
-          <n-form
-            ref="loginFormRef"
-            :label-width="80"
-            :model="loginForm"
-            :rules="rules"
-          >
-            <n-form-item label="用户名/邮箱" path="account">
-              <n-input v-model:value="loginForm.account" placeholder="请输入用户名/邮箱" />
-            </n-form-item>
-            <n-form-item label="密码" path="password">
-              <n-input v-model:value="loginForm.password" type="password" show-password-on="mousedown" placeholder="请输入密码" />
-            </n-form-item>
-            <n-form-item label="验证码" path="verification">
-              <n-input v-model:value="loginForm.verification" placeholder="请输入验证码" />
-              <img class="verification-img" src="@/assets/temp/boat-8614314_1280.jpg" alt="">
-              <span class="replace">换一张</span>
-            </n-form-item>
-          </n-form>
-          <div class="remember-password">
-            <n-checkbox v-model:checked="rememberPassword">
-              记住密码
-            </n-checkbox>
-            <!-- <div @click="toPage("forgetPassword")">忘记密码？</div> -->
-          </div>
-          <div class="login-btn" @click="handleLogin">登录</div>
-          <div class="back-register">
-            <!-- <div @click="navigateTo()">
-              <n-icon :component="ArrowBackCircle" />
-              返回首页
+      <div class="form-box">
+        <div class="title">登录</div>
+        <n-form
+          ref="loginFormRef"
+          :label-width="80"
+          :model="loginForm"
+          :rules="rules"
+        >
+          <n-form-item label="邮箱" path="account">
+            <n-input v-model:value="loginForm.account" placeholder="请输入邮箱"
+              :input-props="{ autocomplete: 'username' }"/>
+          </n-form-item>
+          <n-form-item label="密码" path="password">
+            <n-input v-model:value="loginForm.password" type="password" show-password-on="mousedown" placeholder="请输入密码"
+              :input-props="{ autocomplete: 'current-password' }"/>
+          </n-form-item>
+          <n-form-item label="验证码" path="verify">
+            <n-input v-model:value="loginForm.verify" placeholder="请输入验证码" />
+            <div v-if="loadingVerify" class="verify-box" style="background-color: #FFF;">
+              <n-spin size="small" />
             </div>
-            <div @click="navigateTo()">还没账号？去注册一个</div> -->
-          </div>
+            <div v-else-if="verifyImg" class="verify-box">
+              <img class="verify-img" :src="`data:image/png;base64,${verifyImg}`" alt="验证码图片" @click="getVerify">
+            </div>
+            <div v-else class="verify-box" @click="getVerify">
+              <span>加载失败</span>
+              <n-icon :component="Reload" />
+            </div>
+          </n-form-item>
+        </n-form>
+        <div class="remember-password">
+          <n-checkbox v-model:checked="rememberPassword">
+            记住密码
+          </n-checkbox>
         </div>
-      </ClientOnly>
+        <div class="login-btn" @click="handleLogin">登录</div>
+        <div class="back-register">
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -118,10 +139,18 @@ const handleLogin = () => {
     margin-bottom: 20px;
     text-align: center;
   }
-  .verification-img {
-    width: 140px;
+  .verify-box {
+    min-width: 100px;
     height: 34px;
     margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    background-color: #b9b9b9;
+    color: #FFF;
+    border-radius: 2px;
   }
   .replace {
     cursor: pointer;

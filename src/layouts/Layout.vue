@@ -1,23 +1,10 @@
 <script lang="ts" setup>
-import type { GlobalThemeOverrides } from "naive-ui"
 import LayoutrLogo from "./LayoutLogo.vue"
 import LayoutMenu from "./LayoutMenu.vue"
 
-const themeOverrides: GlobalThemeOverrides = {
-  Menu: {
-    itemTextColorActive: "#3291F5",
-    itemTextColorChildActive: "#3291F5",
-    itemTextColorActiveHover: "#3291F5",
-    itemTextColorHover: "",
-    itemColorActive: "#EAF3FD",
-    itemColorActiveHover: "#EAF3FD",
-    itemTextColorChildActiveHover: "#3291F5"
-  }
-}
 </script>
 
 <template>
-  <n-config-provider :theme-overrides="themeOverrides">
     <div class="layout">
       <div class="left">
         <div class="logo">
@@ -39,7 +26,6 @@ const themeOverrides: GlobalThemeOverrides = {
         </div>
       </div>
     </div>
-  </n-config-provider>
 </template>
 
 <style lang="scss" scope>
