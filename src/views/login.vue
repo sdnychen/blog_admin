@@ -6,16 +6,17 @@ import userApi from "@/api/apis/userApi"
 
 // 验证码图片
 const verifyImg = ref("")
-// 验证码加载
+// 验证码加载状态
 const loadingVerify = ref(false)
 
 // 获取验证码
-const getVerify = () => {
+const getVerify = async() => {
   loadingVerify.value = true
-  userApi.getVerifyImg().then(res => {
-    verifyImg.value = res ? res as unknown as string : ""
-    loadingVerify.value = false
-  })
+  const res = await userApi.getVerifyImg()
+  loadingVerify.value = false
+  if (res.success) {
+    verifyImg.value = res.data
+  }
 }
 
 // 登录表单
@@ -46,13 +47,12 @@ const rememberPassword = ref(false)
 // 登录
 const loginFormRef = ref()
 const handleLogin = () => {
-  loginFormRef.value?.validate((res: Array<FormValidationError>) => {
+  loginFormRef.value.validate(async(res: Array<FormValidationError>) => {
     if (!res) {
-      userApi.login(loginForm).then(res => {
-        if (res) {
-          console.log(res)
-        }
-      })
+      const res = await userApi.login(loginForm)
+      if (res.success) {
+        console.log(res)
+      }
     }
   })
 }

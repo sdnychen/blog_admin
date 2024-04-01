@@ -1,44 +1,85 @@
 import axios from "axios"
+import type { AxiosRequestConfig, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios"
 import { createDiscreteApi } from "naive-ui"
 
 const { message } = createDiscreteApi(["message"])
 
-interface Resulve {
+export interface Resulve<T = any> {
   success: boolean,
   code: number,
   msg: string,
-  data: any
+  data: T
 }
 
-const service = axios.create({
-  baseURL: "http://localhost:8080/api/",
-  timeout: 20000,
-  withCredentials: true // 表示跨域请求时是否需要使用凭证
-})
+class server {
+  instance: AxiosInstance
+  baseConfig: AxiosRequestConfig
 
-// 请求拦截器
-service.interceptors.request.use(config => {
-  return config
-}, error => {
-  console.log(error)
-})
+  constructor(config: AxiosRequestConfig) {
+    this.instance = axios.create(config)
+    this.baseConfig = config
 
-// 响应拦截器
-service.interceptors.response.use(response => {
+    // 请求拦截器
+    this.instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+      return request
+    }, (err: any) => {
+      return Promise.reject(err)
+    })
+    // 响应拦截器
+    this.instance.interceptors.response.use((response: AxiosResponse) => {
+      // 统一消息通知处理
+      const resolve = response.data
+      if (resolve.success && resolve.msg) {
+        message.success(resolve.msg)
+      } else if (!resolve.success && resolve.msg) {
+        message.warning(resolve.msg)
+      }
 
-  // 消息弹窗
-  const resulve: Resulve = response.data
-  if (resulve.success && resulve.msg) {
-    message.success(resulve.msg)
-  } else if (resulve.code === 5000 && resulve.msg) {
-    message.error(resulve.msg)
-  } else if (resulve.msg) {
-    message.warning(resulve.msg)
+      return resolve
+    }, (err: any) => {
+      return Promise.reject(err)
+    })
   }
 
-  return response.data
-}, error => {
-  console.log(error)
-})
+  /**
+   * 通用请求
+   * @param config
+   */
+  public request(config: AxiosRequestConfig): Promise<AxiosResponse> {
+    return this.instance.request(config)
+  }
 
-export default service
+  /**
+   * GET请求
+   * @param config
+   */
+  public get<T = any>(url: string, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+    return this.instance.get(url, config)
+  }
+
+  /**
+   * POST请求
+   * @param config
+   */
+  public post<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+    return this.instance.post(url, data, config)
+  }
+
+  /**
+   * PUT请求
+   * @param config
+   */
+  public put<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+    return this.instance.put(url, data, config)
+  }
+
+  /**
+   * PUT请求
+   * @param config
+   */
+  public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+    return this.instance.delete(url, config)
+  }
+}
+
+export default server

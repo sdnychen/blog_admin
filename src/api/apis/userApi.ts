@@ -1,11 +1,18 @@
-import { get, post } from "../index"
+import { request } from "../index"
 
 const userApi = {
+  /**
+   * 获取验证码
+   */
   getVerifyImg: () => {
-    return get("/user/verifyCode")
+    return request.get<string>("/user/verifyCode")
   },
+
+  /**
+   * 登录
+   */
   login: (params: any) => {
-    return post("/user/login", params)
+    return request.post("/user/login", params)
   }
 }
 
