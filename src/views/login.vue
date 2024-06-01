@@ -3,6 +3,11 @@ import { ref, reactive, onMounted } from "vue"
 import type { FormValidationError } from "naive-ui"
 import { Reload } from "@vicons/ionicons5"
 import userApi from "@/api/apis/userApi"
+import { useRouter } from "vue-router"
+import { useUserStore } from "@/stores/user"
+
+const router = useRouter()
+const userStore = useUserStore()
 
 // 验证码图片
 const verifyImg = ref("")
@@ -19,55 +24,60 @@ const getVerify = async() => {
   }
 }
 
-// 登录表单
-interface LoginForm {
-  account: string,
-  password: string,
-  verify: string
-}
 const loginForm: LoginForm = reactive({
-  account: "",
+  username: "",
   password: "",
   verify: ""
 })
 const rules = reactive({
-  account: { required: true, message: "请输入邮箱", trigger: "blur" },
+  username: { required: true, message: "请输入用户名", trigger: "blur" },
   password: { required: true, message: "请输入密码", trigger: "blur" },
   verify: { required: true, message: "请输入验证码", trigger: "blur" }
 })
 
-// 页面跳转
-// const toPage = (type: string) => {
-//   console.log(type)
-// }
-
 // 记住密码
-const rememberPassword = ref(false)
+const remember = ref(false)
 
 // 登录
 const loginFormRef = ref()
 const handleLogin = () => {
   loginFormRef.value.validate(async(res: Array<FormValidationError>) => {
     if (!res) {
-      const res = await userApi.login(loginForm)
-      if (res.success) {
-        console.log(res)
+      const res = await userStore.login(loginForm)
+      if (res) {
+        if (remember.value) {
+          loginForm.verify = void 0
+          localStorage.setItem("login_user", JSON.stringify(loginForm))
+        } else {
+          localStorage.removeItem("login_user")
+        }
+        setTimeout(() => {
+          router.push({name: "Main"})
+        }, 300)
       }
+      loginForm.verify = ""
+      getVerify()
     }
   })
 }
 
 onMounted(() => {
   getVerify()
+  const user = JSON.parse(localStorage.getItem("login_user") as string)
+  if (user) {
+    remember.value = true
+    loginForm.username = user.username
+    loginForm.password = user.password
+  }
 })
 
 </script>
 
 <template>
-  <div class="page">
-    <div class="left" />
-    <div class="right">
-      <div class="form-box">
+  <div class="login-page">
+    <div class="login-left" />
+    <div class="login-right">
+      <div class="login-form-box">
         <div class="title">登录</div>
         <n-form
           ref="loginFormRef"
@@ -75,8 +85,8 @@ onMounted(() => {
           :model="loginForm"
           :rules="rules"
         >
-          <n-form-item label="邮箱" path="account">
-            <n-input v-model:value="loginForm.account" placeholder="请输入邮箱"
+          <n-form-item label="用户名" path="username">
+            <n-input v-model:value="loginForm.username" placeholder="请输入用户名"
               :input-props="{ autocomplete: 'username' }"/>
           </n-form-item>
           <n-form-item label="密码" path="password">
@@ -98,7 +108,7 @@ onMounted(() => {
           </n-form-item>
         </n-form>
         <div class="remember-password">
-          <n-checkbox v-model:checked="rememberPassword">
+          <n-checkbox v-model:checked="remember">
             记住密码
           </n-checkbox>
         </div>
@@ -111,7 +121,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scope>
-.page {
+.login-page {
   display: flex;
   width: 100vw;
   height: 100vh;
@@ -119,16 +129,16 @@ onMounted(() => {
   background-size: cover;
   background-position: center;
 }
-.left {
+.login-left {
   flex: 1;
 }
-.right {
+.login-right {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.form-box {
+.login-form-box {
   width: 400px;
   padding: 20px 30px;
   border-radius: 16px;

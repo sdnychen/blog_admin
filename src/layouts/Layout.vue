@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import LayoutrLogo from "./LayoutLogo.vue"
-import LayoutMenu from "./LayoutMenu.vue"
+// import LayoutMenu1 from "./LayoutAsideMenu1.vue"
+import LayoutMenu2 from "./LayoutAsideMenu2.vue"
 
 </script>
 
 <template>
     <div class="layout">
       <div class="left">
-        <div class="logo">
-          <LayoutrLogo />
-        </div>
         <aside class="aside">
-          <LayoutMenu />
+          <!-- <LayoutMenu1 /> -->
+          <LayoutMenu2 />
         </aside>
       </div>
       <div class="right">

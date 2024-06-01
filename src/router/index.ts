@@ -2,8 +2,9 @@ import { createRouter, createWebHashHistory} from "vue-router"
 import type { RouteRecordRaw } from "vue-router"
 import constantRouter from "./constantRouter"
 import { useUserStore } from "@/stores/user"
+import { useMenuStore } from "@/stores/menu"
 
-// import home from "@/router/module/home"
+import home from "@/router/module/home"
 
 const routes: Array<RouteRecordRaw> = [
   ...constantRouter
@@ -14,35 +15,53 @@ const router = createRouter({
   routes
 })
 
-// const routeList = [
-//   home
-// ]
-
-// const useUser = useUserStore()
-// useUser.addRouter(routeList)
+const asyncRouter: RouteRecordRaw[] = [
+  {
+    path: "/",
+    name: "Home11",
+    meta: {
+      title: "主控",
+      // auth: [1],
+      icon: ""
+    },
+    children: [
+      ...home
+    ]
+  }
+]
 
 // 最后添加的路由
 // const lastRouter: Array<RouteRecordRaw> = [
 // ]
-// lastRouter.forEach((item => {
-//   router.addRoute(item)
-// }))
 
 // 全局前置守卫
 router.beforeEach((to) => {
-  const useUser = useUserStore()
-  const token = useUser.$state.token
-  if (!token) {
-    if (to.name === "Login") {
-      return true
-    } else {
-      return {name: "Login"}
+  const userStore = useUserStore()
+  const menuStore = useMenuStore()
+
+  // useUser.addRouter(routeList)
+
+  if (userStore.$state.isLogin) {
+    if (!menuStore.isGenerate) {
+      // 已登录，还没挂在路由
+      const accessRouter = menuStore.generateRouter(asyncRouter)
+      accessRouter.forEach(item => {
+        console.log("item", item)
+        router.addRoute(item)
+      })
+      return to.fullPath
     }
-  } else {
+
     if (to.name === "Login") {
       return {name: "Home"}
     } else {
       return true
+    }
+  } else {
+    if (to.name === "Login") {
+      return true
+    } else {
+      return {name: "Login"}
     }
   }
 })

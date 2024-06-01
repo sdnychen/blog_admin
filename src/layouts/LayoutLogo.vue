@@ -3,9 +3,6 @@
 
 <template>
   <div class="logo-box">
-    <span class="logo-img">
-      <img src="/favicon.ico" alt="">
-    </span>
     <span class="logo-title">
       Admin
     </span>
@@ -19,16 +16,12 @@
   justify-content: center;
   gap: 10px;
   height: 100%;
-  .logo-img {
-    img {
-      display: block;
-      width: 40px;
-    }
-  }
+  padding: 1rem 0;
   .logo-title {
     position: relative;
     top: -2px;
-    font-size: 3rem;
+    font-size: 2.4rem;
+    cursor: pointer;
   }
 }
 </style>
