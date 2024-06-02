@@ -70,4 +70,4 @@ import LayoutAsideMenu from "./LayoutAsideMenu.vue"
     background-color: getColor(main-bg-color);
   }
 }
-</style>./LayoutLogo.vue
+</style>

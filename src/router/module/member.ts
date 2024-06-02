@@ -1,39 +1,38 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
 import {
-  CubeOutline,
-  HomeOutline,
-  TvOutline
+  PersonCircleOutline,
+  TrendingUpSharp
 } from "@vicons/ionicons5"
 
 const home: Array<RouteRecordRaw> = [
   {
-    path: "/home",
-    name: "Home",
+    path: "/member",
+    name: "Member",
     component: Layout,
-    redirect: "/home/welcome",
+    redirect: "/member/member",
     meta: {
-      title: "主控台",
+      title: "会员",
       auth: [1],
-      icon: CubeOutline
+      icon: PersonCircleOutline
     },
     children: [
       {
-        path: "welcome",
-        name: "Welcome",
+        path: "member",
+        name: "MemberManage",
         component: () => import("@/views/Home/home.vue"),
         meta: {
-          title: "欢迎",
-          icon: HomeOutline
+          title: "会员管理",
+          icon: PersonCircleOutline
         }
       },
       {
-        path: "overview",
-        name: "Overview",
+        path: "memberLevel",
+        name: "MemberLevel",
         component: () => import("@/views/Home/home.vue"),
         meta: {
-          title: "总览",
-          icon: TvOutline
+          title: "会员等级",
+          icon: TrendingUpSharp
         }
       }
     ]

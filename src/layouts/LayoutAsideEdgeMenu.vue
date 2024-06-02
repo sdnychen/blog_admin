@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { HomeOutline } from "@vicons/ionicons5"
 import { ref, onBeforeMount } from "vue"
 import { useMenuStore } from "@/stores/menu"
 import { useRouter, type RouteRecordRaw } from "vue-router"
@@ -37,7 +36,7 @@ onBeforeMount(() => {
         :class="['edge-menu-item', activeMenu === item.path ? 'edge-menu-active' : '']"
         @click="navigateenu(item)"
         >
-        <NIcon :component="HomeOutline" size="20" />
+        <NIcon v-if="item.meta?.icon" :component="item.meta.icon" size="20" />
         <div class="edge-menu-label">{{ item.meta?.title }}</div>
       </div>
     </n-scrollbar>

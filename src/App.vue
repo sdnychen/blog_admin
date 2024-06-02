@@ -26,7 +26,9 @@ const themeOverrides: GlobalThemeOverrides = {
     itemTextColorHover: "",
     itemColorActive: "#EAF3FD",
     itemColorActiveHover: "#EAF3FD",
-    itemTextColorChildActiveHover: "#3291F5"
+    itemTextColorChildActiveHover: "#3291F5",
+    itemIconColorActive: "#3291F5",
+    itemIconColorChildActive: "#3291F5"
   },
   Spin: {
     color: "#3291F5"

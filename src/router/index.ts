@@ -1,11 +1,10 @@
 import { createRouter, createWebHashHistory} from "vue-router"
 import type { RouteRecordRaw } from "vue-router"
-import constantRouter from "./constantRouter"
 import { useUserStore } from "@/stores/user"
 import { useMenuStore } from "@/stores/menu"
 
-import home from "@/router/module/home"
-import test from "@/router/module/test"
+import constantRouter from "./constantRouter"
+import dynamicRouter from "./dynamicRouter"
 
 const routes: Array<RouteRecordRaw> = [
   ...constantRouter
@@ -16,36 +15,19 @@ const router = createRouter({
   routes
 })
 
-const asyncRouter: RouteRecordRaw[] = [
-  {
-    path: "/",
-    name: "Home11",
-    meta: {
-      title: "主控",
-      // auth: [1],
-      icon: ""
-    },
-    children: [
-      ...home
-    ]
-  },
-  {
-    path: "/test",
-    name: "Test",
-    meta: {
-      title: "主控TT",
-      // auth: [1],
-      icon: ""
-    },
-    children: [
-      ...test
-    ]
-  }
-]
+const asyncRouter: RouteRecordRaw[] = dynamicRouter
 
 // 最后添加的路由
-// const lastRouter: Array<RouteRecordRaw> = [
-// ]
+const lastRouter: Array<RouteRecordRaw> = [
+  {
+    path: "/:productName",
+    component: () => import("@/views/404.vue")
+  }
+]
+lastRouter.forEach(item => {
+  console.log("item", item)
+  router.addRoute(item)
+})
 
 // 全局前置守卫
 router.beforeEach((to) => {

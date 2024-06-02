@@ -1,39 +1,39 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
 import {
-  CubeOutline,
-  HomeOutline,
-  TvOutline
+  FolderOutline,
+  CloudOfflineOutline,
+  CloudOutline
 } from "@vicons/ionicons5"
 
 const home: Array<RouteRecordRaw> = [
   {
-    path: "/home",
-    name: "Home",
+    path: "/material",
+    name: "Material",
     component: Layout,
-    redirect: "/home/welcome",
+    redirect: "/material/localMaterial",
     meta: {
-      title: "主控台",
+      title: "素材",
       auth: [1],
-      icon: CubeOutline
+      icon: FolderOutline
     },
     children: [
       {
-        path: "welcome",
-        name: "Welcome",
+        path: "localMaterial",
+        name: "LocalMaterial",
         component: () => import("@/views/Home/home.vue"),
         meta: {
-          title: "欢迎",
-          icon: HomeOutline
+          title: "本地",
+          icon: CloudOfflineOutline
         }
       },
       {
-        path: "overview",
-        name: "Overview",
+        path: "cloudMaterial",
+        name: "CloudMaterial",
         component: () => import("@/views/Home/home.vue"),
         meta: {
-          title: "总览",
-          icon: TvOutline
+          title: "云",
+          icon: CloudOutline
         }
       }
     ]

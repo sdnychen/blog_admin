@@ -4,7 +4,6 @@ import { RouterLink, type RouteRecordRaw } from "vue-router"
 import type { MenuOption } from "naive-ui"
 import { NIcon } from "naive-ui"
 import { useMenuStore } from "@/stores/menu"
-import { HomeOutline } from "@vicons/ionicons5"
 
 const menuStore = useMenuStore()
 
@@ -36,10 +35,10 @@ const generateMenu = (routes: RouteRecordRaw[], activeMainMenu?: string | undefi
             name: route.name
           }
         },
-        { default: () => route.name }
+        { default: () => route.meta?.title }
       ),
       key: route.name as string,
-      icon: renderIcon(HomeOutline),
+      icon: route.meta?.icon ? renderIcon(route.meta.icon) : void 0,
       children: route.children?.length ? generateMenu(route.children) : void 0
     })
   })
