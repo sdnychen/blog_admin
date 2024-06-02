@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-// import LayoutMenu1 from "./LayoutAsideMenu1.vue"
-import LayoutMenu2 from "./LayoutAsideMenu2.vue"
+import LayoutAsideEdgeMenu from "./LayoutAsideEdgeMenu.vue"
+import LayoutAsideMenu from "./LayoutAsideMenu.vue"
 
 </script>
 
 <template>
     <div class="layout">
-      <div class="left">
+      <div class="layout-left">
         <aside class="aside">
-          <!-- <LayoutMenu1 /> -->
-          <LayoutMenu2 />
+          <div class="edge-menu">
+            <LayoutAsideEdgeMenu />
+          </div>
+          <div class="menu">
+            <LayoutAsideMenu />
+          </div>
         </aside>
       </div>
-      <div class="right">
+      <div class="layout-right">
         <div class="header">
           header
         </div>
@@ -34,7 +38,7 @@ import LayoutMenu2 from "./LayoutAsideMenu2.vue"
   height: 100vh;
   background-color: getColor(layout-bg-color);
 }
-.left {
+.layout-left {
   width: $aside-width;
   display: flex;
   flex-direction: column;
@@ -43,11 +47,17 @@ import LayoutMenu2 from "./LayoutAsideMenu2.vue"
   .logo {
     height: $header-height;
   }
-  // .aside {
-
-  // }
+  .aside {
+    display: flex;
+    .edge-menu {
+      border-right: 1px solid #F5F5F5;
+    }
+    .menu {
+      width: 100%;
+    }
+  }
 }
-.right {
+.layout-right {
   flex: 1;
   display: flex;
   flex-direction: column;

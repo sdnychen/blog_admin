@@ -8,6 +8,11 @@ html {
   font-size: 10px;
 }
 
+a {
+  text-decoration: none;
+  color: #000;
+}
+
 // 定义思源黑体
 @font-face {
   font-family: "SourceHanSans";

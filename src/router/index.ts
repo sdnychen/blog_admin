@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores/user"
 import { useMenuStore } from "@/stores/menu"
 
 import home from "@/router/module/home"
+import test from "@/router/module/test"
 
 const routes: Array<RouteRecordRaw> = [
   ...constantRouter
@@ -26,6 +27,18 @@ const asyncRouter: RouteRecordRaw[] = [
     },
     children: [
       ...home
+    ]
+  },
+  {
+    path: "/test",
+    name: "Test",
+    meta: {
+      title: "主控TT",
+      // auth: [1],
+      icon: ""
+    },
+    children: [
+      ...test
     ]
   }
 ]
