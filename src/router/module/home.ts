@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   CubeOutline,
   HomeOutline,
@@ -15,7 +16,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "主控台",
       auth: [1],
-      icon: CubeOutline
+      icon: markRaw(CubeOutline)
     },
     children: [
       {
@@ -24,7 +25,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "欢迎",
-          icon: HomeOutline
+          icon: markRaw(HomeOutline)
         }
       },
       {
@@ -33,7 +34,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "总览",
-          icon: TvOutline
+          icon: markRaw(TvOutline)
         }
       }
     ]

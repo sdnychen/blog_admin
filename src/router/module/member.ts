@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   PersonCircleOutline,
   TrendingUpSharp
@@ -14,7 +15,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "会员",
       auth: [1],
-      icon: PersonCircleOutline
+      icon: markRaw(PersonCircleOutline)
     },
     children: [
       {
@@ -23,7 +24,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "会员管理",
-          icon: PersonCircleOutline
+          icon: markRaw(PersonCircleOutline)
         }
       },
       {
@@ -32,7 +33,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "会员等级",
-          icon: TrendingUpSharp
+          icon: markRaw(TrendingUpSharp)
         }
       }
     ]

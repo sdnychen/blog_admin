@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
 import EmptyLayout from "@/layouts/EmptyLayout.vue"
+import { markRaw } from "vue"
 import {
   FileTrayFullOutline,
   ReceiptOutline,
@@ -16,7 +17,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "内容",
       auth: [1],
-      icon: FileTrayFullOutline
+      icon: markRaw(FileTrayFullOutline)
     },
     children: [
       {
@@ -26,7 +27,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/content/article/article",
         meta: {
           title: "文章",
-          icon: ReceiptOutline
+          icon: markRaw(ReceiptOutline)
         },
         children: [
           {
@@ -70,7 +71,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/content/moments/moments",
         meta: {
           title: "动态",
-          icon: ApertureOutline
+          icon: markRaw(ApertureOutline)
         },
         children: [
           {

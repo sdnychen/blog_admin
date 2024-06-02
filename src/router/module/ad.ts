@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   EaselOutline
 } from "@vicons/ionicons5"
@@ -13,7 +14,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "广告",
       auth: [1],
-      icon: EaselOutline
+      icon: markRaw(EaselOutline)
     },
     children: [
       {
@@ -22,7 +23,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "广告管理",
-          icon: EaselOutline
+          icon: markRaw(EaselOutline)
         }
       }
     ]

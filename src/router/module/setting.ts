@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
 import EmptyLayout from "@/layouts/EmptyLayout.vue"
+import { markRaw } from "vue"
 import {
   SettingsOutline,
   InformationCircleOutline,
@@ -18,7 +19,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "设置",
       auth: [1],
-      icon: SettingsOutline
+      icon: markRaw(SettingsOutline)
     },
     children: [
       {
@@ -27,7 +28,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "基本信息",
-          icon: InformationCircleOutline
+          icon: markRaw(InformationCircleOutline)
         }
       },
       {
@@ -36,7 +37,7 @@ const home: Array<RouteRecordRaw> = [
         component: EmptyLayout,
         meta: {
           title: "配置信息",
-          icon: BuildOutline
+          icon: markRaw(BuildOutline)
         },
         children: [
           {
@@ -63,7 +64,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "主题样式",
-          icon: ColorPaletteOutline
+          icon: markRaw(ColorPaletteOutline)
         }
       },
       {
@@ -72,7 +73,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "协议条款",
-          icon: DocumentTextOutline
+          icon: markRaw(DocumentTextOutline)
         }
       }
     ]

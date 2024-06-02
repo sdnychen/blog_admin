@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   ChatboxEllipsesOutline
 } from "@vicons/ionicons5"
@@ -13,7 +14,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "评论",
       auth: [1],
-      icon: ChatboxEllipsesOutline
+      icon: markRaw(ChatboxEllipsesOutline)
     },
     children: [
       {
@@ -22,7 +23,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "评论管理",
-          icon: ChatboxEllipsesOutline
+          icon: markRaw(ChatboxEllipsesOutline)
         }
       }
     ]

@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   LinkOutline
 } from "@vicons/ionicons5"
@@ -13,7 +14,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "友链",
       auth: [1],
-      icon: LinkOutline
+      icon: markRaw(LinkOutline)
     },
     children: [
       {
@@ -22,7 +23,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "友链管理",
-          icon: LinkOutline
+          icon: markRaw(LinkOutline)
         }
       }
     ]

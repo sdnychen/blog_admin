@@ -27,7 +27,7 @@ onBeforeMount(() => {
 <template>
   <div>
     <div class="edge-menu-logo-box">
-      <img class="edge-menu-logo" src="/public/favicon.ico" alt="logo">
+      <img class="edge-menu-logo" src="/favicon.ico" alt="logo">
     </div>
 
     <n-scrollbar class="edge-menu-box">

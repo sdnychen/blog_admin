@@ -18,16 +18,12 @@ const router = createRouter({
 const asyncRouter: RouteRecordRaw[] = dynamicRouter
 
 // 最后添加的路由
-const lastRouter: Array<RouteRecordRaw> = [
-  {
-    path: "/:productName",
-    component: () => import("@/views/404.vue")
-  }
-]
-lastRouter.forEach(item => {
-  console.log("item", item)
-  router.addRoute(item)
-})
+// const lastRouter: Array<RouteRecordRaw> = [
+//   {
+//     path: "/:productName",
+//     component: () => import("@/views/Home/home.vue")
+//   }
+// ]
 
 // 全局前置守卫
 router.beforeEach((to) => {
@@ -40,8 +36,8 @@ router.beforeEach((to) => {
     if (!menuStore.isGenerate) {
       // 已登录，还没挂在路由
       const accessRouter = menuStore.generateRouter(asyncRouter)
+      // accessRouter.push(...lastRouter)
       accessRouter.forEach(item => {
-        console.log("item", item)
         router.addRoute(item)
       })
       return to.fullPath

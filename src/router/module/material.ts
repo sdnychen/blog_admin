@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import { markRaw } from "vue"
 import {
   FolderOutline,
   CloudOfflineOutline,
@@ -15,7 +16,7 @@ const home: Array<RouteRecordRaw> = [
     meta: {
       title: "素材",
       auth: [1],
-      icon: FolderOutline
+      icon: markRaw(FolderOutline)
     },
     children: [
       {
@@ -24,7 +25,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "本地",
-          icon: CloudOfflineOutline
+          icon: markRaw(CloudOfflineOutline)
         }
       },
       {
@@ -33,7 +34,7 @@ const home: Array<RouteRecordRaw> = [
         component: () => import("@/views/Home/home.vue"),
         meta: {
           title: "云",
-          icon: CloudOutline
+          icon: markRaw(CloudOutline)
         }
       }
     ]
