@@ -5,3 +5,11 @@ interface LoginForm {
   password: string,
   verify: string | undefined
 }
+
+// popupMenu组件数据类型
+interface popupMenu {
+  label: string,
+  icon?: Component,
+  callback: Function | null,
+  disable: Boolean
+}

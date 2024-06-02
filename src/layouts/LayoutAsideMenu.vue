@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { h, onBeforeMount, ref, type Component } from "vue"
 import { RouterLink, type RouteRecordRaw } from "vue-router"
-import type { MenuOption } from "naive-ui"
+import type { MenuInst, MenuOption } from "naive-ui"
 import { NIcon } from "naive-ui"
 import { useMenuStore } from "@/stores/menu"
 
 const menuStore = useMenuStore()
 
 const menuOptions = ref<MenuOption[]>([])
+
+// 当前菜单
+const currMenu = ref<string>("")
 
 // 图标函数
 const renderIcon = (icon: Component) => {
@@ -45,16 +48,33 @@ const generateMenu = (routes: RouteRecordRaw[], activeMainMenu?: string | undefi
   return menuList
 }
 
+onBeforeMount(() => {
+  menuOptions.value = generateMenu(menuStore.routes, menuStore.activeMainMenu) as any
+  currMenu.value = menuStore.currMenu
+})
+
+// 切换菜单
+const changeMenu = (key: string) => {
+  currMenu.value = key
+}
+
+// MenuRef
+const menuRef = ref<MenuInst | null>(null)
+
+// 展开菜单
+const expandMenu = () => {
+  menuRef.value?.showOption(currMenu.value)
+}
+
 menuStore.$subscribe((mutation: any, state) => {
   if (mutation.events.key === "activeMainMenu") {
     menuOptions.value = generateMenu(menuStore.routes, state.activeMainMenu) as any
   }
+  if (mutation.events.key === "currMenu") {
+    currMenu.value = menuStore.currMenu
+    expandMenu()
+  }
 })
-
-onBeforeMount(() => {
-  menuOptions.value = generateMenu(menuStore.routes, menuStore.activeMainMenu) as any
-})
-
 </script>
 
 <template>
@@ -65,11 +85,14 @@ onBeforeMount(() => {
       </span>
     </div>
     <n-menu
+      ref="menuRef"
       :collapsed="false"
       :collapsed-width="64"
       :collapsed-icon-size="22"
       :indent="20"
+      :value="currMenu"
       :options="menuOptions"
+      :on-update:value="changeMenu"
     />
   </div>
 </template>

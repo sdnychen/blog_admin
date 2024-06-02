@@ -46,7 +46,8 @@ export const useMenuStore = defineStore("menu", {
     return {
       isGenerate: false,
       routes: [] as RouteRecordRaw[],
-      activeMainMenu: "/"
+      activeMainMenu: "/home",
+      currMenu: ""
     }
   },
   actions: {

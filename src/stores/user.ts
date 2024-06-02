@@ -7,7 +7,7 @@ export const useUserStore = defineStore("user", {
     return {
       userInfo: null as null | Object,
       isLogin: false,
-      token: ""
+      token: null as null | string
     }
   },
   actions: {
@@ -34,6 +34,16 @@ export const useUserStore = defineStore("user", {
     //     router.push({name: "Home"})
     //   }
     // }
+
+    // 退出登录
+    logout() {
+      this.isLogin = false
+      this.token = null
+      this.userInfo = null
+      localStorage.removeItem("userInfo")
+    },
+
+    // 获取权限
     getAuth() {
       const auth: Array<number | string> = []
       auth.push(1)

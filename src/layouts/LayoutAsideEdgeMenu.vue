@@ -16,6 +16,7 @@ const activeMenu = ref<null | string>("")
 const navigateenu = (route: RouteRecordRaw) => {
   activeMenu.value = route.path
   menuStore.activeMainMenu = route.path
+  menuStore.currMenu = route.name as string
   router.push(route.path)
 }
 

@@ -21,7 +21,7 @@ class server {
 
     // 请求拦截器
     this.instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-      console.log("request", request)
+      // console.log("request", request)
       return request
     }, (err: any) => {
       return Promise.reject(err)

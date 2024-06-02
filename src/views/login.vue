@@ -54,9 +54,10 @@ const handleLogin = () => {
         setTimeout(() => {
           router.push({name: "Main"})
         }, 300)
+      } else {
+        loginForm.verify = ""
+        getVerify()
       }
-      loginForm.verify = ""
-      getVerify()
     }
   })
 }

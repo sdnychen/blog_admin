@@ -21,7 +21,7 @@ const home: Array<RouteRecordRaw> = [
       {
         path: "user",
         name: "UserManage",
-        component: () => import("@/views/Home/home.vue"),
+        component: () => import("@/views/User/user.vue"),
         meta: {
           title: "用户管理",
           icon: markRaw(PersonOutline)

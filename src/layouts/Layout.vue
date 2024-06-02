@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import LayoutAsideEdgeMenu from "./LayoutAsideEdgeMenu.vue"
 import LayoutAsideMenu from "./LayoutAsideMenu.vue"
+import Header from "./Header.vue"
+import Tabs from "./Tabs.vue"
 
 </script>
 
@@ -18,9 +20,12 @@ import LayoutAsideMenu from "./LayoutAsideMenu.vue"
       </div>
       <div class="layout-right">
         <div class="header">
-          header
+          <Header />
         </div>
-        <div class="content">
+        <div class="tabs">
+          <Tabs />
+        </div>
+        <div class="content" style="background-color: #FFF">
           <RouterView />
         </div>
         <div class="footer">
@@ -33,7 +38,6 @@ import LayoutAsideMenu from "./LayoutAsideMenu.vue"
 <style lang="scss" scope>
 .layout {
   display: flex;
-  gap: $layout-gap;
   width: 100%;
   height: 100vh;
   background-color: getColor(layout-bg-color);
@@ -62,9 +66,11 @@ import LayoutAsideMenu from "./LayoutAsideMenu.vue"
   display: flex;
   flex-direction: column;
   gap: $layout-gap;
+  margin: 0 $layout-gap;
   .header {
     height: $header-height;
     background-color: getColor(main-bg-color);
+    border-radius: 0 0 $card-radius $card-radius;
   }
   .footer {
     background-color: getColor(main-bg-color);
