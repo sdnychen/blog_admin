@@ -14,16 +14,16 @@ import setting from "./module/setting"
 
 // 动态路由
 const dynamicRouter: Array<RouteRecordRaw> = [
-  ...home,
-  ...content,
-  ...material,
-  ...comment,
-  ...menber,
-  ...user,
-  ...menu,
-  ...blogroll,
-  ...ad,
-  ...setting
+    ...home,
+    ...content,
+    ...material,
+    ...comment,
+    ...menber,
+    ...user,
+    ...menu,
+    ...blogroll,
+    ...ad,
+    ...setting
 ]
 
 export default dynamicRouter

@@ -2,10 +2,9 @@
 </script>
 
 <template>
-  <div>
-    404
-  </div>
+    <div>
+        404
+    </div>
 </template>
 
-<style lang="scss" scope>
-</style>
+<style lang="scss" scope></style>

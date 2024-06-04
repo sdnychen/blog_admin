@@ -3,8 +3,7 @@
 </script>
 
 <template>
-  <RouterView />
+    <RouterView />
 </template>
 
-<style lang="scss" scope>
-</style>
+<style lang="scss" scope></style>

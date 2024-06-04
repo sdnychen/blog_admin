@@ -1,0 +1,288 @@
+<script lang="ts" setup>
+import { ref, reactive, watch, nextTick } from "vue"
+import type { DropdownOption } from "naive-ui"
+import IconRander from "@/utils/IconRender"
+import { useRouter } from "vue-router"
+import {
+    Options,
+    ChevronBack,
+    ChevronForward,
+    Reload,
+    ArrowBack,
+    ArrowForward,
+    Close
+} from "@vicons/ionicons5"
+
+const router = useRouter()
+
+interface tabItem {
+    title: string,
+    name: string,
+    path: string,
+    closeable: Boolean
+}
+
+const tabsArray = ref<tabItem[]>([
+    {
+        title: "首页",
+        name: "Welcome",
+        path: "/home",
+        closeable: false
+    }
+])
+
+// 右击菜单项
+const itemMenuList = reactive<DropdownOption[]>([
+    {
+        label: "刷新",
+        key: "reload",
+        icon: IconRander(Reload)
+    },
+    {
+        type: "divider",
+        key: "d1"
+    },
+    {
+        label: "关闭其他",
+        key: "closeOther",
+        icon: IconRander(Close)
+    },
+    {
+        label: "关闭左侧",
+        key: "closeLeft",
+        icon: IconRander(ArrowBack)
+    },
+    {
+        label: "关闭右侧",
+        key: "closeRight",
+        icon: IconRander(ArrowForward)
+    }
+])
+
+// 当前路由
+const currentActiveTab = ref<string>("Welcome")
+// 切换标签
+const handleSwitchTab = (key: string) => {
+    router.push({ name: key })
+}
+// 关闭标签
+const closeTab = (item: tabItem, index: number) => {
+    if (item.name === currentActiveTab.value) {
+        if (index + 1 < tabsArray.value.length) {
+            handleSwitchTab(tabsArray.value[index + 1].name)
+        } else {
+            handleSwitchTab(tabsArray.value[index - 1].name)
+        }
+    }
+    tabsArray.value.splice(index, 1)
+    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+}
+
+// 显示隐藏菜单
+const showDropdownRef = ref<Boolean>(false)
+// 当前点击的菜单
+const rightClickTab = ref<string | null>(null)
+// 右击菜单事件
+const handleContextMenu = (e: MouseEvent, name: string) => {
+    e.preventDefault()
+    rightClickTab.value = name
+    showDropdownRef.value = true
+}
+// 关闭菜单
+const handleCloseMenu = () => {
+    showDropdownRef.value = false
+    rightClickTab.value = null
+}
+// 右击菜单功能
+const handleItemMenu = (key: string, item: tabItem, index: number) => {
+    console.log("key", key)
+    console.log("item", item)
+    console.log("index", index)
+    switch (key) {
+        case "reload":
+            break
+        case "closeOther":
+            break
+        case "closeLeft":
+            break
+        case "closeRight":
+            break
+    }
+    handleCloseMenu()
+}
+
+// 右侧操作菜单下拉
+const optionMenuList = reactive<DropdownOption[]>([
+    {
+        label: "刷新当前",
+        key: "reload",
+        icon: IconRander(Reload)
+    },
+    {
+        label: "关闭全部",
+        key: "closeAll",
+        icon: IconRander(Close)
+    }
+])
+// 右侧操作菜单下拉处理
+const handleOptionMenu = (key: string) => {
+    console.log(key)
+}
+
+// 获取tab-content元素
+const content = ref<any>(null)
+const showArrow = ref<Boolean>(false)
+
+// 检测页面是否已打开
+const checkOpen = (name: string): Boolean => {
+    return tabsArray.value.some(item => item.name === name)
+}
+// 监听路由变化
+watch(() => router.currentRoute.value, (newValue, oldValue) => {
+    if (!oldValue && sessionStorage.getItem("tabs")) {
+        tabsArray.value = JSON.parse(sessionStorage.getItem("tabs") as string)
+    }
+    if (newValue.name === oldValue?.name) {
+        return
+    }
+    if (checkOpen(newValue.name as string)) {
+        handleSwitchTab(newValue.name as string)
+    } else {
+        tabsArray.value.push({
+            title: newValue.meta.title as string,
+            name: newValue.name as string,
+            path: newValue.fullPath,
+            closeable: true
+        })
+    }
+    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+    nextTick(() => {
+        showArrow.value = content.value?.scrollWidth > content.value?.clientWidth
+        currentActiveTab.value = newValue.name as string
+    })
+}, { immediate: true })
+</script>
+
+<template>
+    <div class="tabs-bar">
+        <div class="tab-left-box">
+            <div v-if="showArrow" class="previous-btn">
+                <NIcon :component="ChevronBack" size="20" />
+            </div>
+            <div class="tab-content" ref="content">
+                <div v-for="(item, index) in tabsArray" :key="item.name"
+                    @contextmenu="handleContextMenu($event, item.name)" class="tab-item">
+                    <n-dropdown :options="itemMenuList" :show="showDropdownRef && rightClickTab === item.name"
+                        @select="handleItemMenu($event, item, index)" @clickoutside="handleCloseMenu">
+                        <div :class="['tab-item-content', currentActiveTab === item.name ? 'active' : '']">
+                            <div class="title" @click="handleSwitchTab(item.name)">{{ item.title }}</div>
+                            <div class="icon" @click="closeTab(item, index)">
+                                <NIcon v-if="item.closeable" :component="Close" size="18" :depth="3" />
+                            </div>
+                        </div>
+                    </n-dropdown>
+                </div>
+            </div>
+            <div v-if="showArrow" class="next-btn">
+                <NIcon :component="ChevronForward" size="20" />
+            </div>
+        </div>
+        <div class="tab-right-box">
+            <div class="tab-right-btn">
+                <n-dropdown trigger="click" :options="optionMenuList" @select="handleOptionMenu">
+                    <NIcon :component="Options" size="20" />
+                </n-dropdown>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scope>
+.tabs-bar {
+    min-width: 100%;
+    max-width: 100%;
+    height: $tabbar-height;
+    display: flex;
+
+    .n-icon {
+        cursor: pointer;
+    }
+}
+
+.tab-left-box {
+    width: calc(100% - $tabbar-height - $tab-item-gap);
+    height: 100%;
+    display: flex;
+
+    // 上一页和下一页按钮
+    .previous-btn,
+    .next-btn {
+        min-width: $tabbar-height;
+        max-width: $tabbar-height;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $tabbar-radius;
+        background-color: #FFF;
+    }
+
+    .previous-btn {
+        margin-right: $tab-item-gap;
+    }
+
+    .next-btn {
+        margin-left: $tab-item-gap;
+    }
+
+    // 标签内容区域
+    .tab-content {
+        display: flex;
+        gap: $tab-item-gap;
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+
+        .tab-item {
+            background-color: #FFF;
+            height: 100%;
+            padding-left: 14px;
+            padding-right: 14px;
+            border-radius: $tabbar-radius;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .tab-item-content {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-left: 4px;
+            }
+        }
+
+        .active {
+            color: $main-color;
+        }
+    }
+}
+
+.tab-right-box {
+    .tab-right-btn {
+        background-color: #FFF;
+        border-radius: $tabbar-radius;
+        width: $tabbar-height;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: $tab-item-gap;
+    }
+}
+</style>

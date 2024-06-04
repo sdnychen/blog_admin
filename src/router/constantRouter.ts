@@ -3,16 +3,16 @@ import type { RouteRecordRaw } from "vue-router"
 
 // 静态路由
 const staticRouter: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "Main",
-    redirect: "/home"
-  },
-  {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/login.vue")
-  }
+    {
+        path: "/",
+        name: "Main",
+        redirect: "/home"
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: () => import("@/views/login.vue")
+    }
 ]
 
 export default staticRouter

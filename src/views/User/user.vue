@@ -2,10 +2,9 @@
 </script>
 
 <template>
-  <div>
-    3
-  </div>
+    <div>
+        3
+    </div>
 </template>
 
-<style lang="scss" scope>
-</style>
+<style lang="scss" scope></style>
