@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, watch, nextTick } from "vue"
+import { ref, reactive, watch, nextTick, onMounted } from "vue"
 import type { DropdownOption } from "naive-ui"
 import IconRander from "@/utils/IconRender"
 import { useRouter } from "vue-router"
@@ -20,6 +20,14 @@ interface tabItem {
     name: string,
     path: string,
     closeable: Boolean
+}
+
+// 获取tab-content元素
+const content = ref<any>(null)
+const showArrow = ref<Boolean>(false)
+// 计算是否显示两侧左右按钮
+const computedShowArrow = () => {
+    showArrow.value = content.value?.scrollWidth > content.value?.clientWidth
 }
 
 const tabsArray = ref<tabItem[]>([
@@ -75,6 +83,9 @@ const closeTab = (item: tabItem, index: number) => {
         }
     }
     tabsArray.value.splice(index, 1)
+    nextTick(() => {
+        computedShowArrow()
+    })
     sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
 }
 
@@ -95,26 +106,30 @@ const handleCloseMenu = () => {
 }
 // 右击菜单功能
 const handleItemMenu = (key: string, item: tabItem, index: number) => {
-    console.log("key", key)
-    console.log("item", item)
-    console.log("index", index)
     switch (key) {
         case "reload":
+            console.log("reload")
             break
         case "closeOther":
+            tabsArray.value.splice(1, index - 1)
+            tabsArray.value.splice(2, tabsArray.value.length)
             break
         case "closeLeft":
+            tabsArray.value.splice(1, index - 1)
             break
         case "closeRight":
+            tabsArray.value.splice(index + 1, tabsArray.value.length)
             break
     }
+    computedShowArrow()
+    router.push(item.path)
     handleCloseMenu()
 }
 
-// 右侧操作菜单下拉
+// 操作按钮下拉
 const optionMenuList = reactive<DropdownOption[]>([
     {
-        label: "刷新当前",
+        label: "刷新页面",
         key: "reload",
         icon: IconRander(Reload)
     },
@@ -124,14 +139,24 @@ const optionMenuList = reactive<DropdownOption[]>([
         icon: IconRander(Close)
     }
 ])
-// 右侧操作菜单下拉处理
+// 操作按钮功能
 const handleOptionMenu = (key: string) => {
-    console.log(key)
+    switch (key) {
+        case "reload":
+            location.reload()
+            break
+        case "closeAll":
+            tabsArray.value.splice(1, tabsArray.value.length)
+            break
+    }
+    computedShowArrow()
+    router.push(tabsArray.value[0].path)
 }
 
-// 获取tab-content元素
-const content = ref<any>(null)
-const showArrow = ref<Boolean>(false)
+// 左右箭头
+const contentScrollHandle = (type: string) => {
+    type === "left" ? content.value.scrollLeft -= 100 : content.value.scrollLeft += 100
+}
 
 // 检测页面是否已打开
 const checkOpen = (name: string): Boolean => {
@@ -157,17 +182,28 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
     }
     sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
     nextTick(() => {
-        showArrow.value = content.value?.scrollWidth > content.value?.clientWidth
+        computedShowArrow()
         currentActiveTab.value = newValue.name as string
     })
 }, { immediate: true })
+const screenWidth = ref(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+onMounted(() => {
+    window.onresize = () => {
+        return (() => {
+            screenWidth.value = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+        })()
+    }
+})
+watch(() => screenWidth.value, () => {
+    computedShowArrow()
+})
 </script>
 
 <template>
     <div class="tabs-bar">
         <div class="tab-left-box">
-            <div v-if="showArrow" class="previous-btn">
-                <NIcon :component="ChevronBack" size="20" />
+            <div v-if="showArrow" class="previous-btn" @click="contentScrollHandle('left')">
+                <NIcon :component="ChevronBack" size="20"/>
             </div>
             <div class="tab-content" ref="content">
                 <div v-for="(item, index) in tabsArray" :key="item.name"
@@ -183,16 +219,16 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
                     </n-dropdown>
                 </div>
             </div>
-            <div v-if="showArrow" class="next-btn">
+            <div v-if="showArrow" class="next-btn" @click="contentScrollHandle('right')">
                 <NIcon :component="ChevronForward" size="20" />
             </div>
         </div>
         <div class="tab-right-box">
-            <div class="tab-right-btn">
-                <n-dropdown trigger="click" :options="optionMenuList" @select="handleOptionMenu">
+            <n-dropdown trigger="click" :options="optionMenuList" @select="handleOptionMenu">
+                <div class="tab-right-btn">
                     <NIcon :component="Options" size="20" />
-                </n-dropdown>
-            </div>
+                </div>
+            </n-dropdown>
         </div>
     </div>
 </template>
@@ -241,8 +277,10 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
         gap: $tab-item-gap;
         white-space: nowrap;
         width: 100%;
-        overflow: hidden;
-
+        overflow-x: auto;
+        &::-webkit-scrollbar {
+            display: none
+        };
         .tab-item {
             background-color: #FFF;
             height: 100%;
@@ -274,6 +312,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
 }
 
 .tab-right-box {
+    cursor: pointer;
     .tab-right-btn {
         background-color: #FFF;
         border-radius: $tabbar-radius;

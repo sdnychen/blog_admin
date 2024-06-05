@@ -92,7 +92,8 @@
         ], // 生成器函数'*'的位置
         "indent": [
             "error",
-            4
+            4,
+            {"SwitchCase": 1}
         ],
         "key-spacing": "error",
         "keyword-spacing": "error",
@@ -134,7 +135,7 @@
         "space-before-blocks": "error", // 函数块前的空格
         "space-before-function-paren": [
             "error",
-            "never"
+            "always"
         ], // 函数参数括号之前的空格
         "space-in-parens": "error", // 参数括号内的空格
         "space-infix-ops": "error", // 运算符周围空格
