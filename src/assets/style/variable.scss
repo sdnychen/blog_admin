@@ -7,6 +7,7 @@
 
 // layout
 $layout-gap: 10px; // layout-right的左右两侧宽度
+$box-radius: 10px;
 
 // aside
 $aside-width: 280px; // 菜单栏总宽度
@@ -19,11 +20,19 @@ $menu-logo-box-height: 60px;
 
 // header
 $header-height: 60px; // header高度
-$header-box-radius: 10px; // 统一圆角
+$header-box-radius: $box-radius; // 统一圆角
 
 // tabbar
 $tabbar-height: 30px; // tabbar高度，功能按钮的宽高
 $tabbar-radius: 4px; // 标签和按钮的圆角
-$tab-item-gap: 10px//标签间距和按钮间距
+$tab-item-gap: 10px;//标签间距和按钮间距
 
-/*------------------↓layout↓------------------*/
+// fotter
+$fotter-height: 60px;
+$fotter-box-radius: $box-radius;
+
+// content
+$content-height: calc(100vh - $header-height - $tabbar-height - $fotter-height - 4 * $layout-gap);
+$content-box-radius: $box-radius;
+
+/*------------------↓用户管理↓------------------*/

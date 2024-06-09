@@ -237,9 +237,8 @@ watch(() => screenWidth.value, () => {
 .tabs-bar {
     min-width: 100%;
     max-width: 100%;
-    height: $tabbar-height;
+    height: 100%;
     display: flex;
-
     .n-icon {
         cursor: pointer;
     }

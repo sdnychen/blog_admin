@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 import type { GlobalThemeOverrides } from "naive-ui"
-import { onBeforeMount } from "vue"
-import { useUserStore } from "./stores/user"
-
-const usertStore = useUserStore()
 
 const themeOverrides: GlobalThemeOverrides = {
     common: {
@@ -39,12 +35,6 @@ const themeOverrides: GlobalThemeOverrides = {
         color: "#3291F5"
     }
 }
-onBeforeMount(() => {
-    if (localStorage.getItem("userInfo")) {
-        usertStore.isLogin = true
-        usertStore.userInfo = localStorage.getItem("userInfo")
-    }
-})
 </script>
 
 <template>

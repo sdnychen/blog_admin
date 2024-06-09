@@ -3,6 +3,7 @@ import LayoutAsideEdgeMenu from "./LayoutAsideEdgeMenu.vue"
 import LayoutAsideMenu from "./LayoutAsideMenu.vue"
 import Header from "./Header.vue"
 import TabBar from "./TabBar.vue"
+import Footer from "./Footer.vue"
 
 </script>
 
@@ -25,11 +26,11 @@ import TabBar from "./TabBar.vue"
             <div class="tab-bar">
                 <TabBar />
             </div>
-            <div class="content" style="background-color: #FFF">
+            <div class="content">
                 <RouterView />
             </div>
             <div class="footer">
-                footer
+                <Footer />
             </div>
         </div>
     </div>
@@ -82,11 +83,19 @@ import TabBar from "./TabBar.vue"
     }
 
     .tab-bar {
+        height: $tabbar-height;
         width: 100%;
     }
 
+    .content {
+        height: $content-height;
+        border-radius: $content-box-radius;
+    }
+
     .footer {
+        height: $fotter-height;
         background-color: getColor(main-bg-color);
+        border-radius: $fotter-box-radius;
     }
 }
 </style>

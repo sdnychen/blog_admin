@@ -45,9 +45,7 @@ export const useMenuStore = defineStore("menu", {
     state: () => {
         return {
             isGenerate: false,
-            routes: [] as RouteRecordRaw[],
-            activeMainMenu: "/home",
-            currMenu: ""
+            routes: [] as RouteRecordRaw[]
         }
     },
     actions: {
@@ -69,15 +67,6 @@ export const useMenuStore = defineStore("menu", {
             this.routes = accessRouter
             this.isGenerate = true
             return accessRouter
-        },
-
-        /**
-         * 切换路由
-         * @param route
-         */
-        navigatMenu(route: RouteRecordRaw) {
-            this.activeMainMenu = route.path
-            this.currMenu = route.name as string
         }
     }
 })

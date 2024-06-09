@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from "vue"
 import type { FormValidationError } from "naive-ui"
 import { Reload } from "@vicons/ionicons5"
-import userApi from "@/api/apis/userApi"
+import BaseApi from "@/api/apis/baseApi"
 import { useRouter } from "vue-router"
 import { useUserStore } from "@/stores/user"
 
@@ -17,7 +17,7 @@ const loadingVerify = ref(false)
 // 获取验证码
 const getVerify = async () => {
     loadingVerify.value = true
-    const res = await userApi.getVerifyImg()
+    const res = await BaseApi.getVerifyImg()
     loadingVerify.value = false
     if (res.success) {
         verifyImg.value = res.data
@@ -52,9 +52,10 @@ const handleLogin = () => {
                     localStorage.removeItem("login_user")
                 }
                 setTimeout(() => {
-                    router.push({ name: "Main" })
+                    router.push("/")
                 }, 300)
             } else {
+                loginFormRef.value.restoreValidation()
                 loginForm.verify = ""
                 getVerify()
             }

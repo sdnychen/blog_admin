@@ -21,7 +21,7 @@ class server {
 
         // 请求拦截器
         this.instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-            // console.log("request", request)
+            request.headers.Authorization = localStorage.getItem("token")
             return request
         }, (err: any) => {
             return Promise.reject(err)
@@ -29,6 +29,7 @@ class server {
         // 响应拦截器
         this.instance.interceptors.response.use((response: AxiosResponse) => {
             // 统一消息通知处理
+            response.headers.authorization && localStorage.setItem("token", response.headers.authorization)
             const resolve = response.data
             if (resolve.success && resolve.msg) {
                 message.success(resolve.msg)
