@@ -70,7 +70,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
 </script>
 
 <template>
-    <div>
+    <div class="menu-box">
         <div class="logo-box">
             <span class="logo-title">
                 Admin
@@ -99,7 +99,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
     }
 }
 
-.n-scrollbar {
+.menu-box .n-scrollbar {
     height: calc(100vh - $menu-logo-box-height);
 }
 </style>

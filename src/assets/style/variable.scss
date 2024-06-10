@@ -35,4 +35,6 @@ $fotter-box-radius: $box-radius;
 $content-height: calc(100vh - $header-height - $tabbar-height - $fotter-height - 4 * $layout-gap);
 $content-box-radius: $box-radius;
 
-/*------------------↓用户管理↓------------------*/
+/*------------------↓公共组件↓------------------*/
+
+$card-box-radius: $box-radius;

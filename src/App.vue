@@ -33,6 +33,15 @@ const themeOverrides: GlobalThemeOverrides = {
     },
     Spin: {
         color: "#3291F5"
+    },
+    Button: {
+        textColorHover: "#3291F5",
+        borderHover: "1px solid #3291F5",
+        textColorFocus: "#3291F5",
+        borderFocus: "1px solid #3291F5",
+        rippleColor: "",
+        textColorPressed: "#3291F5",
+        borderPressed: "1px solid #3291F5"
     }
 }
 </script>

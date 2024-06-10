@@ -21,6 +21,7 @@ const asyncRouter: RouteRecordRaw[] = dynamicRouter
 const lastRouter: Array<RouteRecordRaw> = [
     {
         path: "/:productName(.*)*",
+        name: "NotFound",
         component: () => import("@/views/404.vue")
     }
 ]

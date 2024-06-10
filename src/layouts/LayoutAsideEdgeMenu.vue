@@ -11,7 +11,9 @@ const currentRoute = computed(() => {
 })
 
 // 菜单列表（路由）
-const menuOptions: RouteRecordRaw[] = menuStore.routes
+const menuOptions = computed(() => {
+    return menuStore.routes.filter(item => item.name !== "NotFound")
+})
 
 // 活动菜单
 const activeMenu = currentRoute
@@ -23,7 +25,7 @@ const navigatMenu = (route: RouteRecordRaw) => {
 </script>
 
 <template>
-    <div>
+    <div class="edge-menu-box">
         <div class="edge-menu-logo-box">
             <img class="edge-menu-logo" src="/favicon.ico" alt="logo">
         </div>
