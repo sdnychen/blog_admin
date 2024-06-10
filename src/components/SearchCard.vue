@@ -16,7 +16,7 @@
 <style lang="scss" scope>
 .search-card-box {
     display: flex;
-    padding: 20px;
+    padding: $card-box-padding;
     background-color: getColor(main-bg-color);
     border-radius: $card-box-radius;
     .search-card-content {

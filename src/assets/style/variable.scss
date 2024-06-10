@@ -10,8 +10,8 @@ $layout-gap: 10px; // layout-right的左右两侧宽度
 $box-radius: 10px;
 
 // aside
-$aside-width: 280px; // 菜单栏总宽度
-$edge-menu-width: 90px; 
+$aside-width: 260px; // 菜单栏总宽度
+$edge-menu-width: 80px; 
 $edge-menu-logo-box-height: 60px; // 
 $edge-menu-logo-width: 40px;
 $edge-menu-logo-height: 40px;
@@ -38,3 +38,4 @@ $content-box-radius: $box-radius;
 /*------------------↓公共组件↓------------------*/
 
 $card-box-radius: $box-radius;
+$card-box-padding: 20px;

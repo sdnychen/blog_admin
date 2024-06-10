@@ -7,7 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    404: typeof import('./src/components/404.vue')['default']
+    CNDataTable: typeof import('./src/components/CNDataTable.vue')['default']
     ContentCard: typeof import('./src/components/ContentCard.vue')['default']
     MainCard: typeof import('./src/components/MainCard.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']

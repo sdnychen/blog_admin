@@ -22,7 +22,7 @@ const hasTitleSlot = ref(!!slots.title)
 .main-card-box {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: $card-box-padding;
     background-color: getColor(main-bg-color);
     border-radius: $card-box-radius;
     // .main-card-box-title {
