@@ -18,7 +18,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/setting/baseInfo",
         meta: {
             title: "设置",
-            auth: [1],
+            auth: "5:F",
             icon: markRaw(SettingsOutline)
         },
         children: [
@@ -28,6 +28,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "基本信息",
+                    auth: "5:1",
                     icon: markRaw(InformationCircleOutline)
                 }
             },
@@ -37,6 +38,7 @@ const home: Array<RouteRecordRaw> = [
                 component: EmptyLayout,
                 meta: {
                     title: "配置信息",
+                    auth: "5:2",
                     icon: markRaw(BuildOutline)
                 },
                 children: [
@@ -64,6 +66,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "主题样式",
+                    auth: "5:4",
                     icon: markRaw(ColorPaletteOutline)
                 }
             },
@@ -73,6 +76,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "协议条款",
+                    auth: "5:8",
                     icon: markRaw(DocumentTextOutline)
                 }
             }

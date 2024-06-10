@@ -14,7 +14,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/member/member",
         meta: {
             title: "会员",
-            auth: [1],
+            auth: "2:3",
             icon: markRaw(PersonCircleOutline)
         },
         children: [
@@ -24,6 +24,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "会员管理",
+                    auth: "2:1",
                     icon: markRaw(PersonCircleOutline)
                 }
             },
@@ -33,6 +34,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "会员等级",
+                    auth: "2:2",
                     icon: markRaw(TrendingUpSharp)
                 }
             }

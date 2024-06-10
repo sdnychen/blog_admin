@@ -20,7 +20,7 @@ const asyncRouter: RouteRecordRaw[] = dynamicRouter
 // 最后添加的路由
 const lastRouter: Array<RouteRecordRaw> = [
     {
-        path: "/:productName",
+        path: "/:productName(.*)*",
         component: () => import("@/views/404.vue")
     }
 ]
@@ -44,6 +44,7 @@ router.beforeEach(async (to) => {
             if (to.name === "Login") {
                 return { name: "Home" }
             }
+            return true
         } else {
             const check = await userStore.check()
             if (check) {

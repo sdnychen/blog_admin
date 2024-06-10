@@ -13,7 +13,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/menu/menu",
         meta: {
             title: "菜单",
-            auth: [1],
+            auth: "8:1",
             icon: markRaw(Menu)
         },
         children: [

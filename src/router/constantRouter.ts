@@ -1,12 +1,23 @@
 import type { RouteRecordRaw } from "vue-router"
-// import Layout from "@/layouts/Layout.vue"
+import Layout from "@/layouts/Layout.vue"
 
 // 静态路由
 const staticRouter: Array<RouteRecordRaw> = [
     {
         path: "/",
         name: "Main",
-        redirect: "/home"
+        component: Layout,
+        redirect: "/home",
+        children: [
+            {
+                path: "/persional",
+                name: "Persional",
+                component: () => import("@/views/Home/home.vue"),
+                meta: {
+                    title: "个人中心"
+                }
+            }
+        ]
     },
     {
         path: "/login",

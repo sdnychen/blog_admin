@@ -5,7 +5,7 @@ import BaseApi from "@/api/apis/baseApi"
 export const useUserStore = defineStore("user", {
     state: () => {
         return {
-            userInfo: null as null | Object
+            userInfo: null as UserInfo | null
         }
     },
     actions: {
@@ -52,10 +52,16 @@ export const useUserStore = defineStore("user", {
         },
 
         // 获取权限
-        getAuth() {
-            const auth: Array<number | string> = []
-            auth.push(1)
-            auth.push(2)
+        getAuth(): string[] {
+            console.log(this.userInfo?.auth)
+            const auth: Array<string> = []
+            if (!this.userInfo?.auth) {
+                return auth
+            }
+            for (let i = 0; i < this.userInfo.auth.length; i += 2) {
+                auth.push(parseInt(this.userInfo.auth.charAt(i) + this.userInfo.auth.charAt(i + 1), 16).toString(2))
+            }
+            console.log("test", auth)
             return auth
         }
     }

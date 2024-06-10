@@ -15,7 +15,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/material/localMaterial",
         meta: {
             title: "素材",
-            auth: [1],
+            auth: "9:3",
             icon: markRaw(FolderOutline)
         },
         children: [
@@ -25,6 +25,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "本地",
+                    auth: "9:1",
                     icon: markRaw(CloudOfflineOutline)
                 }
             },
@@ -34,6 +35,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "云",
+                    auth: "9:2",
                     icon: markRaw(CloudOutline)
                 }
             }

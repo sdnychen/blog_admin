@@ -13,7 +13,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/ad/ad",
         meta: {
             title: "广告",
-            auth: [1],
+            auth: "6:1",
             icon: markRaw(EaselOutline)
         },
         children: [

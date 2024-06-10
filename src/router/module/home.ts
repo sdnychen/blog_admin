@@ -15,7 +15,6 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/home/welcome",
         meta: {
             title: "主控台",
-            auth: [1],
             icon: markRaw(CubeOutline)
         },
         children: [
@@ -34,6 +33,7 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import("@/views/Home/home.vue"),
                 meta: {
                     title: "总览",
+                    auth: "0:1",
                     icon: markRaw(TvOutline)
                 }
             }

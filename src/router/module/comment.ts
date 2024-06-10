@@ -13,7 +13,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/comment/comment",
         meta: {
             title: "评论",
-            auth: [1],
+            auth: "4:1",
             icon: markRaw(ChatboxEllipsesOutline)
         },
         children: [

@@ -16,7 +16,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/content/article",
         meta: {
             title: "内容",
-            auth: [1],
+            auth: "3:3",
             icon: markRaw(FileTrayFullOutline)
         },
         children: [
@@ -27,6 +27,7 @@ const home: Array<RouteRecordRaw> = [
                 redirect: "/content/article/article",
                 meta: {
                     title: "文章",
+                    auth: "3:1",
                     icon: markRaw(ReceiptOutline)
                 },
                 children: [
@@ -71,6 +72,7 @@ const home: Array<RouteRecordRaw> = [
                 redirect: "/content/moments/moments",
                 meta: {
                     title: "动态",
+                    auth: "3:2",
                     icon: markRaw(ApertureOutline)
                 },
                 children: [

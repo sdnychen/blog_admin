@@ -13,7 +13,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: "/blogroll/blogroll",
         meta: {
             title: "友链",
-            auth: [1],
+            auth: "7:1",
             icon: markRaw(LinkOutline)
         },
         children: [
