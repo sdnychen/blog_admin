@@ -42,6 +42,10 @@ const themeOverrides: GlobalThemeOverrides = {
         rippleColor: "",
         textColorPressed: "#3291F5",
         borderPressed: "1px solid #3291F5"
+    },
+    Switch: {
+        railColorActive: "#3291F5",
+        boxShadowFocus: ""
     }
 }
 </script>

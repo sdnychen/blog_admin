@@ -15,3 +15,9 @@ interface UserInfo {
     email: string,
     auth: string
 }
+
+// 返回数据的结构（分页）
+interface responsePageData {
+    list: any[],
+    total: number
+}

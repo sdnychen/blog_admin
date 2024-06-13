@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+
 </script>
 
 <template>
@@ -7,8 +8,8 @@
             <slot />
         </div>
         <div class="search-card-btn">
-            <n-button type="info">搜索</n-button>
-            <n-button type="default">重置</n-button>
+            <n-button type="info" @click="$emit('search-handle')">搜索</n-button>
+            <n-button type="default" @click="$emit('reset-handle')">重置</n-button>
         </div>
     </div>
 </template>

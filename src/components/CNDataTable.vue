@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import { ref, onMounted, defineProps, useSlots } from "vue"
+import { ref, onMounted, defineProps, useSlots, reactive } from "vue"
 
-defineProps({
-    topBoxHeight: String
+const props = defineProps({
+    topBoxHeight: String,
+    total: Number
+})
+
+const pagination = reactive({
+    pageSize: 20,
+    itemCount: props.total
 })
 
 const topBarRef = ref()
@@ -15,7 +21,10 @@ onMounted(() => topBarHeight.value = !!useSlots().default ? topBarRef.value.clie
         <slot />
     </div>
     <div>
-        <n-data-table v-bind="$attrs" />
+        <n-data-table
+            :pagination="pagination"
+            v-bind="$attrs"
+        />
     </div>
 </template>
 

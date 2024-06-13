@@ -55,8 +55,8 @@ class server {
      * GET请求
      * @param config
      */
-    public get<T = any>(url: string, config?: AxiosRequestConfig): Promise<Resulve<T>> {
-        return this.instance.get(url, config)
+    public get<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+        return this.instance.get(url, {...config, params})
     }
 
     /**
@@ -76,11 +76,11 @@ class server {
     }
 
     /**
-     * PUT请求
+     * DELETE请求
      * @param config
      */
-    public delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<Resulve<T>> {
-        return this.instance.delete(url, config)
+    public delete<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
+        return this.instance.delete(url, {...config, params})
     }
 }
 

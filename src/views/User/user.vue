@@ -1,52 +1,111 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from "vue"
-import type { DataTableColumns } from "naive-ui"
+import { reactive, ref, onMounted, h } from "vue"
+import { NSwitch, NTime, NImage, NButton, type DataTableColumns, type UploadFileInfo } from "naive-ui"
+import userApi from "@/api/apis/userApi"
+// import { UserStatus } from "@/enum/userStatus"
 
-interface TableData {
+type TableData = {
     username: string,
     email: string
 }
 
+type addEditForm = {
+    username: string,
+    mobile: string,
+    email: string,
+    avatar: string
+}
+
 const queryForm = ref({
-    username: ""
+    page: 1,
+    username: "",
+    mobile: "",
+    email: ""
 })
-const pagination = reactive({
-    pageSize: 20
+const queryFormInit = ref({
+    page: 1,
+    username: "",
+    mobile: "",
+    email: ""
 })
+
+// 状态改变
+const statusChangeHandle = (value: any) => {
+    console.log(value)
+}
+
 const columns = reactive<DataTableColumns>([
+    {title: "用户名", key: "username", fixed: "left"},
+    {title: "手机号", key: "mobile"},
+    {title: "邮箱", key: "email"},
     {
-        title: "用户名",
-        key: "username"
+        title: "头像", key: "avatar", align: "center",
+        render: (row) => row.avatar ? h(NImage, {width: 30, height: 30, lazy: true, src: row.avatar as string, style: {borderRadius: "8px"}}) : "--"
     },
     {
-        title: "Email",
-        key: "email"
+        title: "创建时间", key: "createTime", fixed: "right",
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
+    },
+    {
+        title: "状态", key: "status", align: "center",
+        render: () => h(NSwitch, {checkedValue: 1, uncheckedValue: 0, onUpdateValue: statusChangeHandle})
+    },
+    {
+        title: "操作", key: "operation", fixed: "right",
+        render: () => [
+            h(NButton, {text: true, type: "info", style: {marginRight: "8px"}}, () => "修改"),
+            h(NButton, {text: true, type: "error"}, () => "删除")
+        ]
     }
 ])
-const dataList = ref<TableData[]>([
-    {
-        username: "张三",
-        email: "111"
-    },
-    {
-        username: "李四",
-        email: "222"
-    },
-    {
-        username: "张三",
-        email: "111"
-    }
-])
+const dataList = ref<TableData[]>([])
+const total = ref<number>(0)
+
+const getList = async () => {
+    const { data } = await userApi.getUserList(queryForm.value)
+    dataList.value = data.list
+    total.value = data.total
+}
+
+// 搜索
+const searchHandle = () => {
+    getList()
+}
+// 重置
+const resetHandle = () => {
+    queryForm.value = {...queryFormInit.value}
+}
+
+const addEditForm = ref({
+    username: "",
+    mobile: "",
+    email: "",
+    avatar: ""
+})
+const avatarFiles = ref<UploadFileInfo[]>([])
+const addEditRules = reactive({
+
+})
+
+const showAddEditModal = ref<boolean>(false)
+// 添加
+const onAddHandle = () => {
+    showAddEditModal.value = true
+    console.log("1")
+}
 
 const topBoxRef = ref()
 const topBoxRefHeight = ref<string>("0px")
-onMounted(() => topBoxRefHeight.value = topBoxRef.value.clientHeight + "px")
+onMounted(() => {
+    topBoxRefHeight.value = topBoxRef.value.clientHeight + "px"
+    getList()
+})
 </script>
 
 <template>
     <div class="content-layout">
         <div ref="topBoxRef" class="top-box-ref">
-            <SearchCard>
+            <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
                 <n-form
                     ref="formRef"
                     inline
@@ -54,9 +113,16 @@ onMounted(() => topBoxRefHeight.value = topBoxRef.value.clientHeight + "px")
                     label-width="auto"
                     label-placement="left"
                     :show-feedback="false"
+                    :scroll-x="1000"
                 >
-                    <n-form-item label="名称">
-                        <n-input v-model:value="queryForm.username" placeholder="输入名称" />
+                    <n-form-item label="用户名">
+                        <n-input v-model:value="queryForm.username" placeholder="请输入用户名" />
+                    </n-form-item>
+                    <n-form-item label="手机号">
+                        <n-input v-model:value="queryForm.mobile" placeholder="请输入手机号" />
+                    </n-form-item>
+                    <n-form-item label="邮箱">
+                        <n-input v-model:value="queryForm.email" placeholder="请输入邮箱" />
                     </n-form-item>
                 </n-form>
             </SearchCard>
@@ -66,17 +132,49 @@ onMounted(() => topBoxRefHeight.value = topBoxRef.value.clientHeight + "px")
                 <c-n-data-table
                     :columns="columns"
                     :data="dataList"
-                    :pagination="pagination"
                     :bordered="true"
                     :top-box-height="topBoxRefHeight"
+                    :total="total"
                 >
                     <div>
-                        <n-button type="info">添加</n-button>
+                        <n-button type="info" @click="onAddHandle">添加</n-button>
                     </div>
                 </c-n-data-table>
             </MainCard>
         </div>
     </div>
+    <n-modal
+        preset="card"
+        v-model:show="showAddEditModal"
+        title="添加用户"
+        style="width: 600px;"
+    >
+        <n-form
+            :model="addEditForm"
+            :rules="addEditRules"
+        >
+            <n-form-item label="用户名">
+                <n-input v-model:value="addEditForm.username" placeholder="输入用户名" />
+            </n-form-item>
+            <n-form-item label="手机号">
+                <n-input v-model:value="addEditForm.username" placeholder="输入手机号" />
+            </n-form-item>
+            <n-form-item label="邮箱">
+                <n-input v-model:value="addEditForm.username" placeholder="输入邮箱" />
+            </n-form-item>
+            <n-form-item label="头像">
+                <n-upload
+                    action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+                    :file-list="avatarFiles"
+                    list-type="image-card"
+                >
+                </n-upload>
+            </n-form-item>
+        </n-form>
+        <template #footer>
+            尾部
+        </template>
+    </n-modal>
 </template>
 
 <style lang="scss" scope>
