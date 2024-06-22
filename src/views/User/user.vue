@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted, h } from "vue"
-import { NSwitch, NTime, NImage, NButton, type DataTableColumns, type UploadFileInfo } from "naive-ui"
+import { NSwitch, NTime, NImage, NButton, useMessage } from "naive-ui"
+import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions } from "naive-ui"
 import userApi from "@/api/apis/userApi"
+import { avatarUpload } from "@/utils/ossUtil"
 // import { UserStatus } from "@/enum/userStatus"
+
+const message = useMessage()
 
 type TableData = {
     username: string,
@@ -91,7 +95,6 @@ const showAddEditModal = ref<boolean>(false)
 // 添加
 const onAddHandle = () => {
     showAddEditModal.value = true
-    console.log("1")
 }
 
 const topBoxRef = ref()
@@ -100,6 +103,20 @@ onMounted(() => {
     topBoxRefHeight.value = topBoxRef.value.clientHeight + "px"
     getList()
 })
+
+// 文件上传
+const fileUpload = async (option: UploadCustomRequestOptions) => {
+    const oss = await avatarUpload(option.file)
+    addEditForm.value.avatar = oss.url
+}
+const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[]}) => {
+    const re = new RegExp("^image/(png|jpeg)$", "g")
+    if (date.file.type) {
+        return re.test(date.file.type)
+    }
+    message.warning("头像文件格式仅支持png，jpg，jpeg")
+    return false
+}
 </script>
 
 <template>
@@ -164,9 +181,12 @@ onMounted(() => {
             </n-form-item>
             <n-form-item label="头像">
                 <n-upload
-                    action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-                    :file-list="avatarFiles"
+                    :custom-request="fileUpload"
+                    v-model:file-list="avatarFiles"
                     list-type="image-card"
+                    accept=".jpg, .jpeg, .png"
+                    :max="1"
+                    @before-upload="beforeFileUpload"
                 >
                 </n-upload>
             </n-form-item>

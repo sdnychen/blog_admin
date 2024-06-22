@@ -16,10 +16,17 @@ const baseApi = {
     },
 
     /**
-     * 登录
+     * 登录检测
      */
     check: () => {
         return request.post("/check")
+    },
+
+    /**
+     * sts授权
+     */
+    sts: () => {
+        return request.get("/sts")
     }
 }
 
