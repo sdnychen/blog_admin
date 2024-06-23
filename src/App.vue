@@ -46,6 +46,9 @@ const themeOverrides: GlobalThemeOverrides = {
     Switch: {
         railColorActive: "#3291F5",
         boxShadowFocus: ""
+    },
+    Upload: {
+        draggerBorderHover: "1px dashed #3291F5"
     }
 }
 </script>

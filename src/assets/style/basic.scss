@@ -13,6 +13,14 @@ a {
     color: #000;
 }
 
+// model弹框底部按钮位置
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
 // 定义思源黑体
 @font-face {
     font-family: "SourceHanSans";
