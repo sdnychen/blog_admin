@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted, h } from "vue"
 import { NSwitch, NTime, NImage, NButton, useMessage } from "naive-ui"
-import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions, FormRules, FormInst } from "naive-ui"
+import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions, FormRules, FormInst, TransferOption } from "naive-ui"
 import userApi from "@/api/apis/userApi"
+import authApi from "@/api/apis/authApi"
 import { avatarUpload } from "@/utils/ossUtil"
 import { UserStatus } from "@/enum/userStatus"
 import { mobileRegExp, emailRegExp } from "@/utils/regExp"
@@ -10,7 +11,7 @@ import { sha256 } from "js-sha256"
 
 const message = useMessage()
 
-type TableData = {
+type TableDataType = {
     id: string,
     username: string,
     email: string,
@@ -28,6 +29,12 @@ type addEditFormType = {
     avatar: string,
     password: string,
     checkPassword: string | undefined,
+    remark: string
+}
+
+type authType = {
+    id: string,
+    authName: string,
     remark: string
 }
 
@@ -62,7 +69,7 @@ const addEditFormInit = ref<addEditFormType>({
     remark: ""
 })
 
-const dataList = ref<TableData[]>([])
+const dataList = ref<TableDataType[]>([])
 const total = ref<number>(0)
 // 用户列表
 const getList = async () => {
@@ -72,7 +79,7 @@ const getList = async () => {
 }
 
 // 状态改变
-const statusChangeHandle = async (row: TableData, index: number) => {
+const statusChangeHandle = async (row: TableDataType, index: number) => {
     dataList.value[index].status = row.status === 1 ? 0 : 1
     await userApi.updateStatus({id: row.id, status: row.status})
     getList()
@@ -85,8 +92,29 @@ const onDeleteHandle = async (id: string) => {
     }
 }
 const showAddEditModal = ref<boolean>(false)
+const showUserGroupAuthDrawer = ref<boolean>(false)
 const addEditModalType = ref<string | null>(null)
+const userGroupAuthDrawerType = ref<string | null>(null)
 const avatarFiles = ref<UploadFileInfo[]>([])
+
+const userGroupValue = ref<Array<string | number> | null>(null)
+const userGroupOptions = ref<TransferOption[]>([])
+const authValue = ref<Array<string | number> | null>(null)
+const authOptions = ref<TransferOption[]>([])
+const currDrawerUser = ref<TableDataType | null>(null)
+
+// 权限列表
+const getAuthList = async () => {
+    const { data } = await authApi.getAllList()
+    authOptions.value = []
+    data.forEach((item: authType) => {
+        authOptions.value.push({
+            label: item.authName,
+            value: item.id,
+            disabled: false
+        })
+    })
+}
 
 // 添加
 const onAddHandle = () => {
@@ -102,12 +130,19 @@ const onEditHandle = async (id: string) => {
     showAddEditModal.value = true
 }
 // 添加到用户组
-const onAddUserGroupHandle = (id: string) => {
-    console.log(id)
+const onAddUserGroupHandle = (user: TableDataType) => {
+    currDrawerUser.value = user
+    userGroupAuthDrawerType.value = "userGroup"
+    showUserGroupAuthDrawer.value = true
+    console.log(user)
 }
 // 授权
-const onAuthHandle = (id: string) => {
-    console.log(id)
+const onAuthHandle = async (user: TableDataType) => {
+    await getAuthList()
+    currDrawerUser.value = user
+    userGroupAuthDrawerType.value = "auth"
+    showUserGroupAuthDrawer.value = true
+    console.log(user)
 }
 
 // 搜索
@@ -170,13 +205,13 @@ const removeFile = () => {
 }
 
 const addEditFormRef = ref<FormInst | null>()
-// 关闭
-const onCloseHandle = () => {
+// 弹窗关闭
+const onCloseModalHandle = () => {
     showAddEditModal.value = false
     addEditForm.value = addEditFormInit.value
 }
-// 提交
-const onSubmitHandle = () => {
+// 弹窗提交
+const onSubmitModalHandle = () => {
     addEditFormRef.value?.validate(async err => {
         if (!err) {
             if (addEditModalType.value === "add") {
@@ -185,21 +220,29 @@ const onSubmitHandle = () => {
                 formDate.password = sha256(formDate.password)
                 const { success } = await userApi.addUser(formDate)
                 if (success) {
-                    onCloseHandle()
+                    onCloseModalHandle()
                     getList()
                 }
             } else if (addEditModalType.value === "edit") {
                 const { success } = await userApi.editUser(addEditForm.value)
                 if (success) {
-                    onCloseHandle()
+                    onCloseModalHandle()
                     getList()
                 }
             }
         }
     })
 }
+// 抽屉关闭
+const onCloseDrawerHandle = () => {
+    showUserGroupAuthDrawer.value = false
+}
+// 抽屉提交
+const onSubmitDrawerHandle = () => {
+    onCloseDrawerHandle()
+}
 
-const columns = reactive<DataTableColumns<TableData>>([
+const columns = reactive<DataTableColumns<TableDataType>>([
     { title: "用户名", key: "username", fixed: "left", minWidth: 100},
     { title: "手机号", key: "mobile", minWidth: 120},
     { title: "邮箱", key: "email", minWidth: 180 },
@@ -220,8 +263,8 @@ const columns = reactive<DataTableColumns<TableData>>([
         title: "操作", key: "operation", fixed: "right", minWidth: 240,
         render: (row) => [
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserGroupHandle(row.id)}, () => "添加到用户组"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row.id)}, () => "授权"),
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row)}, () => "授权"),
             h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
         ]
     }
@@ -319,11 +362,41 @@ const columns = reactive<DataTableColumns<TableData>>([
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitHandle">提交</n-button>
-                <n-button @click="onCloseHandle">取消</n-button>
+                <n-button type="info" @click="onSubmitModalHandle">提交</n-button>
+                <n-button @click="onCloseModalHandle">取消</n-button>
             </div>
         </template>
     </n-modal>
+    <n-drawer
+        v-model:show="showUserGroupAuthDrawer"
+        :width="600"
+        :close-on-esc="false"
+        :mask-closable="false"
+    >
+        <n-drawer-content :title="userGroupAuthDrawerType === 'userGroup' ? '添加到用户组' : '用户授权'">
+        <n-transfer
+            v-if="userGroupAuthDrawerType === 'userGroup'"
+            ref="transfer"
+            v-model:value="userGroupValue"
+            :options="userGroupOptions"
+            source-title="全部用户组"
+            target-title="已选用户组"
+            select-all-text="全选"
+            clear-text="清除"
+            source-filter-placeholder="搜索用户组"
+            size="small"
+            :show-selected="false"
+            source-filterable
+        />
+        <n-transfer v-else ref="transfer" v-model:value="authValue" :options="authOptions" />
+        <template #footer>
+            <div class="drawer-footer">
+                <n-button type="info" @click="onSubmitDrawerHandle">提交</n-button>
+                <n-button @click="onCloseDrawerHandle">取消</n-button>
+            </div>
+        </template>
+        </n-drawer-content>
+    </n-drawer>
 </template>
 
 <style lang="scss" scope>

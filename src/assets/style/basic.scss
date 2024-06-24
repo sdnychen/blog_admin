@@ -20,6 +20,12 @@ a {
     justify-content: flex-end;
     gap: 20px;
 }
+// drawer弹框底部按钮位置
+.drawer-footer {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
 // 定义思源黑体
 @font-face {
