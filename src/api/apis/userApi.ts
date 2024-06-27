@@ -29,7 +29,18 @@ const userApi = {
     /**
      * 用户删除
      */
-    userDetail: (params: any) => request.get("/user/detail", params)
+    getUserDetail: (params: any) => request.get("/user/detail", params),
+
+    /**
+     * 获取用户权限
+     */
+    getUserAuthList: (params: any) => request.get("/user/auth", params),
+
+    /**
+     * 更新用户权限
+     */
+    updateUserAuthList: (params: any) => request.post("/user/updateAuth", params)
+
 }
 
 export default userApi

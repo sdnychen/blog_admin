@@ -32,7 +32,7 @@ type addEditFormType = {
     remark: string
 }
 
-type authType = {
+type authRequestType = {
     id: string,
     authName: string,
     remark: string
@@ -99,20 +99,28 @@ const avatarFiles = ref<UploadFileInfo[]>([])
 
 const userGroupValue = ref<Array<string | number> | null>(null)
 const userGroupOptions = ref<TransferOption[]>([])
-const authValue = ref<Array<string | number> | null>(null)
+const authValue = ref<Array<string | number>>([])
 const authOptions = ref<TransferOption[]>([])
 const currDrawerUser = ref<TableDataType | null>(null)
 
-// 权限列表
+// 全部权限
 const getAuthList = async () => {
     const { data } = await authApi.getAllList()
     authOptions.value = []
-    data.forEach((item: authType) => {
+    data.forEach((item: authRequestType) => {
         authOptions.value.push({
             label: item.authName,
             value: item.id,
             disabled: false
         })
+    })
+}
+// 用户权限
+const getUserAuth = async (id: string) => {
+    const { data } = await userApi.getUserAuthList({id})
+    authValue.value = []
+    data.forEach((item: authRequestType) => {
+        authValue.value.push(item.id)
     })
 }
 
@@ -123,7 +131,7 @@ const onAddHandle = () => {
 }
 // 编辑
 const onEditHandle = async (id: string) => {
-    const { data } = await userApi.userDetail({id})
+    const { data } = await userApi.getUserDetail({id})
     addEditForm.value = data
     avatarFiles.value = data.avatar ? [{id: "avatarId", name: new URL(data.avatar).pathname.split("/")[2], status: "finished", url: data.avatar}] : []
     addEditModalType.value = "edit"
@@ -137,12 +145,12 @@ const onAddUserGroupHandle = (user: TableDataType) => {
     console.log(user)
 }
 // 授权
-const onAuthHandle = async (user: TableDataType) => {
-    await getAuthList()
+const onAuthHandle = (user: TableDataType) => {
+    getAuthList()
+    getUserAuth(user.id)
     currDrawerUser.value = user
     userGroupAuthDrawerType.value = "auth"
     showUserGroupAuthDrawer.value = true
-    console.log(user)
 }
 
 // 搜索
@@ -238,7 +246,18 @@ const onCloseDrawerHandle = () => {
     showUserGroupAuthDrawer.value = false
 }
 // 抽屉提交
-const onSubmitDrawerHandle = () => {
+const onSubmitDrawerHandle = async () => {
+    if (userGroupAuthDrawerType.value === "userGroup") {
+        console.log("用户组提交")
+    } else {
+        const { success } = await userApi.updateUserAuthList({
+            id: currDrawerUser.value?.id,
+            authList: authValue.value
+        })
+        if (success) {
+            onCloseDrawerHandle()
+        }
+    }
     onCloseDrawerHandle()
 }
 
@@ -374,21 +393,49 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         :mask-closable="false"
     >
         <n-drawer-content :title="userGroupAuthDrawerType === 'userGroup' ? '添加到用户组' : '用户授权'">
-        <n-transfer
-            v-if="userGroupAuthDrawerType === 'userGroup'"
-            ref="transfer"
-            v-model:value="userGroupValue"
-            :options="userGroupOptions"
-            source-title="全部用户组"
-            target-title="已选用户组"
-            select-all-text="全选"
-            clear-text="清除"
-            source-filter-placeholder="搜索用户组"
-            size="small"
-            :show-selected="false"
-            source-filterable
-        />
-        <n-transfer v-else ref="transfer" v-model:value="authValue" :options="authOptions" />
+            <div class="drawer-content currUser">
+                <div class="sub-title">
+                    授权用户
+                </div>
+                <div class="user">
+                    <span>{{ currDrawerUser?.username }}</span>
+                </div>
+            </div>
+            <div class="drawer-content auth">
+                <div class="sub-title">
+                    权限
+                </div>
+                <n-transfer
+                    v-if="userGroupAuthDrawerType === 'userGroup'"
+                    ref="userGroupTransfer"
+                    v-model:value="userGroupValue"
+                    :options="userGroupOptions"
+                    source-title="全部用户组"
+                    target-title="已选用户组"
+                    select-all-text="全选"
+                    clear-text="清除"
+                    source-filter-placeholder="搜索用户组"
+                    size="small"
+                    :show-selected="false"
+                    source-filterable
+                    target-filterable
+                />
+                <n-transfer
+                    v-else
+                    ref="authTransfer"
+                    v-model:value="authValue"
+                    :options="authOptions"
+                    source-title="全部权限"
+                    target-title="已选权限"
+                    select-all-text="全选"
+                    clear-text="清除"
+                    source-filter-placeholder="搜索权限"
+                    size="small"
+                    :show-selected="false"
+                    source-filterable
+                    target-filterable
+                />
+            </div>
         <template #footer>
             <div class="drawer-footer">
                 <n-button type="info" @click="onSubmitDrawerHandle">提交</n-button>
@@ -404,5 +451,20 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     display: flex;
     flex-direction: column;
     gap: $layout-gap
+}
+.n-drawer {
+    .drawer-content {
+        margin-bottom: 20px
+    }
+    .sub-title {
+        font-weight: 500;
+        margin-bottom: 6px
+    }
+    .currUser {
+        .user {
+            padding: 2px 6px;
+            border: 1px solid #ccc
+        }
+    }
 }
 </style>
