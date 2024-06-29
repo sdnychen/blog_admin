@@ -31,7 +31,7 @@ const home: Array<RouteRecordRaw> = [
             {
                 path: "userGroup",
                 name: "UserGroupManage",
-                component: () => import("@/views/Home/home.vue"),
+                component: () => import("@/views/User/userGroup.vue"),
                 meta: {
                     title: "用户组管理",
                     auth: "1:2",

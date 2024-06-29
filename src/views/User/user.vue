@@ -92,9 +92,9 @@ const onDeleteHandle = async (id: string) => {
     }
 }
 const showAddEditModal = ref<boolean>(false)
-const showUserGroupAuthDrawer = ref<boolean>(false)
+const showUserGroupAndAuthDrawer = ref<boolean>(false)
 const addEditModalType = ref<string | null>(null)
-const userGroupAuthDrawerType = ref<string | null>(null)
+const userGroupAndAuthDrawerType = ref<string | null>(null)
 const avatarFiles = ref<UploadFileInfo[]>([])
 
 const userGroupValue = ref<Array<string | number> | null>(null)
@@ -140,17 +140,16 @@ const onEditHandle = async (id: string) => {
 // 添加到用户组
 const onAddUserGroupHandle = (user: TableDataType) => {
     currDrawerUser.value = user
-    userGroupAuthDrawerType.value = "userGroup"
-    showUserGroupAuthDrawer.value = true
-    console.log(user)
+    userGroupAndAuthDrawerType.value = "userGroup"
+    showUserGroupAndAuthDrawer.value = true
 }
 // 授权
 const onAuthHandle = (user: TableDataType) => {
     getAuthList()
     getUserAuth(user.id)
     currDrawerUser.value = user
-    userGroupAuthDrawerType.value = "auth"
-    showUserGroupAuthDrawer.value = true
+    userGroupAndAuthDrawerType.value = "auth"
+    showUserGroupAndAuthDrawer.value = true
 }
 
 // 搜索
@@ -216,7 +215,7 @@ const addEditFormRef = ref<FormInst | null>()
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
-    addEditForm.value = addEditFormInit.value
+    addEditForm.value = {...addEditFormInit.value}
 }
 // 弹窗提交
 const onSubmitModalHandle = () => {
@@ -243,11 +242,11 @@ const onSubmitModalHandle = () => {
 }
 // 抽屉关闭
 const onCloseDrawerHandle = () => {
-    showUserGroupAuthDrawer.value = false
+    showUserGroupAndAuthDrawer.value = false
 }
 // 抽屉提交
 const onSubmitDrawerHandle = async () => {
-    if (userGroupAuthDrawerType.value === "userGroup") {
+    if (userGroupAndAuthDrawerType.value === "userGroup") {
         console.log("用户组提交")
     } else {
         const { success } = await userApi.updateUserAuthList({
@@ -387,15 +386,15 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         </template>
     </n-modal>
     <n-drawer
-        v-model:show="showUserGroupAuthDrawer"
+        v-model:show="showUserGroupAndAuthDrawer"
         :width="600"
         :close-on-esc="false"
         :mask-closable="false"
     >
-        <n-drawer-content :title="userGroupAuthDrawerType === 'userGroup' ? '添加到用户组' : '用户授权'">
+        <n-drawer-content :title="userGroupAndAuthDrawerType === 'userGroup' ? '添加到用户组' : '用户授权'">
             <div class="drawer-content currUser">
                 <div class="sub-title">
-                    授权用户
+                    用户
                 </div>
                 <div class="user">
                     <span>{{ currDrawerUser?.username }}</span>
@@ -406,12 +405,12 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     权限
                 </div>
                 <n-transfer
-                    v-if="userGroupAuthDrawerType === 'userGroup'"
+                    v-if="userGroupAndAuthDrawerType === 'userGroup'"
                     ref="userGroupTransfer"
                     v-model:value="userGroupValue"
                     :options="userGroupOptions"
                     source-title="全部用户组"
-                    target-title="已选用户组"
+                    target-title="已添加用户组"
                     select-all-text="全选"
                     clear-text="清除"
                     source-filter-placeholder="搜索用户组"

@@ -12,7 +12,7 @@ const userApi = {
     addUser: (params: any) => request.post("/user/add", params),
 
     /**
-     * 用户添加
+     * 用户编辑
      */
     editUser: (params: any) => request.put("/user/edit", params),
 
