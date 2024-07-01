@@ -3,6 +3,7 @@ import { reactive, ref, onMounted, h } from "vue"
 import { NSwitch, NTime, NImage, NButton, useMessage } from "naive-ui"
 import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions, FormRules, FormInst, TransferOption } from "naive-ui"
 import userApi from "@/api/apis/userApi"
+import userGroupApi from "@/api/apis/userGroupApi"
 import authApi from "@/api/apis/authApi"
 import { avatarUpload } from "@/utils/ossUtil"
 import { UserStatus } from "@/enum/userStatus"
@@ -29,12 +30,6 @@ type addEditFormType = {
     avatar: string,
     password: string,
     checkPassword: string | undefined,
-    remark: string
-}
-
-type authRequestType = {
-    id: string,
-    authName: string,
     remark: string
 }
 
@@ -97,7 +92,7 @@ const addEditModalType = ref<string | null>(null)
 const userGroupAndAuthDrawerType = ref<string | null>(null)
 const avatarFiles = ref<UploadFileInfo[]>([])
 
-const userGroupValue = ref<Array<string | number> | null>(null)
+const userGroupValue = ref<Array<string | number>>([])
 const userGroupOptions = ref<TransferOption[]>([])
 const authValue = ref<Array<string | number>>([])
 const authOptions = ref<TransferOption[]>([])
@@ -115,12 +110,33 @@ const getAuthList = async () => {
         })
     })
 }
+// 全部用户组
+const getAllUserGroup = async () => {
+    const { data } = await userGroupApi.getAllUserGroupList()
+    userGroupOptions.value = []
+    data.forEach((item: userGroupRequestType) => {
+        userGroupOptions.value.push({
+            label: item.groupName,
+            value: item.id,
+            disabled: false
+        })
+    })
+}
+
 // 用户权限
 const getUserAuth = async (id: string) => {
     const { data } = await userApi.getUserAuthList({id})
     authValue.value = []
     data.forEach((item: authRequestType) => {
         authValue.value.push(item.id)
+    })
+}
+// 用户组
+const getUserGroup = async (id: string) => {
+    const { data } = await userGroupApi.getUserGroupByUser({id})
+    userGroupValue.value = []
+    data.forEach((item: userGroupRequestType) => {
+        userGroupValue.value.push(item.id)
     })
 }
 
@@ -139,6 +155,8 @@ const onEditHandle = async (id: string) => {
 }
 // 添加到用户组
 const onAddUserGroupHandle = (user: TableDataType) => {
+    getAllUserGroup()
+    getUserGroup(user.id)
     currDrawerUser.value = user
     userGroupAndAuthDrawerType.value = "userGroup"
     showUserGroupAndAuthDrawer.value = true
@@ -247,7 +265,13 @@ const onCloseDrawerHandle = () => {
 // 抽屉提交
 const onSubmitDrawerHandle = async () => {
     if (userGroupAndAuthDrawerType.value === "userGroup") {
-        console.log("用户组提交")
+        const { success } = await userApi.updateUserGroupList({
+            id: currDrawerUser.value?.id,
+            userGroupList: userGroupValue.value
+        })
+        if (success) {
+            onCloseDrawerHandle()
+        }
     } else {
         const { success } = await userApi.updateUserAuthList({
             id: currDrawerUser.value?.id,
@@ -265,7 +289,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     { title: "手机号", key: "mobile", minWidth: 120},
     { title: "邮箱", key: "email", minWidth: 180 },
     {
-        title: "头像", key: "avatar", align: "center", minWidth: 40,
+        title: "头像", key: "avatar", align: "center", minWidth: 60,
         render: (row) => row.avatar ? h(NImage, {width: 30, height: 30, lazy: true, src: row.avatar, style: {borderRadius: "8px"}}) : "--"
     },
     {
@@ -332,7 +356,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     <n-modal
         preset="card"
         v-model:show="showAddEditModal"
-        title="添加用户"
+        :title="addEditModalType === 'add' ? '添加用户' : '编辑用户'"
         :mask-closable="false"
         style="width: 600px;"
     >

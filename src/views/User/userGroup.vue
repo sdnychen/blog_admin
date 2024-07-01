@@ -4,23 +4,17 @@ import { NTime, NButton } from "naive-ui"
 import type { DataTableColumns, FormRules, FormInst, TransferOption } from "naive-ui"
 import userGroupApi from "@/api/apis/userGroupApi"
 import authApi from "@/api/apis/authApi"
+import userApi from "@/api/apis/userApi"
 
 type TableDataType = {
     id: string,
     groupName: string,
-    userNum: number,
     createTime: string
     remark: string
 }
 
 type addEditFormType = {
     groupName: string,
-    remark: string
-}
-
-type authRequestType = {
-    id: string,
-    authName: string,
     remark: string
 }
 
@@ -62,7 +56,7 @@ const showUserAndAuthDrawer = ref<boolean>(false)
 const addEditModalType = ref<string | null>(null)
 const userAndAuthDrawerType = ref<string | null>(null)
 
-const userValue = ref<Array<string | number> | null>(null)
+const userValue = ref<Array<string | number>>([])
 const userOptions = ref<TransferOption[]>([])
 const authValue = ref<Array<string | number>>([])
 const authOptions = ref<TransferOption[]>([])
@@ -80,12 +74,32 @@ const getAuthList = async () => {
         })
     })
 }
-// 用户组权限
+// 全部用户
+const getAllUser = async () => {
+    const { data } = await userApi.getAllUserList()
+    userOptions.value = []
+    data.forEach((item: userRequestType) => {
+        userOptions.value.push({
+            label: item.username,
+            value: item.id,
+            disabled: false
+        })
+    })
+}
+// 用户组
 const getUserGroupAuth = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupAuthList({id})
     authValue.value = []
     data.forEach((item: authRequestType) => {
         authValue.value.push(item.id)
+    })
+}
+// 用户
+const getUser = async (id: string) => {
+    const { data } = await userApi.getUserInUserGroup({id})
+    userValue.value = []
+    data.forEach((item: userRequestType) => {
+        userValue.value.push(item.id)
     })
 }
 
@@ -103,6 +117,8 @@ const onEditHandle = async (id: string) => {
 }
 // 向用户组添加用户
 const onAddUserHandle = (user: TableDataType) => {
+    getAllUser()
+    getUser(user.id)
     currDrawerUserGroup.value = user
     userAndAuthDrawerType.value = "user"
     showUserAndAuthDrawer.value = true
@@ -173,7 +189,13 @@ const onCloseDrawerHandle = () => {
 // 抽屉提交
 const onSubmitDrawerHandle = async () => {
     if (userAndAuthDrawerType.value === "user") {
-        console.log("用户组提交")
+        const { success } = await userGroupApi.updateUserList({
+            id: currDrawerUserGroup.value?.id,
+            userId: userValue.value
+        })
+        if (success) {
+            onCloseDrawerHandle()
+        }
     } else {
         const { success } = await userGroupApi.updateUserGroupAuthList({
             id: currDrawerUserGroup.value?.id,
@@ -188,7 +210,6 @@ const onSubmitDrawerHandle = async () => {
 
 const columns = reactive<DataTableColumns<TableDataType>>([
     { title: "用户组名", key: "groupName", fixed: "left", minWidth: 100},
-    { title: "关联用户数", key: "userNum", minWidth: 180 },
     {
         title: "创建时间", key: "createTime", minWidth: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
@@ -243,7 +264,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     <n-modal
         preset="card"
         v-model:show="showAddEditModal"
-        title="添加用户组"
+        :title="addEditModalType === 'add' ? '添加用户组' : '编辑用户'"
         :mask-closable="false"
         style="width: 600px;"
     >
@@ -279,11 +300,11 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         :mask-closable="false"
     >
         <n-drawer-content :title="userAndAuthDrawerType === 'user' ? '添加用户' : '用户授权'">
-            <div class="drawer-content currUser">
+            <div class="drawer-content currUserGroup">
                 <div class="sub-title">
                     用户组
                 </div>
-                <div class="user">
+                <div class="userGroup">
                     <span>{{ currDrawerUserGroup?.groupName }}</span>
                 </div>
             </div>
@@ -346,8 +367,8 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         font-weight: 500;
         margin-bottom: 6px
     }
-    .currUser {
-        .user {
+    .currUserGroup {
+        .userGroup {
             padding: 2px 6px;
             border: 1px solid #ccc
         }

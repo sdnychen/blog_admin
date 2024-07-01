@@ -19,5 +19,6 @@ interface UserInfo {
 // 返回数据的结构（分页）
 interface responsePageData {
     list: any[],
+    page: number,
     total: number
 }

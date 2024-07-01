@@ -7,6 +7,11 @@ const userApi = {
     getUserList: (params: any) => request.get<responsePageData>("/user/list", params),
 
     /**
+     * 全部用户列表
+     */
+    getAllUserList: (params?: any) => request.get("/user/allList", params),
+
+    /**
      * 用户添加
      */
     addUser: (params: any) => request.post("/user/add", params),
@@ -39,8 +44,17 @@ const userApi = {
     /**
      * 更新用户权限
      */
-    updateUserAuthList: (params: any) => request.post("/user/updateAuth", params)
+    updateUserAuthList: (params: any) => request.post("/user/updateAuth", params),
 
+    /**
+     * 获取用户加入的用户
+     */
+    getUserInUserGroup: (params: any) => request.get("/user/userInUserGroup", params),
+
+    /**
+     * 更新用户的用户组
+     */
+    updateUserGroupList: (params: any) => request.post("/user/updateUserGroup", params)
 }
 
 export default userApi

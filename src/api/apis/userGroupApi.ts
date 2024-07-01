@@ -7,6 +7,11 @@ const userGroupApi = {
     getUserGroupList: (params: any) => request.get<responsePageData>("/userGroup/list", params),
 
     /**
+     * 全部用户组列表
+     */
+    getAllUserGroupList: (params?: any) => request.get("/userGroup/allList", params),
+
+    /**
      * 用户组添加
      */
     addUserGroup: (params: any) => request.post("/userGroup/add", params),
@@ -34,7 +39,17 @@ const userGroupApi = {
     /**
      * 更新用户组权限
      */
-    updateUserGroupAuthList: (params: any) => request.post("/userGroup/updateAuth", params)
+    updateUserGroupAuthList: (params: any) => request.post("/userGroup/updateAuth", params),
+
+    /**
+     * 获取该用户所在用户组
+     */
+    getUserGroupByUser: (params: any) => request.get("/userGroup/userGroupbyUser", params),
+
+    /**
+     * 更新用户组的用户
+     */
+    updateUserList: (params: any) => request.post("/userGroup/updateUser", params)
 
 }
 
