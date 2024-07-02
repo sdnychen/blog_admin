@@ -53,7 +53,6 @@ export const useUserStore = defineStore("user", {
 
         // 获取权限
         getAuth(): string[] {
-            console.log(this.userInfo?.auth)
             const auth: Array<string> = []
             if (!this.userInfo?.auth) {
                 return auth
@@ -61,7 +60,6 @@ export const useUserStore = defineStore("user", {
             for (let i = 0; i < this.userInfo.auth.length; i += 2) {
                 auth.push(parseInt(this.userInfo.auth.charAt(i) + this.userInfo.auth.charAt(i + 1), 16).toString(2))
             }
-            console.log("test", auth)
             return auth
         }
     }

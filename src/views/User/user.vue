@@ -326,13 +326,13 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     :show-feedback="false"
                 >
                     <n-form-item label="用户名">
-                        <n-input v-model:value="queryForm.username" placeholder="请输入用户名" clearable />
+                        <n-input v-model:value="queryForm.username" placeholder="用户名" clearable />
                     </n-form-item>
                     <n-form-item label="手机号">
-                        <n-input v-model:value="queryForm.mobile" placeholder="请输入手机号" clearable />
+                        <n-input v-model:value="queryForm.mobile" placeholder="手机号" clearable />
                     </n-form-item>
                     <n-form-item label="邮箱">
-                        <n-input v-model:value="queryForm.email" placeholder="请输入邮箱" clearable />
+                        <n-input v-model:value="queryForm.email" placeholder="邮箱" clearable />
                     </n-form-item>
                 </n-form>
             </SearchCard>

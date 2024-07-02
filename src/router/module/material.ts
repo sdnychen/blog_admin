@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from "vue-router"
 import Layout from "@/layouts/Layout.vue"
+import EmptyLayout from "@/layouts/EmptyLayout.vue"
 import { markRaw } from "vue"
 import {
     FolderOutline,
@@ -32,12 +33,22 @@ const home: Array<RouteRecordRaw> = [
             {
                 path: "cloudMaterial",
                 name: "CloudMaterial",
-                component: () => import("@/views/Home/home.vue"),
+                component: EmptyLayout,
                 meta: {
                     title: "云",
                     auth: "9:2",
                     icon: markRaw(CloudOutline)
-                }
+                },
+                children: [
+                    {
+                        path: "ossCloupMaterial",
+                        name: "OSSCloupMaterial",
+                        component: () => import("@/views/Home/home.vue"),
+                        meta: {
+                            title: "OSS"
+                        }
+                    }
+                ]
             }
         ]
     }

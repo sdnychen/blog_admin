@@ -8,7 +8,7 @@ const hasTitleSlot = ref(!!slots.title)
 
 <template>
     <div class="main-card-box">
-        <div class="main-card-box-title">
+        <div v-if="hasTitleSlot" class="main-card-box-title">
             <slot name="title" />
         </div>
         <n-divider v-if="hasTitleSlot" />

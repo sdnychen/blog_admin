@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { AxiosRequestConfig, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios"
 import { createDiscreteApi } from "naive-ui"
+import { useUserStore } from "@/stores/user"
+import router from "@/router/index"
 
 const { message } = createDiscreteApi(["message"])
 
@@ -35,6 +37,12 @@ class server {
                 message.success(resolve.msg)
             } else if (!resolve.success && resolve.msg) {
                 message.warning(resolve.msg)
+            }
+            // token过期
+            if (resolve.code === 40103) {
+                const userStore = useUserStore()
+                userStore.logout()
+                router.replace({ name: "Login" })
             }
 
             return resolve

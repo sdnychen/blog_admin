@@ -240,7 +240,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     :show-feedback="false"
                 >
                     <n-form-item label="用户名">
-                        <n-input v-model:value="queryForm.userGroupName" placeholder="请输入用户组名" clearable />
+                        <n-input v-model:value="queryForm.userGroupName" placeholder="用户组名" clearable />
                     </n-form-item>
                 </n-form>
             </SearchCard>
