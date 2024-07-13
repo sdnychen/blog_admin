@@ -24,13 +24,21 @@ const home: Array<RouteRecordRaw> = [
                 path: "article",
                 name: "Article",
                 component: EmptyLayout,
-                redirect: "/content/article/article",
+                redirect: "/content/article/newArticle",
                 meta: {
                     title: "文章",
                     auth: "3:1",
                     icon: markRaw(ReceiptOutline)
                 },
                 children: [
+                    {
+                        path: "newArticle",
+                        name: "NewArticle",
+                        component: () => import("@/views/Home/home.vue"),
+                        meta: {
+                            title: "新增"
+                        }
+                    },
                     {
                         path: "article",
                         name: "ArticleManage",
@@ -40,9 +48,17 @@ const home: Array<RouteRecordRaw> = [
                         }
                     },
                     {
+                        path: "articleDrafts",
+                        name: "ArticleDrafts",
+                        component: () => import("@/views/Home/home.vue"),
+                        meta: {
+                            title: "文章草稿箱"
+                        }
+                    },
+                    {
                         path: "sort",
                         name: "SortManage",
-                        component: () => import("@/views/Home/home.vue"),
+                        component: () => import("@/views/Article/sort.vue"),
                         meta: {
                             title: "分类管理"
                         }
@@ -50,17 +66,9 @@ const home: Array<RouteRecordRaw> = [
                     {
                         path: "tag",
                         name: "TagManage",
-                        component: () => import("@/views/Home/home.vue"),
+                        component: () => import("@/views/Article/tag.vue"),
                         meta: {
                             title: "标签管理"
-                        }
-                    },
-                    {
-                        path: "articleDrafts",
-                        name: "ArticleDrafts",
-                        component: () => import("@/views/Home/home.vue"),
-                        meta: {
-                            title: "文章草稿箱"
                         }
                     }
                 ]

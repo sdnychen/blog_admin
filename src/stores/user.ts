@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { sha256 } from "js-sha256"
 import BaseApi from "@/api/apis/baseApi"
+import { useMenuStore } from "./menu"
 
 export const useUserStore = defineStore("user", {
     state: () => {
@@ -46,7 +47,9 @@ export const useUserStore = defineStore("user", {
 
         // 退出登录
         logout() {
+            const menuStore = useMenuStore()
             this.userInfo = null
+            menuStore.isGenerate = false
             sessionStorage.removeItem("tabs")
             localStorage.removeItem("token")
         },

@@ -22,7 +22,7 @@ const userApi = {
     editUser: (params: any) => request.put("/user/edit", params),
 
     /**
-     * 用户状态改变
+     * 用户启用禁用状态改变
      */
     updateStatus: (params: any) => request.put("/user/updateStatus", params),
 
@@ -32,7 +32,7 @@ const userApi = {
     deleteUser: (params: any) => request.delete("/user/delete", params),
 
     /**
-     * 用户删除
+     * 用户详情
      */
     getUserDetail: (params: any) => request.get("/user/detail", params),
 

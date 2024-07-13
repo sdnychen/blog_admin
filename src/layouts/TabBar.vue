@@ -124,6 +124,7 @@ const handleItemMenu = (key: string, item: tabItem, index: number) => {
     computedShowArrow()
     router.push(item.path)
     handleCloseMenu()
+    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
 }
 
 // 操作按钮下拉
@@ -151,6 +152,7 @@ const handleOptionMenu = (key: string) => {
     }
     computedShowArrow()
     router.push(tabsArray.value[0].path)
+    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
 }
 
 // 左右箭头

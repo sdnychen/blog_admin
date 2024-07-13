@@ -4,7 +4,7 @@ export const useSettingStore = defineStore("setting", {
     state: () => {
         return {
             setting: {
-                enable_auth: false as boolean
+                enable_auth: true as boolean
             }
         }
     }

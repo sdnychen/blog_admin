@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted, h } from "vue"
-import { NSwitch, NTime, NImage, NButton, useMessage } from "naive-ui"
+import { NSwitch, NTime, NImage, NButton, useMessage, useDialog } from "naive-ui"
 import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions, FormRules, FormInst, TransferOption } from "naive-ui"
 import userApi from "@/api/apis/userApi"
 import userGroupApi from "@/api/apis/userGroupApi"
 import authApi from "@/api/apis/authApi"
 import { avatarUpload } from "@/utils/ossUtil"
-import { UserStatus } from "@/enum/userStatus"
+import EnableDisableEnum from "@/enum/EnableDisableEnum"
 import { mobileRegExp, emailRegExp } from "@/utils/regExp"
 import { sha256 } from "js-sha256"
 
 const message = useMessage()
+const dialog = useDialog()
 
 type TableDataType = {
     id: string,
@@ -75,16 +76,24 @@ const getList = async () => {
 
 // 状态改变
 const statusChangeHandle = async (row: TableDataType, index: number) => {
-    dataList.value[index].status = row.status === 1 ? 0 : 1
+    dataList.value[index].status = row.status === 1 ? 2 : 1
     await userApi.updateStatus({id: row.id, status: row.status})
     getList()
 }
 // 删除
-const onDeleteHandle = async (id: string) => {
-    const { success } = await userApi.deleteUser({id})
-    if (success) {
-        getList()
-    }
+const onDeleteHandle = (id: string) => {
+    dialog.warning({
+        title: "删除警告",
+        content: "确定删除？",
+        positiveText: "确定",
+        negativeText: "取消",
+        onPositiveClick: async () => {
+            const { success } = await userApi.deleteUser({id})
+            if (success) {
+                getList()
+            }
+        }
+    })
 }
 const showAddEditModal = ref<boolean>(false)
 const showUserGroupAndAuthDrawer = ref<boolean>(false)
@@ -221,7 +230,7 @@ const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[
     if (date.file.type) {
         return re.test(date.file.type)
     }
-    message.warning("头像文件格式仅支持png，jpg，jpeg")
+    message.warning("头像文件格式仅支持png/jpg/jpeg")
     return false
 }
 const removeFile = () => {
@@ -299,7 +308,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     { title: "备注", key: "remark", minWidth: 180},
     {
         title: "状态", key: "status", align: "center", fixed: "right", minWidth: 100,
-        render: (row, index) => h(NSwitch, {checkedValue: UserStatus.ENABLE, uncheckedValue: UserStatus.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
+        render: (row, index) => h(NSwitch, {checkedValue: EnableDisableEnum.ENABLE, uncheckedValue: EnableDisableEnum.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
     },
     {
         title: "操作", key: "operation", fixed: "right", minWidth: 240,
@@ -470,11 +479,6 @@ const columns = reactive<DataTableColumns<TableDataType>>([
 </template>
 
 <style lang="scss" scope>
-.content-layout {
-    display: flex;
-    flex-direction: column;
-    gap: $layout-gap
-}
 .n-drawer {
     .drawer-content {
         margin-bottom: 20px
