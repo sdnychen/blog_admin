@@ -1,4 +1,11 @@
 /* eslint-disable no-unused-vars */
+type Resulve<T = any> = {
+    success: boolean,
+    code: number,
+    msg: string,
+    data: T
+}
+
 type authRequestType = {
     id: string,
     authName: string,

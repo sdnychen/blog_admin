@@ -54,7 +54,12 @@ const userApi = {
     /**
      * 更新用户的用户组
      */
-    updateUserGroupList: (params: any) => request.post("/user/updateUserGroup", params)
+    updateUserGroupList: (params: any) => request.post("/user/updateUserGroup", params),
+
+    /**
+     * 重置密码
+     */
+    resetPassword: (params: any) => request.post("/user/resetPassword", params)
 }
 
 export default userApi

@@ -9,9 +9,11 @@ import { avatarUpload } from "@/utils/ossUtil"
 import EnableDisableEnum from "@/enum/EnableDisableEnum"
 import { mobileRegExp, emailRegExp } from "@/utils/regExp"
 import { sha256 } from "js-sha256"
+import { useUserStore } from "@/stores/user"
 
 const message = useMessage()
 const dialog = useDialog()
+const userStore = useUserStore()
 
 type TableDataType = {
     id: string,
@@ -96,8 +98,10 @@ const onDeleteHandle = (id: string) => {
     })
 }
 const showAddEditModal = ref<boolean>(false)
+const showResetPasswordModal = ref<boolean>(false)
 const showUserGroupAndAuthDrawer = ref<boolean>(false)
 const addEditModalType = ref<string | null>(null)
+const addEditModalTitle = ref<string | null>(null)
 const userGroupAndAuthDrawerType = ref<string | null>(null)
 const avatarFiles = ref<UploadFileInfo[]>([])
 
@@ -105,7 +109,7 @@ const userGroupValue = ref<Array<string | number>>([])
 const userGroupOptions = ref<TransferOption[]>([])
 const authValue = ref<Array<string | number>>([])
 const authOptions = ref<TransferOption[]>([])
-const currDrawerUser = ref<TableDataType | null>(null)
+const currUser = ref<TableDataType | null>(null)
 
 // 全部权限
 const getAuthList = async () => {
@@ -152,6 +156,7 @@ const getUserGroup = async (id: string) => {
 // 添加
 const onAddHandle = () => {
     addEditModalType.value = "add"
+    addEditModalTitle.value = "添加用户"
     showAddEditModal.value = true
 }
 // 编辑
@@ -160,13 +165,14 @@ const onEditHandle = async (id: string) => {
     addEditForm.value = data
     avatarFiles.value = data.avatar ? [{id: "avatarId", name: new URL(data.avatar).pathname.split("/")[2], status: "finished", url: data.avatar}] : []
     addEditModalType.value = "edit"
+    addEditModalTitle.value = "编辑用户"
     showAddEditModal.value = true
 }
 // 添加到用户组
 const onAddUserGroupHandle = (user: TableDataType) => {
     getAllUserGroup()
     getUserGroup(user.id)
-    currDrawerUser.value = user
+    currUser.value = user
     userGroupAndAuthDrawerType.value = "userGroup"
     showUserGroupAndAuthDrawer.value = true
 }
@@ -174,9 +180,16 @@ const onAddUserGroupHandle = (user: TableDataType) => {
 const onAuthHandle = (user: TableDataType) => {
     getAuthList()
     getUserAuth(user.id)
-    currDrawerUser.value = user
+    currUser.value = user
     userGroupAndAuthDrawerType.value = "auth"
     showUserGroupAndAuthDrawer.value = true
+}
+// 重置密码
+const onResetPasswordHandle = (user: TableDataType) => {
+    currUser.value = user
+    addEditModalType.value = "reset"
+    addEditModalTitle.value = "重置密码"
+    showAddEditModal.value = true
 }
 
 // 搜索
@@ -242,17 +255,18 @@ const addEditFormRef = ref<FormInst | null>()
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
-    addEditForm.value = {...addEditFormInit.value}
+    showResetPasswordModal.value = false
+    addEditForm.value = addEditFormInit.value
 }
 // 弹窗提交
 const onSubmitModalHandle = () => {
     addEditFormRef.value?.validate(async err => {
         if (!err) {
             if (addEditModalType.value === "add") {
-                const formDate = {...addEditForm.value}
-                formDate.checkPassword = void 0
-                formDate.password = sha256(formDate.password)
-                const { success } = await userApi.addUser(formDate)
+                const dataForm = {...addEditForm.value}
+                dataForm.checkPassword = void 0
+                dataForm.password = sha256(dataForm.password)
+                const { success } = await userApi.addUser(dataForm)
                 if (success) {
                     onCloseModalHandle()
                     getList()
@@ -262,6 +276,15 @@ const onSubmitModalHandle = () => {
                 if (success) {
                     onCloseModalHandle()
                     getList()
+                }
+            } else if (addEditModalType.value === "reset") {
+                const dataForm = {
+                    id: currUser.value?.id,
+                    newPassword: sha256(addEditForm.value.password)
+                }
+                const { success } = await userApi.resetPassword(dataForm)
+                if (success) {
+                    onCloseModalHandle()
                 }
             }
         }
@@ -275,7 +298,7 @@ const onCloseDrawerHandle = () => {
 const onSubmitDrawerHandle = async () => {
     if (userGroupAndAuthDrawerType.value === "userGroup") {
         const { success } = await userApi.updateUserGroupList({
-            id: currDrawerUser.value?.id,
+            id: currUser.value?.id,
             userGroupList: userGroupValue.value
         })
         if (success) {
@@ -283,7 +306,7 @@ const onSubmitDrawerHandle = async () => {
         }
     } else {
         const { success } = await userApi.updateUserAuthList({
-            id: currDrawerUser.value?.id,
+            id: currUser.value?.id,
             authList: authValue.value
         })
         if (success) {
@@ -311,11 +334,15 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         render: (row, index) => h(NSwitch, {checkedValue: EnableDisableEnum.ENABLE, uncheckedValue: EnableDisableEnum.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
     },
     {
-        title: "操作", key: "operation", fixed: "right", minWidth: 240,
+        title: "操作", key: "operation", fixed: "right", minWidth: 300,
         render: (row) => [
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row)}, () => "授权"),
+            h(NButton, {text: true, type: "info", style: {
+                display: userStore.userInfo?.id === "1" ? "inline-flex" : "none",
+                marginRight: "10px"
+            }, onClick: () => onResetPasswordHandle(row)}, () => "重置密码"),
             h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
         ]
     }
@@ -365,7 +392,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     <n-modal
         preset="card"
         v-model:show="showAddEditModal"
-        :title="addEditModalType === 'add' ? '添加用户' : '编辑用户'"
+        :title="addEditModalTitle"
         :mask-closable="false"
         style="width: 600px;"
     >
@@ -374,22 +401,22 @@ const columns = reactive<DataTableColumns<TableDataType>>([
             :model="addEditForm"
             :rules="addEditRules"
         >
-            <n-form-item label="用户名" path="username">
+            <n-form-item v-if="addEditModalType !== 'reset'" label="用户名" path="username">
                 <n-input v-model:value="addEditForm.username" placeholder="输入用户名" />
             </n-form-item>
-            <n-form-item label="手机号" path="mobile">
+            <n-form-item v-if="addEditModalType !== 'reset'" label="手机号" path="mobile">
                 <n-input v-model:value="addEditForm.mobile" placeholder="输入手机号" />
             </n-form-item>
-            <n-form-item label="邮箱" path="email">
+            <n-form-item v-if="addEditModalType !== 'reset'" label="邮箱" path="email">
                 <n-input v-model:value="addEditForm.email" placeholder="输入邮箱" />
             </n-form-item>
-            <n-form-item v-if="addEditModalType === 'add'" label="密码" path="password">
+            <n-form-item v-if="addEditModalType !== 'edit'" label="密码" path="password">
                 <n-input v-model:value="addEditForm.password" type="password" placeholder="请输入密码" />
             </n-form-item>
             <n-form-item v-if="addEditModalType === 'add'" label="确认密码" path="checkPassword">
                 <n-input v-model:value="addEditForm.checkPassword" type="password" placeholder="请再次输入密码" />
             </n-form-item>
-            <n-form-item label="头像">
+            <n-form-item v-if="addEditModalType !== 'reset'" label="头像">
                 <n-upload
                     :custom-request="fileUpload"
                     v-model:file-list="avatarFiles"
@@ -401,7 +428,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                 >
                 </n-upload>
             </n-form-item>
-            <n-form-item label="备注" path="remark">
+            <n-form-item v-if="addEditModalType !== 'reset'" label="备注" path="remark">
                 <n-input
                     v-model:value="addEditForm.remark"
                     type="textarea"
@@ -430,7 +457,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     用户
                 </div>
                 <div class="user">
-                    <span>{{ currDrawerUser?.username }}</span>
+                    <span>{{ currUser?.username }}</span>
                 </div>
             </div>
             <div class="drawer-content auth">

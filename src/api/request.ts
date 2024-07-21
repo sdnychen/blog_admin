@@ -6,13 +6,6 @@ import router from "@/router/index"
 
 const { message } = createDiscreteApi(["message"])
 
-export interface Resulve<T = any> {
-    success: boolean,
-    code: number,
-    msg: string,
-    data: T
-}
-
 class server {
     instance: AxiosInstance
     baseConfig: AxiosRequestConfig
