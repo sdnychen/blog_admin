@@ -321,9 +321,9 @@ const onSubmitDrawerHandle = async () => {
 }
 
 const columns = reactive<DataTableColumns<TableDataType>>([
-    { title: "用户名", key: "username", fixed: "left", minWidth: 100, ellipsis: { tooltip: true } },
-    { title: "手机号", key: "mobile", minWidth: 120 },
-    { title: "邮箱", key: "email", minWidth: 180, ellipsis: { tooltip: true } },
+    {title: "用户名", key: "username", fixed: "left", width: 200, ellipsis: {tooltip: true} },
+    {title: "手机号", key: "mobile", width: 120 },
+    {title: "邮箱", key: "email", width: 200, ellipsis: {tooltip: true} },
     {
         title: "头像", key: "avatar", align: "center", width: 60,
         render: (row) => row.avatar ? h(NImage, {width: 30, height: 30, lazy: true, src: row.avatar, style: {borderRadius: "8px"}}) : "--"
@@ -332,7 +332,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    { title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
+    {title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
     {
         title: "状态", key: "status", align: "center", fixed: "right", width: 60,
         render: (row, index) => h(NSwitch, {checkedValue: EnableDisableEnum.ENABLE, uncheckedValue: EnableDisableEnum.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
@@ -340,9 +340,9 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     {
         title: "操作", key: "operation", fixed: "right", width: 300,
         render: (row) => [
-            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
-            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onAuthHandle(row)}, () => "授权"),
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row)}, () => "授权"),
             h(NButton, {text: true, type: "info", style: {
                 display: userStore.userInfo?.id === "1" ? "inline-flex" : "none",
                 marginRight: "10px"

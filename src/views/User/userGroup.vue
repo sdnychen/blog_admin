@@ -35,11 +35,25 @@ const addEditFormInit = ref<addEditFormType>({
     remark: ""
 })
 
+const showAddEditModal = ref<boolean>(false)
+const showUserAndAuthDrawer = ref<boolean>(false)
+const addEditModalType = ref<string | null>(null)
+const userAndAuthDrawerType = ref<string | null>(null)
+const userGroupListLoading = ref<boolean>(false)
+
+const userValue = ref<Array<string | number>>([])
+const userOptions = ref<TransferOption[]>([])
+const authValue = ref<Array<string | number>>([])
+const authOptions = ref<TransferOption[]>([])
+const currDrawerUserGroup = ref<TableDataType | null>(null)
+
 const dataList = ref<TableDataType[]>([])
 const total = ref<number>(0)
 // 用户组列表
 const getList = async () => {
+    userGroupListLoading.value = true
     const { data } = await userGroupApi.getUserGroupList(queryForm.value)
+    userGroupListLoading.value = false
     dataList.value = data.list
     total.value = data.total
 }
@@ -51,16 +65,6 @@ const onDeleteHandle = async (id: string) => {
         getList()
     }
 }
-const showAddEditModal = ref<boolean>(false)
-const showUserAndAuthDrawer = ref<boolean>(false)
-const addEditModalType = ref<string | null>(null)
-const userAndAuthDrawerType = ref<string | null>(null)
-
-const userValue = ref<Array<string | number>>([])
-const userOptions = ref<TransferOption[]>([])
-const authValue = ref<Array<string | number>>([])
-const authOptions = ref<TransferOption[]>([])
-const currDrawerUserGroup = ref<TableDataType | null>(null)
 
 // 全部权限
 const getAuthList = async () => {
@@ -209,14 +213,14 @@ const onSubmitDrawerHandle = async () => {
 }
 
 const columns = reactive<DataTableColumns<TableDataType>>([
-    { title: "用户组名", key: "groupName", fixed: "left", minWidth: 100},
+    {title: "用户组名", key: "groupName", fixed: "left", width: 200, ellipsis: {tooltip: true} },
     {
-        title: "创建时间", key: "createTime", minWidth: 180,
+        title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    { title: "备注", key: "remark", minWidth: 180},
+    {title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
     {
-        title: "操作", key: "operation", fixed: "right", minWidth: 200,
+        title: "操作", key: "operation", fixed: "right", width: 200,
         render: (row) => [
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
             h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserHandle(row)}, () => "添加用户"),
@@ -250,9 +254,17 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                 <c-n-data-table
                     :columns="columns"
                     :data="dataList"
-                    :bordered="true"
                     :top-box-height="topBoxRefHeight"
-                    :total="total"
+                    :loading="userGroupListLoading"
+                    :pagination="{
+                        page: queryForm.page,
+                        pageSize: 20,
+                        itemCount: total,
+                        onChange: (page: number) => {
+                            queryForm.page = page
+                            getList()
+                        }
+                    }"
                 >
                     <div>
                         <n-button type="info" @click="onAddHandle">添加</n-button>
