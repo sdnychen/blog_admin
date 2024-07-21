@@ -52,6 +52,14 @@ const themeOverrides: GlobalThemeOverrides = {
         draggerBorderHover: "1px dashed #3291F5"
     },
     Dialog: {
+    },
+    DataTable: {
+        loadingColor: "#3291F5"
+    },
+    Pagination: {
+        itemTextColorActive: "#3291F5",
+        itemTextColorHover: "#3291F5",
+        itemBorderActive: "1px solid #3291F5"
     }
 }
 </script>

@@ -67,11 +67,28 @@ const addEditFormInit = ref<addEditFormType>({
     remark: ""
 })
 
+const showAddEditModal = ref<boolean>(false)
+const showResetPasswordModal = ref<boolean>(false)
+const showUserGroupAndAuthDrawer = ref<boolean>(false)
+const addEditModalType = ref<string | null>(null)
+const addEditModalTitle = ref<string | null>(null)
+const userGroupAndAuthDrawerType = ref<string | null>(null)
+const avatarFiles = ref<UploadFileInfo[]>([])
+const userListLoading = ref<boolean>(false)
+
+const userGroupValue = ref<Array<string | number>>([])
+const userGroupOptions = ref<TransferOption[]>([])
+const authValue = ref<Array<string | number>>([])
+const authOptions = ref<TransferOption[]>([])
+const currUser = ref<TableDataType | null>(null)
+
 const dataList = ref<TableDataType[]>([])
 const total = ref<number>(0)
 // 用户列表
 const getList = async () => {
+    userListLoading.value = true
     const { data } = await userApi.getUserList(queryForm.value)
+    userListLoading.value = false
     dataList.value = data.list
     total.value = data.total
 }
@@ -97,19 +114,6 @@ const onDeleteHandle = (id: string) => {
         }
     })
 }
-const showAddEditModal = ref<boolean>(false)
-const showResetPasswordModal = ref<boolean>(false)
-const showUserGroupAndAuthDrawer = ref<boolean>(false)
-const addEditModalType = ref<string | null>(null)
-const addEditModalTitle = ref<string | null>(null)
-const userGroupAndAuthDrawerType = ref<string | null>(null)
-const avatarFiles = ref<UploadFileInfo[]>([])
-
-const userGroupValue = ref<Array<string | number>>([])
-const userGroupOptions = ref<TransferOption[]>([])
-const authValue = ref<Array<string | number>>([])
-const authOptions = ref<TransferOption[]>([])
-const currUser = ref<TableDataType | null>(null)
 
 // 全部权限
 const getAuthList = async () => {
@@ -317,28 +321,28 @@ const onSubmitDrawerHandle = async () => {
 }
 
 const columns = reactive<DataTableColumns<TableDataType>>([
-    { title: "用户名", key: "username", fixed: "left", minWidth: 100},
-    { title: "手机号", key: "mobile", minWidth: 120},
-    { title: "邮箱", key: "email", minWidth: 180 },
+    { title: "用户名", key: "username", fixed: "left", minWidth: 100, ellipsis: { tooltip: true } },
+    { title: "手机号", key: "mobile", minWidth: 120 },
+    { title: "邮箱", key: "email", minWidth: 180, ellipsis: { tooltip: true } },
     {
-        title: "头像", key: "avatar", align: "center", minWidth: 60,
+        title: "头像", key: "avatar", align: "center", width: 60,
         render: (row) => row.avatar ? h(NImage, {width: 30, height: 30, lazy: true, src: row.avatar, style: {borderRadius: "8px"}}) : "--"
     },
     {
-        title: "创建时间", key: "createTime", minWidth: 180,
+        title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    { title: "备注", key: "remark", minWidth: 180},
+    { title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
     {
-        title: "状态", key: "status", align: "center", fixed: "right", minWidth: 100,
+        title: "状态", key: "status", align: "center", fixed: "right", width: 60,
         render: (row, index) => h(NSwitch, {checkedValue: EnableDisableEnum.ENABLE, uncheckedValue: EnableDisableEnum.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
     },
     {
-        title: "操作", key: "operation", fixed: "right", minWidth: 300,
+        title: "操作", key: "operation", fixed: "right", width: 300,
         render: (row) => [
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row)}, () => "授权"),
+            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onEditHandle(row.id)}, () => "修改"),
+            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onAddUserGroupHandle(row)}, () => "添加到用户组"),
+            h(NButton, {text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onAuthHandle(row)}, () => "授权"),
             h(NButton, {text: true, type: "info", style: {
                 display: userStore.userInfo?.id === "1" ? "inline-flex" : "none",
                 marginRight: "10px"
@@ -378,9 +382,17 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                 <c-n-data-table
                     :columns="columns"
                     :data="dataList"
-                    :bordered="true"
                     :top-box-height="topBoxRefHeight"
-                    :total="total"
+                    :loading="userListLoading"
+                    :pagination="{
+                        page: queryForm.page,
+                        pageSize: 20,
+                        itemCount: total,
+                        onChange: (page: number) => {
+                            queryForm.page = page
+                            getList()
+                        }
+                    }"
                 >
                     <div>
                         <n-button type="info" @click="onAddHandle">添加</n-button>
