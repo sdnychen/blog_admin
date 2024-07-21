@@ -38,6 +38,7 @@ const addEditFormInit = ref<addEditFormType>({
 const showAddEditModal = ref<boolean>(false)
 const showUserAndAuthDrawer = ref<boolean>(false)
 const addEditModalType = ref<string | null>(null)
+const addEditModalTitle = ref<string | null>(null)
 const userAndAuthDrawerType = ref<string | null>(null)
 const userGroupListLoading = ref<boolean>(false)
 
@@ -110,6 +111,7 @@ const getUser = async (id: string) => {
 // 添加
 const onAddHandle = () => {
     addEditModalType.value = "add"
+    addEditModalTitle.value = "添加用户组"
     showAddEditModal.value = true
 }
 // 编辑
@@ -117,6 +119,7 @@ const onEditHandle = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupDetail({id})
     addEditForm.value = data
     addEditModalType.value = "edit"
+    addEditModalTitle.value = "编辑用户组"
     showAddEditModal.value = true
 }
 // 向用户组添加用户
@@ -276,7 +279,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     <n-modal
         preset="card"
         v-model:show="showAddEditModal"
-        :title="addEditModalType === 'add' ? '添加用户组' : '编辑用户'"
+        :title="addEditModalTitle"
         :mask-closable="false"
         style="width: 600px;"
     >
@@ -286,7 +289,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
             :rules="addEditRules"
         >
             <n-form-item label="用户组名" path="groupName">
-                <n-input v-model:value="addEditForm.groupName" placeholder="输入用户名" />
+                <n-input v-model:value="addEditForm.groupName" placeholder="输入用户组名" />
             </n-form-item>
             <n-form-item label="备注" path="remark">
                 <n-input

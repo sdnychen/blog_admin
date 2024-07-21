@@ -2,6 +2,7 @@
 import { h, ref, reactive, onMounted } from "vue"
 import { NTime, NButton, useDialog } from "naive-ui"
 import type { DataTableColumns, FormRules, FormInst } from "naive-ui"
+import articleTagApi from "@/api/apis/articleTagApi"
 
 const dialog = useDialog()
 
@@ -13,10 +14,7 @@ type queryFormType = {
 type TableDataType = {
     id: string,
     name: string,
-    abstract: string,
-    img: string,
     color: string,
-    status: number,
     createTime: string
     remark: string
 }
@@ -49,36 +47,28 @@ const addEditFormInit = ref<addEditFormType>({
 })
 
 const addEditRules = reactive<FormRules>({
-    // username: [
-    //     {required: true, trigger: "blur", message: "请输入用户名"},
-    //     {max: 20, trigger: ["input", "blur"], message: "用户名最大长度20个字符"}
-    // ],
-    // mobile: [
-    //     {required: true, trigger: "blur", message: "请输入手机号"},
-    //     {pattern: mobileRegExp(), trigger: ["input", "blur"], message: "手机号格式错误"}
-    // ],
-    // email: [
-    //     {required: true, trigger: "blur", message: "请输入邮箱"},
-    //     {max: 50, trigger: ["input", "blur"], message: "邮箱最大长度50个字符"},
-    //     {pattern: emailRegExp(), trigger: ["input", "blur"], message: "邮箱格式错误"}
-    // ],
-    // password: [
-    //     {required: true, trigger: "blur", message: "请输入密码"},
-    //     {min: 8, trigger: ["input", "blur"], message: "密码长度至少8位"}
-    // ],
-    // checkPassword: [
-    //     {required: true, trigger: "blur", message: "请再次输入密码"},
-    //     {validator: (_rule, value) => value === addEditForm.value.password, trigger: ["input", "blur"], message: "两次密码不一致"}
-    // ]
+    name: [
+        {required: true, trigger: "blur", message: "请输入标签名"},
+        {max: 20, trigger: ["input", "blur"], message: "标签名最大长度20个字符"}
+    ],
+    color: [
+        {required: true, trigger: "blur", message: "请选择标签颜色"}
+    ]
 })
 
 const dataList = ref<TableDataType[]>([])
 
 const showAddEditModal = ref<boolean>(false)
 const addEditModalType = ref<string>("")
+const addEditModalTitle = ref<string | null>(null)
+const tagListLoading = ref<boolean>(false)
 
-const getList = () => {
-    console.log("获取数据")
+const getList = async () => {
+    tagListLoading.value = true
+    const { data } = await articleTagApi.list(queryForm.value)
+    tagListLoading.value = false
+    dataList.value = data.list
+    total.value = data.total
 }
 
 // 搜索
@@ -95,16 +85,16 @@ const resetHandle = () => {
 // 添加
 const onAddHandle = () => {
     addEditModalType.value = "add"
+    addEditModalTitle.value = "添加标签"
     showAddEditModal.value = true
 }
 // 编辑
 const onEditHandle = async (id: string) => {
-    // const { data } = await userApi.getUserDetail({id})
-    // addEditForm.value = data
-    // avatarFiles.value = data.avatar ? [{id: "avatarId", name: new URL(data.avatar).pathname.split("/")[2], status: "finished", url: data.avatar}] : []
+    const { data } = await articleTagApi.detail({id})
+    addEditForm.value = data
     addEditModalType.value = "edit"
+    addEditModalTitle.value = "编辑标签"
     showAddEditModal.value = true
-    console.log(id)
 }
 
 // 删除
@@ -115,28 +105,32 @@ const onDeleteHandle = (id: string) => {
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
-            console.log(id)
-            // const { success } = await userApi.deleteUser({id})
-            // if (success) {
-            //     getList()
-            // }
+            const { success } = await articleTagApi.delete({id})
+            if (success) {
+                getList()
+            }
         }
     })
 }
 
 const columns = reactive<DataTableColumns<TableDataType>>([
-    { title: "标签名", key: "name", fixed: "left", minWidth: 100 },
-    { title: "颜色", key: "color", minWidth: 120 },
+    {title: "标签名", key: "name", fixed: "left", width: 140, ellipsis: {tooltip: true}},
     {
-        title: "创建时间", key: "createTime", minWidth: 180,
-        render: (row) => h(NTime, { time: new Date(row.createTime) })
+        title: "颜色", key: "color", width: 100,
+        render: (row) => h("div", {class: "color-preview-box", style: {backgroundColor: row.color}, onClick: () => {
+            navigator.clipboard.writeText(row.color)
+        }})
     },
-    { title: "备注", key: "remark", minWidth: 180 },
     {
-        title: "操作", key: "operation", fixed: "right", minWidth: 240,
+        title: "创建时间", key: "createTime", width: 180,
+        render: (row) => h(NTime, {time: new Date(row.createTime)})
+    },
+    {title: "备注", key: "remark", minWidth: 180},
+    {
+        title: "操作", key: "operation", fixed: "right", width: 120,
         render: (row) => [
-            h(NButton, { text: true, type: "info", style: { marginRight: "10px" }, onClick: () => onEditHandle(row.id) }, () => "修改"),
-            h(NButton, { text: true, type: "error", onClick: () => onDeleteHandle(row.id) }, () => "删除")
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
+            h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
         ]
     }
 ])
@@ -152,20 +146,17 @@ const onSubmitModalHandle = () => {
     addEditFormRef.value?.validate(async err => {
         if (!err) {
             if (addEditModalType.value === "add") {
-                // const formDate = {...addEditForm.value}
-                // formDate.checkPassword = void 0
-                // formDate.password = sha256(formDate.password)
-                // const { success } = await userApi.addUser(formDate)
-                // if (success) {
-                //     onCloseModalHandle()
-                //     getList()
-                // }
+                const { success } = await articleTagApi.add(addEditForm.value)
+                if (success) {
+                    onCloseModalHandle()
+                    getList()
+                }
             } else if (addEditModalType.value === "edit") {
-                // const { success } = await userApi.editUser(addEditForm.value)
-                // if (success) {
-                //     onCloseModalHandle()
-                //     getList()
-                // }
+                const { success } = await articleTagApi.edit(addEditForm.value)
+                if (success) {
+                    onCloseModalHandle()
+                    getList()
+                }
             }
         }
     })
@@ -193,8 +184,21 @@ onMounted(() => {
         </div>
         <div>
             <MainCard>
-                <c-n-data-table :columns="columns" :data="dataList" :bordered="true" :top-box-height="topBoxRefHeight"
-                    :total="total">
+                <c-n-data-table
+                    :columns="columns"
+                    :data="dataList"
+                    :top-box-height="topBoxRefHeight"
+                    :loading="tagListLoading"
+                    :pagination="{
+                        page: queryForm.page,
+                        pageSize: 20,
+                        itemCount: total,
+                        onChange: (page: number) => {
+                            queryForm.page = page
+                            getList()
+                        }
+                    }"
+                >
                     <div>
                         <n-button type="info" @click="onAddHandle">添加</n-button>
                     </div>
@@ -202,14 +206,14 @@ onMounted(() => {
             </MainCard>
         </div>
     </div>
-    <n-modal preset="card" v-model:show="showAddEditModal" :title="addEditModalType === 'add' ? '添加标签' : '编辑标签'"
+    <n-modal preset="card" v-model:show="showAddEditModal" :title="addEditModalTitle"
         :mask-closable="false" style="width: 600px;">
         <n-form ref="addEditFormRef" :model="addEditForm" :rules="addEditRules">
             <n-form-item label="标签名" path="name">
                 <n-input v-model:value="addEditForm.name" placeholder="输入标签名" />
             </n-form-item>
             <n-form-item label="颜色" path="color">
-                <n-color-picker v-model:value="addEditForm.color" :modes="['hex']" :show-alpha="false" />
+                <n-color-picker v-model:value="addEditForm.color" :modes="['hex']" :show-alpha="true" show-preview/>
             </n-form-item>
             <n-form-item label="备注" path="remark">
                 <n-input v-model:value="addEditForm.remark" type="textarea" maxlength="255" show-count
@@ -225,4 +229,11 @@ onMounted(() => {
     </n-modal>
 </template>
 
-<style lang="scss" scope></style>
+<style lang="scss" scope>
+.color-preview-box {
+    width: 40px;
+    height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+</style>
