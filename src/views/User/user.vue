@@ -75,6 +75,7 @@ const addEditModalTitle = ref<string | null>(null)
 const userGroupAndAuthDrawerType = ref<string | null>(null)
 const avatarFiles = ref<UploadFileInfo[]>([])
 const userListLoading = ref<boolean>(false)
+const uploadLoading = ref<boolean>(false)
 
 const userGroupValue = ref<Array<string | number>>([])
 const userGroupOptions = ref<TransferOption[]>([])
@@ -241,11 +242,13 @@ onMounted(() => {
 const fileUpload = async (option: UploadCustomRequestOptions) => {
     const oss = await avatarUpload(option.file)
     addEditForm.value.avatar = oss.url
+    uploadLoading.value = false
 }
 const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[]}) => {
     const re = new RegExp("^image/(png|jpeg)$", "g")
-    if (date.file.type) {
-        return re.test(date.file.type)
+    if (date.file.type && re.test(date.file.type)) {
+        uploadLoading.value = true
+        return true
     }
     message.warning("头像文件格式仅支持png/jpg/jpeg")
     return false
@@ -260,6 +263,8 @@ const addEditFormRef = ref<FormInst | null>()
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
     showResetPasswordModal.value = false
+    uploadLoading.value = false
+    avatarFiles.value = []
     addEditForm.value = addEditFormInit.value
 }
 // 弹窗提交
@@ -452,7 +457,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitModalHandle">提交</n-button>
+                <n-button type="info" @click="onSubmitModalHandle" :disabled="uploadLoading">提交</n-button>
                 <n-button @click="onCloseModalHandle">取消</n-button>
             </div>
         </template>
