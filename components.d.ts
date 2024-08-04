@@ -7,8 +7,11 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Article: typeof import('./src/components/Article.vue')['default']
+    ArticleEdit: typeof import('./src/components/ArticleEdit.vue')['default']
     CNDataTable: typeof import('./src/components/CNDataTable.vue')['default']
     ContentCard: typeof import('./src/components/ContentCard.vue')['default']
+    EditorArticle: typeof import('./src/components/Editor/EditorArticle.vue')['default']
     MainCard: typeof import('./src/components/MainCard.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NBreadcrumb: typeof import('naive-ui')['NBreadcrumb']
@@ -31,6 +34,7 @@ declare module 'vue' {
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
     NScrollbar: typeof import('naive-ui')['NScrollbar']
+    NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
     NSpin: typeof import('naive-ui')['NSpin']
     NTransfer: typeof import('naive-ui')['NTransfer']

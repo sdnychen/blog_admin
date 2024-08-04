@@ -24,7 +24,7 @@ const home: Array<RouteRecordRaw> = [
                 path: "article",
                 name: "Article",
                 component: EmptyLayout,
-                redirect: "/content/article/newArticle",
+                redirect: "/content/article/article",
                 meta: {
                     title: "文章",
                     auth: "3:1",
@@ -32,27 +32,11 @@ const home: Array<RouteRecordRaw> = [
                 },
                 children: [
                     {
-                        path: "newArticle",
-                        name: "NewArticle",
-                        component: () => import("@/views/Home/home.vue"),
-                        meta: {
-                            title: "新增"
-                        }
-                    },
-                    {
                         path: "article",
                         name: "ArticleManage",
-                        component: () => import("@/views/Home/home.vue"),
+                        component: () => import("@/views/Article/article.vue"),
                         meta: {
                             title: "文章管理"
-                        }
-                    },
-                    {
-                        path: "articleDrafts",
-                        name: "ArticleDrafts",
-                        component: () => import("@/views/Home/home.vue"),
-                        meta: {
-                            title: "文章草稿箱"
                         }
                     },
                     {
@@ -69,6 +53,14 @@ const home: Array<RouteRecordRaw> = [
                         component: () => import("@/views/Article/tag.vue"),
                         meta: {
                             title: "标签管理"
+                        }
+                    },
+                    {
+                        path: "recycleBin",
+                        name: "RecycleBin",
+                        component: () => import("@/views/Article/tag.vue"),
+                        meta: {
+                            title: "回收站"
                         }
                     }
                 ]

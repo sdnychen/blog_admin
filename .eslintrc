@@ -29,7 +29,7 @@
         "no-setter-return": "error",
         "no-unused-private-class-members": "error",
         "no-unused-vars": "error",
-        "no-use-before-define": "error",
+        "no-use-before-define": "off",
         "consistent-this": [
             "error",
             "that"

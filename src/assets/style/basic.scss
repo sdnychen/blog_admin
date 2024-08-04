@@ -16,7 +16,7 @@ a {
 .content-layout {
     display: flex;
     flex-direction: column;
-    gap: $layout-gap
+    gap: $layout-gap;
 }
 
 // model弹框底部按钮位置
@@ -33,6 +33,17 @@ a {
     gap: 20px;
 }
 
+
+// 全屏
+// .full-screen {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100vw;
+//     height: 100vh;
+//     background-color: getColor(main-bg-color);
+//     z-index: 100;
+// }
 // 定义思源黑体
 @font-face {
     font-family: "SourceHanSans";

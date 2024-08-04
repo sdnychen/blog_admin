@@ -4,62 +4,8 @@ import { zhCN, dateZhCN } from "naive-ui"
 
 const themeOverrides: GlobalThemeOverrides = {
     common: {
-    },
-    Input: {
-        borderHover: "1px solid #3291F5",
-        borderFocus: "1px solid #3291F5",
-        boxShadowFocus: ""
-    },
-    Checkbox: {
-        borderChecked: "1px solid #3291F5",
-        borderFocus: "1px solid #3291F5",
-        colorChecked: "#3291F5",
-        boxShadowFocus: ""
-    },
-    Menu: {
-        itemTextColorActive: "#3291F5",
-        itemTextColorChildActive: "#3291F5",
-        itemTextColorActiveHover: "#3291F5",
-        itemTextColorHover: "",
-        itemColorActive: "#EAF3FD",
-        itemColorActiveHover: "#EAF3FD",
-        itemTextColorChildActiveHover: "#3291F5",
-        itemIconColorActive: "#3291F5",
-        itemIconColorChildActive: "#3291F5",
-        itemIconColorChildActiveHover: "#3291F5",
-        itemIconColorActiveHover: "#3291F5",
-        arrowColorActiveHover: "#3291F5",
-        arrowColorChildActive: "#3291F5",
-        arrowColorChildActiveHover: "#3291F5"
-    },
-    Spin: {
-        color: "#3291F5"
-    },
-    Button: {
-        textColorHover: "#3291F5",
-        borderHover: "1px solid #3291F5",
-        textColorFocus: "#3291F5",
-        borderFocus: "1px solid #3291F5",
-        rippleColor: "",
-        textColorPressed: "#3291F5",
-        borderPressed: "1px solid #3291F5"
-    },
-    Switch: {
-        railColorActive: "#3291F5",
-        boxShadowFocus: ""
-    },
-    Upload: {
-        draggerBorderHover: "1px dashed #3291F5"
-    },
-    Dialog: {
-    },
-    DataTable: {
-        loadingColor: "#3291F5"
-    },
-    Pagination: {
-        itemTextColorActive: "#3291F5",
-        itemTextColorHover: "#3291F5",
-        itemBorderActive: "1px solid #3291F5"
+        primaryColor: "#3291F5",
+        primaryColorHover: "#3291F5"
     }
 }
 </script>

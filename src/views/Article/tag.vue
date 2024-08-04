@@ -11,14 +11,6 @@ type queryFormType = {
     name: string
 }
 
-type TableDataType = {
-    id: string,
-    name: string,
-    color: string,
-    createTime: string
-    remark: string
-}
-
 type addEditFormType = {
     name: string,
     color: string,
@@ -56,7 +48,7 @@ const addEditRules = reactive<FormRules>({
     ]
 })
 
-const dataList = ref<TableDataType[]>([])
+const dataList = ref<articleTagRequestType[]>([])
 
 const showAddEditModal = ref<boolean>(false)
 const addEditModalType = ref<string>("")
@@ -113,10 +105,10 @@ const onDeleteHandle = (id: string) => {
     })
 }
 
-const columns = reactive<DataTableColumns<TableDataType>>([
+const columns = reactive<DataTableColumns<articleTagRequestType>>([
     {title: "标签名", key: "name", fixed: "left", width: 140, ellipsis: {tooltip: true}},
     {
-        title: "颜色", key: "color", width: 100,
+        title: "颜色", key: "color", align: "center", width: 100,
         render: (row) => h("div", {class: "color-preview-box", style: {backgroundColor: row.color}, onClick: () => {
             navigator.clipboard.writeText(row.color)
         }})

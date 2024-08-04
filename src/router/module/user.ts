@@ -11,7 +11,7 @@ const home: Array<RouteRecordRaw> = [
         path: "/user",
         name: "User",
         component: Layout,
-        redirect: "/user/user",
+        redirect: "/user/userManage",
         meta: {
             title: "用户",
             auth: "1:3",
@@ -19,7 +19,7 @@ const home: Array<RouteRecordRaw> = [
         },
         children: [
             {
-                path: "user",
+                path: "userManage",
                 name: "UserManage",
                 component: () => import("@/views/User/user.vue"),
                 meta: {
