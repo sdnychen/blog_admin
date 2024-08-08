@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { h, ref, reactive, onMounted } from "vue"
-import { NTime, NButton, useDialog } from "naive-ui"
+import { NTime, NButton, NImage, NTag, useDialog } from "naive-ui"
 import type { DataTableColumns } from "naive-ui"
 import articleApi from "@/api/apis/articleApi"
+import { ArticleStatusEnum, getType} from "@/enum/ArticleStatusEnum"
 
 const dialog = useDialog()
 
@@ -79,33 +80,48 @@ const onDeleteHandle = (id: string) => {
         negativeText: "取消",
         onPositiveClick: async () => {
             console.log(id)
-            // const { success } = await articleApi.delete({id})
-            // if (success) {
-            //     getList()
-            // }
+            const { success } = await articleApi.delete({id})
+            if (success) {
+                getList()
+            }
         }
     })
 }
 
 const columns = reactive<DataTableColumns<ArticleRequestType>>([
-    {title: "标题", key: "title", fixed: "left", width: 300, ellipsis: {tooltip: true}},
+    {title: "标题", key: "title", fixed: "left", width: 200, ellipsis: {tooltip: true}},
+    {
+        title: "首图", key: "img", align: "center", width: 60,
+        render: (row) => row.img ? h(NImage, {width: 30, height: 30, lazy: true, src: row.img, style: {borderRadius: "8px"}}) : "--"
+    },
     {title: "摘要", key: "intro", minWidth: 200},
     {title: "别名", key: "alias", minWidth: 100},
+    {
+        title: "状态", key: "status", align: "center", width: 100,
+        render: (row) => h(NTag, {type: getType(row.status), bordered: false}, ArticleStatusEnum[row.status])
+    },
     {title: "备注", key: "remark", minWidth: 180},
     {
         title: "发布时间", key: "createTime", width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => row.status === 2 ? h(NTime, {time: new Date(row.createTime)}) : "--"
     },
     {
         title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
     {
-        title: "操作", key: "operation", fixed: "right", width: 120,
-        render: (row) => [
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
-        ]
+        title: "操作", key: "operation", fixed: "right", width: 180,
+        render: (row) => {
+            const btnArr = [
+                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
+                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "发布"),
+                h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
+            ]
+            if (row.status === 2) {
+                btnArr[1] = h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "取消发布")
+            }
+            return btnArr
+        }
     }
 ])
 

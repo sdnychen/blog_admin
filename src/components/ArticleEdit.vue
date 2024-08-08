@@ -6,8 +6,11 @@ import EditorArticle from "./Editor/EditorArticle.vue"
 import articleTagApi from "@/api/apis/articleTagApi"
 import articleSortApi from "@/api/apis/articleSortApi"
 import articleApi from "@/api/apis/articleApi"
-import { type FormRules } from "naive-ui"
+import { useMessage } from "naive-ui"
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
+import { articleFileUpload } from "@/utils/ossUtil"
 
+const message = useMessage()
 const emit = defineEmits(["onCloseArticleEditHandle"])
 const props = defineProps({
     type: {
@@ -34,7 +37,7 @@ const form = ref<ArticleForm>({
     alias: "",
     content: "",
     intro: "",
-    img: "1", // todo 临时使用
+    img: "",
     tagList: null,
     sortList: null,
     remark: "",
@@ -42,6 +45,8 @@ const form = ref<ArticleForm>({
 })
 const tagList = ref<articleTagRequestType[]>()
 const sortList = ref<articleSortRequestType[]>()
+const uploadLoading = ref<boolean>(false)
+const imgFiles = ref<UploadFileInfo[]>([])
 
 // 获取文章
 const getArticle = async () => {
@@ -59,6 +64,25 @@ const getTagAllList = async (name: string = "") => {
 const getSortAllList = async (name: string = "") => {
     const { data } = await articleSortApi.allList({name})
     sortList.value = data
+}
+// 文件上传
+const fileUpload = async (option: UploadCustomRequestOptions) => {
+    const oss = await articleFileUpload(option.file)
+    form.value.img = oss.url
+    uploadLoading.value = false
+}
+const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[]}) => {
+    const re = new RegExp("^image/(png|jpeg)$", "g")
+    if (date.file.type && re.test(date.file.type)) {
+        uploadLoading.value = true
+        return true
+    }
+    message.warning("头像文件格式仅支持png/jpg/jpeg")
+    return false
+}
+const removeFile = () => {
+    imgFiles.value = []
+    form.value.img = ""
 }
 
 const onCloseHandle = () => {
@@ -95,8 +119,8 @@ const formRules = reactive<FormRules>({
     <div class="article-edit-box">
         <div class="article-edit-box-top">
             <n-button type="error" quaternary @click="onCloseHandle">关闭</n-button>
-            <n-button @click="onSavePublishHandle('save')">保存草稿</n-button>
-            <n-button type="info" :render-icon="renderIcon(PaperPlane)">发布</n-button>
+            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('save')">保存草稿</n-button>
+            <n-button :disabled="uploadLoading" type="info" :render-icon="renderIcon(PaperPlane)">发布</n-button>
         </div>
         <n-divider />
         <div class="article-edit-box-content">
@@ -105,23 +129,38 @@ const formRules = reactive<FormRules>({
             </div>
             <div class="article-edit-box-right">
                 <n-form ref="formRef" :model="form" :rules="formRules" label-width="auto" label-placement="top">
-                    <n-form-item label="文章标题" path="title">
-                        <n-input v-model:value="form.title" placeholder="文章标题" clearable />
+                    <n-form-item label="标题" path="title">
+                        <n-input v-model:value="form.title" placeholder="请输入文章标题" clearable />
                     </n-form-item>
-                    <n-form-item label="文章别名" path="alias">
-                        <n-input v-model:value="form.alias" placeholder="文章标题" clearable />
+                    <n-form-item label="别名" path="alias">
+                        <n-input v-model:value="form.alias" placeholder="请输入文章别名" clearable />
                     </n-form-item>
-                    <n-form-item label="文章简介" path="intro">
-                        <n-input v-model:value="form.intro" type="textarea" placeholder="文章简介" maxlength="100" show-count clearable />
+                    <n-alert type="info" style="margin-bottom: 10px;">
+                        别名将用于生成文章地址
+                    </n-alert>
+                    <n-form-item label="简介" path="intro">
+                        <n-input v-model:value="form.intro" type="textarea" placeholder="请输入文章简介" maxlength="100" show-count clearable />
                     </n-form-item>
-                    <n-form-item label="文章分类" path="sortList">
-                        <n-select v-model:value="form.sortList" label-field="name" value-field="id" multiple :options="sortList" />
+                    <n-form-item label="首图">
+                        <n-upload
+                            :custom-request="fileUpload"
+                            v-model:file-list="imgFiles"
+                            list-type="image-card"
+                            accept=".jpg, .jpeg, .png"
+                            :max="1"
+                            @before-upload="beforeFileUpload"
+                            @remove="removeFile"
+                        >
+                        </n-upload>
                     </n-form-item>
-                    <n-form-item label="文章标签" path="tagList">
-                        <n-select v-model:value="form.tagList" label-field="name" value-field="id" multiple :options="tagList" />
+                    <n-form-item label="分类" path="sortList">
+                        <n-select v-model:value="form.sortList" label-field="name" value-field="id" placeholder="请选择分类" multiple :options="sortList" />
                     </n-form-item>
-                    <n-form-item label="文章备注" path="remark">
-                        <n-input v-model:value="form.remark" type="textarea" placeholder="文章备注" maxlength="255" show-count clearable />
+                    <n-form-item label="标签" path="tagList">
+                        <n-select v-model:value="form.tagList" label-field="name" value-field="id" placeholder="请选择标签" multiple :options="tagList" />
+                    </n-form-item>
+                    <n-form-item label="备注" path="remark">
+                        <n-input v-model:value="form.remark" type="textarea" placeholder="请输入文章备注" maxlength="255" show-count clearable />
                     </n-form-item>
                 </n-form>
             </div>
@@ -168,6 +207,11 @@ $padding: 12px;
         margin-left: $padding;
         padding-left: $padding;
         border-left: 1px solid #dadada;
+        overflow-y: auto;
     }
 }
+
+// :deep(.n-upload-file--image-card-type) {
+//     display: block
+// }
 </style>

@@ -37,6 +37,8 @@ type ArticleRequestType = {
     id: string,
     title: string,
     alias: string,
+    img: string,
+    status: number,
     createTime: string
     remark: string
 }

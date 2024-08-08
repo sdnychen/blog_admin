@@ -3,7 +3,7 @@ import { h, ref, reactive, onMounted } from "vue"
 import { NTime, NButton, useDialog, useMessage, NImage } from "naive-ui"
 import type { DataTableColumns, FormRules, FormInst, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
 import articleSortApi from "@/api/apis/articleSortApi"
-import { sysUpload } from "@/utils/ossUtil"
+import { sysFileUpload } from "@/utils/ossUtil"
 
 const dialog = useDialog()
 const message = useMessage()
@@ -160,7 +160,7 @@ const onSubmitModalHandle = () => {
 
 // 文件上传
 const fileUpload = async (option: UploadCustomRequestOptions) => {
-    const oss = await sysUpload(option.file)
+    const oss = await sysFileUpload(option.file)
     addEditForm.value.img = oss.url
     uploadLoading.value = false
 }

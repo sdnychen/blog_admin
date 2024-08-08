@@ -45,8 +45,19 @@ export const avatarUpload = async (file: SettledFileInfo) => {
  * @param file naive上传组件返回的file对象
  * @returns oss返回结果
  */
-export const sysUpload = async (file: SettledFileInfo) => {
+export const sysFileUpload = async (file: SettledFileInfo) => {
     const oss = await createOssClient()
     const fileName = `sys/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split(".").pop()}`
+    return oss.put(fileName, file.file)
+}
+
+/**
+ * 文章文件上传
+ * @param file naive上传组件返回的file对象
+ * @returns oss返回结果
+ */
+export const articleFileUpload = async (file: SettledFileInfo) => {
+    const oss = await createOssClient()
+    const fileName = `article/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split(".").pop()}`
     return oss.put(fileName, file.file)
 }
