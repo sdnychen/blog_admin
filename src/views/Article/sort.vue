@@ -45,9 +45,7 @@ const addEditRules = reactive<FormRules>({
         {required: true, trigger: "blur", message: "请输入类名"},
         {max: 20, trigger: ["input", "blur"], message: "类名最大长度20个字符"}
     ],
-    img: [
-        {required: true, trigger: "blur", message: "请上传分类图片"}
-    ]
+    img: {required: true, trigger: "blur", message: "请上传分类图片"}
 })
 
 const dataList = ref<articleSortRequestType[]>([])

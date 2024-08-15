@@ -27,9 +27,14 @@ const articleApi = {
     edit: (params?: any) => request.put("/article/edit", params),
 
     /**
-     * 文章删除
+     * 文章状态
      */
-    delete: (params?: any) => request.delete("/article/delete", params)
+    updateStatus: (params?: any) => request.put("/article/updateStatus", params),
+
+    /**
+     * 文章删恢复
+     */
+    deleteRecovery: (params?: any) => request.delete("/article/deleteRecovery", params)
 }
 
 export default articleApi

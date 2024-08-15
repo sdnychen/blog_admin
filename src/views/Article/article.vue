@@ -70,20 +70,27 @@ const onEditHandle = async (id: String) => {
     articleEditVisibility.value = true
     currArticleId.value = id
 }
-
+// 发布/取消发布
+const onChangeStatusHandle = async (row: ArticleRequestType) => {
+    const {success} = await articleApi.updateStatus({
+        id: row.id,
+        status: row.status === ArticleStatusEnum["已发布"] ? ArticleStatusEnum["未发布"] : ArticleStatusEnum["已发布"]
+    })
+    success && getList()
+}
 // 删除
-const onDeleteHandle = (id: string) => {
+const onDeleteHandle = (row: ArticleRequestType) => {
     dialog.warning({
         title: "删除警告",
         content: "确定删除？",
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
-            console.log(id)
-            const { success } = await articleApi.delete({id})
-            if (success) {
-                getList()
-            }
+            const { success } = await articleApi.deleteRecovery({
+                id: row.id,
+                deleted: 1
+            })
+            success && getList()
         }
     })
 }
@@ -100,7 +107,6 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
         title: "状态", key: "status", align: "center", width: 100,
         render: (row) => h(NTag, {type: getType(row.status), bordered: false}, ArticleStatusEnum[row.status])
     },
-    {title: "备注", key: "remark", minWidth: 180},
     {
         title: "发布时间", key: "createTime", width: 180,
         render: (row) => row.status === 2 ? h(NTime, {time: new Date(row.createTime)}) : "--"
@@ -109,16 +115,19 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
         title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
+    {title: "备注", key: "remark", minWidth: 180},
     {
         title: "操作", key: "operation", fixed: "right", width: 180,
         render: (row) => {
-            const btnArr = [
+            let btnArr = [
                 h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "发布"),
-                h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
+                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onChangeStatusHandle(row)}, () => "发布"),
+                h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row)}, () => "删除")
             ]
             if (row.status === 2) {
-                btnArr[1] = h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "取消发布")
+                btnArr = [
+                    h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onChangeStatusHandle(row)}, () => "取消发布")
+                ]
             }
             return btnArr
         }

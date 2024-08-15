@@ -7,7 +7,7 @@ import articleTagApi from "@/api/apis/articleTagApi"
 import articleSortApi from "@/api/apis/articleSortApi"
 import articleApi from "@/api/apis/articleApi"
 import { useMessage } from "naive-ui"
-import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
+import type { FormInst, FormRules, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
 import { articleFileUpload } from "@/utils/ossUtil"
 
 const message = useMessage()
@@ -21,25 +21,27 @@ const props = defineProps({
 })
 
 type ArticleForm = {
+    id: string | null,
     title: string,
     alias: string,
     content: string,
     intro: string,
     img: string,
     tagList: Array<string> | null,
-    sortList: Array<string> | null,
+    sort: string | null,
     remark: string,
     status: number
 }
 
 const form = ref<ArticleForm>({
+    id: null,
     title: "",
     alias: "",
     content: "",
     intro: "",
     img: "",
     tagList: null,
-    sortList: null,
+    sort: null,
     remark: "",
     status: 1
 })
@@ -89,10 +91,22 @@ const onCloseHandle = () => {
     emit("onCloseArticleEditHandle")
 }
 
-const onSavePublishHandle = async (type: string) => {
-    if (type === "save") {
-        await articleApi.add(form.value)
-    }
+const formRef = ref<FormInst | null>()
+const onSavePublishHandle = (type: string) => {
+    formRef.value?.validate(async err => {
+        if (!err) {
+            if (type === "publish") {
+                form.value.status = 2
+            }
+            if (!!form.value.id) {
+                await articleApi.edit(form.value)
+            } else {
+                const { data } = await articleApi.add(form.value)
+                form.value.id = data.id
+            }
+            type === "publish" && onCloseHandle()
+        }
+    })
 }
 
 onMounted(() => {
@@ -110,7 +124,8 @@ const formRules = reactive<FormRules>({
     ],
     alias: {required: true, trigger: "input", message: "请输入文章别名"},
     intro: {required: true, trigger: "input", message: "请输入文章简介"},
-    sortList: {type: "array", required: true, trigger: ["blur", "change"], message: "请选择文章分类"},
+    img: {required: true, trigger: "blur", message: "请上传文章首图"},
+    sort: {required: true, trigger: ["blur", "change"], message: "请选择文章分类"},
     tagList: {type: "array", required: true, trigger: ["blur", "change"], message: "请选择文章标签"}
 })
 </script>
@@ -119,8 +134,8 @@ const formRules = reactive<FormRules>({
     <div class="article-edit-box">
         <div class="article-edit-box-top">
             <n-button type="error" quaternary @click="onCloseHandle">关闭</n-button>
-            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('save')">保存草稿</n-button>
-            <n-button :disabled="uploadLoading" type="info" :render-icon="renderIcon(PaperPlane)">发布</n-button>
+            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('save')">保存</n-button>
+            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('publish')" type="info" :render-icon="renderIcon(PaperPlane)">发布</n-button>
         </div>
         <n-divider />
         <div class="article-edit-box-content">
@@ -141,7 +156,7 @@ const formRules = reactive<FormRules>({
                     <n-form-item label="简介" path="intro">
                         <n-input v-model:value="form.intro" type="textarea" placeholder="请输入文章简介" maxlength="100" show-count clearable />
                     </n-form-item>
-                    <n-form-item label="首图">
+                    <n-form-item label="首图" path="img">
                         <n-upload
                             :custom-request="fileUpload"
                             v-model:file-list="imgFiles"
@@ -153,8 +168,8 @@ const formRules = reactive<FormRules>({
                         >
                         </n-upload>
                     </n-form-item>
-                    <n-form-item label="分类" path="sortList">
-                        <n-select v-model:value="form.sortList" label-field="name" value-field="id" placeholder="请选择分类" multiple :options="sortList" />
+                    <n-form-item label="分类" path="sort">
+                        <n-select v-model:value="form.sort" label-field="name" value-field="id" placeholder="请选择分类" :options="sortList" />
                     </n-form-item>
                     <n-form-item label="标签" path="tagList">
                         <n-select v-model:value="form.tagList" label-field="name" value-field="id" placeholder="请选择标签" multiple :options="tagList" />
@@ -210,8 +225,4 @@ $padding: 12px;
         overflow-y: auto;
     }
 }
-
-// :deep(.n-upload-file--image-card-type) {
-//     display: block
-// }
 </style>
