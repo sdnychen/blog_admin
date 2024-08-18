@@ -4,6 +4,7 @@ import { NTime, NButton, NImage, NTag, useDialog } from "naive-ui"
 import type { DataTableColumns } from "naive-ui"
 import articleApi from "@/api/apis/articleApi"
 import { ArticleStatusEnum, getType} from "@/enum/ArticleStatusEnum"
+import DeletedEnum from "@/enum/DeletedEnum"
 
 const dialog = useDialog()
 
@@ -88,7 +89,7 @@ const onDeleteHandle = (row: ArticleRequestType) => {
         onPositiveClick: async () => {
             const { success } = await articleApi.deleteRecovery({
                 id: row.id,
-                deleted: 1
+                deleted: DeletedEnum["已删除"]
             })
             success && getList()
         }
@@ -107,15 +108,15 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
         title: "状态", key: "status", align: "center", width: 100,
         render: (row) => h(NTag, {type: getType(row.status), bordered: false}, ArticleStatusEnum[row.status])
     },
+    {title: "备注", key: "remark", minWidth: 180},
     {
         title: "发布时间", key: "createTime", width: 180,
-        render: (row) => row.publishTime ? h(NTime, {time: new Date(row.publishTime)}) : "--"
+        render: (row) => row.status === ArticleStatusEnum["已发布"] ? h(NTime, {time: new Date(row.publishTime)}) : "--"
     },
     {
         title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    {title: "备注", key: "remark", minWidth: 180},
     {
         title: "操作", key: "operation", fixed: "right", width: 180,
         render: (row) => {

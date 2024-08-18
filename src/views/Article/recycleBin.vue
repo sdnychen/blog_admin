@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { h, ref, reactive, onMounted } from "vue"
-import { NTime, NButton, NImage, NTag, useDialog } from "naive-ui"
+import { NTime, NButton, NImage, useDialog } from "naive-ui"
 import type { DataTableColumns } from "naive-ui"
 import articleApi from "@/api/apis/articleApi"
-import { ArticleStatusEnum, getType} from "@/enum/ArticleStatusEnum"
+import DeletedEnum from "@/enum/DeletedEnum"
 
 const dialog = useDialog()
 
@@ -38,7 +38,7 @@ const articleListLoading = ref<boolean>(false)
 
 const getList = async () => {
     articleListLoading.value = true
-    const { data } = await articleApi.list(queryForm.value)
+    const { data } = await articleApi.recycleBinList(queryForm.value)
     articleListLoading.value = false
     dataList.value = data.list
     total.value = data.total
@@ -55,41 +55,23 @@ const resetHandle = () => {
     getList()
 }
 
-const currArticleId = ref<String>("")
-const articleEditVisibility = ref<boolean>(false)
-const articleEditType = ref<string>("add")
-
-// 添加
-const onOpenArticleEditHandle = () => {
-    articleEditType.value = "add"
-    articleEditVisibility.value = true
-}
-// 编辑
-const onEditHandle = async (id: String) => {
-    articleEditType.value = "edit"
-    articleEditVisibility.value = true
-    currArticleId.value = id
-}
-// 发布/取消发布
-const onChangeStatusHandle = async (row: ArticleRequestType) => {
-    const {success} = await articleApi.updateStatus({
-        id: row.id,
-        status: row.status === ArticleStatusEnum["已发布"] ? ArticleStatusEnum["未发布"] : ArticleStatusEnum["已发布"]
+// 还原恢复
+const onRecoveryHandle = async (id: String) => {
+    const { success } = await articleApi.deleteRecovery({
+        id: id,
+        deleted: DeletedEnum["未删除"]
     })
     success && getList()
 }
-// 删除
-const onDeleteHandle = (row: ArticleRequestType) => {
+// 彻底删除
+const onDeleteHandle = (id: String) => {
     dialog.warning({
-        title: "删除警告",
-        content: "确定删除？",
+        title: "永久删除警告",
+        content: "永久删除后不可恢复，确定永久删除？",
         positiveText: "确定",
         negativeText: "取消",
         onPositiveClick: async () => {
-            const { success } = await articleApi.deleteRecovery({
-                id: row.id,
-                deleted: 1
-            })
+            const { success } = await articleApi.delete({id})
             success && getList()
         }
     })
@@ -102,43 +84,23 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
         render: (row) => row.img ? h(NImage, {width: 30, height: 30, lazy: true, src: row.img, style: {borderRadius: "8px"}}) : "--"
     },
     {title: "摘要", key: "intro", minWidth: 200},
-    {title: "别名", key: "alias", minWidth: 100},
-    {
-        title: "状态", key: "status", align: "center", width: 100,
-        render: (row) => h(NTag, {type: getType(row.status), bordered: false}, ArticleStatusEnum[row.status])
-    },
-    {
-        title: "发布时间", key: "createTime", width: 180,
-        render: (row) => row.publishTime ? h(NTime, {time: new Date(row.publishTime)}) : "--"
-    },
+    {title: "备注", key: "remark", minWidth: 180},
     {
         title: "创建时间", key: "createTime", width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    {title: "备注", key: "remark", minWidth: 180},
     {
-        title: "操作", key: "operation", fixed: "right", width: 180,
-        render: (row) => {
-            let btnArr = [
-                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-                h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onChangeStatusHandle(row)}, () => "发布"),
-                h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row)}, () => "删除")
-            ]
-            if (row.status === ArticleStatusEnum["已发布"]) {
-                btnArr = [
-                    h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onChangeStatusHandle(row)}, () => "取消发布")
-                ]
-            }
-            return btnArr
-        }
+        title: "删除时间", key: "deleteTime", width: 180,
+        render: (row) => h(NTime, {time: new Date(row.deleteTime)})
+    },
+    {
+        title: "操作", key: "operation", fixed: "right", width: 140,
+        render: (row) => [
+            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onRecoveryHandle(row.id)}, () => "恢复"),
+            h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "彻底删除")
+        ]
     }
 ])
-
-// 编辑窗口
-const onCloseArticleEditHandle = () => {
-    getList()
-    articleEditVisibility.value = false
-}
 
 const topBoxRef = ref()
 const topBoxRefHeight = ref<string>("0px")
@@ -176,19 +138,9 @@ onMounted(() => {
                             getList()
                         }
                     }"
-                >
-                    <div>
-                        <n-button type="info" @click="onOpenArticleEditHandle">新文章</n-button>
-                    </div>
-                </c-n-data-table>
+                />
             </MainCard>
         </div>
-        <ArticleEdit
-            v-if="articleEditVisibility"
-            :id="currArticleId"
-            :type="articleEditType"
-            @onCloseArticleEditHandle="onCloseArticleEditHandle"
-        />
     </div>
 </template>
 

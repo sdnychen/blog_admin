@@ -12,6 +12,11 @@ const articleApi = {
     allList: (params?: any) => request.get("/article/allList", params),
 
     /**
+     * 文章回收站列表
+     */
+    recycleBinList: (params?: any) => request.get("/article/recycleBinList", params),
+
+    /**
      * 获取文章详情
      */
     detail: (params?: any) => request.get("/article/detail", params),
@@ -34,7 +39,12 @@ const articleApi = {
     /**
      * 文章删恢复
      */
-    deleteRecovery: (params?: any) => request.delete("/article/deleteRecovery", params)
+    deleteRecovery: (params?: any) => request.delete("/article/deleteRecovery", params),
+
+    /**
+     * 文章删恢复
+     */
+    delete: (params?: any) => request.delete("/article/delete", params)
 }
 
 export default articleApi

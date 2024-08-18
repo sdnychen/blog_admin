@@ -34,6 +34,7 @@ const home: Array<RouteRecordRaw> = [
                 path: "cloudMaterial",
                 name: "CloudMaterial",
                 component: EmptyLayout,
+                redirect: "/material/cloudMaterial/ossCloupMaterial",
                 meta: {
                     title: "云",
                     auth: "9:2",
