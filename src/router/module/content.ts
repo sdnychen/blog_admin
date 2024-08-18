@@ -58,7 +58,7 @@ const home: Array<RouteRecordRaw> = [
                     {
                         path: "recycleBin",
                         name: "RecycleBin",
-                        component: () => import("@/views/Article/tag.vue"),
+                        component: () => import("@/views/Article/recycleBin.vue"),
                         meta: {
                             title: "回收站"
                         }

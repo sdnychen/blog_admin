@@ -40,6 +40,7 @@ type ArticleRequestType = {
     img: string,
     status: number,
     createTime: string
+    publishTime: string | undefined,
     remark: string
 }
 

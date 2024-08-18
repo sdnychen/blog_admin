@@ -1,11 +1,11 @@
 export enum ArticleStatusEnum {
-    "未发布" = 1,
-    "已发布" = 2
+    "未发布",
+    "已发布"
 }
 
 enum ArticleStatusTypeEnum {
-    "error" = 1,
-    "success" = 2
+    "error",
+    "success"
 }
 
 export const getType = (val: number) => {

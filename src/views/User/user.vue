@@ -6,7 +6,7 @@ import userApi from "@/api/apis/userApi"
 import userGroupApi from "@/api/apis/userGroupApi"
 import authApi from "@/api/apis/authApi"
 import { avatarUpload } from "@/utils/ossUtil"
-import EnableDisableEnum from "@/enum/EnableDisableEnum"
+import UserStatusEnum from "@/enum/UserStatusEnum"
 import { mobileRegExp, emailRegExp } from "@/utils/regExp"
 import { sha256 } from "js-sha256"
 import { useUserStore } from "@/stores/user"
@@ -96,7 +96,7 @@ const getList = async () => {
 
 // 状态改变
 const statusChangeHandle = async (row: TableDataType, index: number) => {
-    dataList.value[index].status = row.status === 1 ? 2 : 1
+    dataList.value[index].status = row.status === UserStatusEnum["启用"] ? UserStatusEnum["禁用"] : UserStatusEnum["启用"]
     await userApi.updateStatus({id: row.id, status: row.status})
     getList()
 }
@@ -340,7 +340,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
     {title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
     {
         title: "状态", key: "status", align: "center", fixed: "right", width: 60,
-        render: (row, index) => h(NSwitch, {checkedValue: EnableDisableEnum.ENABLE, uncheckedValue: EnableDisableEnum.DISABLE, value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
+        render: (row, index) => h(NSwitch, {checkedValue: UserStatusEnum["启用"], uncheckedValue: UserStatusEnum["禁用"], value: row.status, onUpdateValue: () => statusChangeHandle(row, index)})
     },
     {
         title: "操作", key: "operation", fixed: "right", width: 300,

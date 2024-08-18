@@ -1,6 +1,6 @@
 enum EnableDisableEnum {
-    "ENABLE" = 1,
-    "DISABLE" = 2
+    "禁用",
+    "启用"
 }
 
 export default EnableDisableEnum

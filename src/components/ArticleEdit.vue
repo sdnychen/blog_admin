@@ -9,6 +9,7 @@ import articleApi from "@/api/apis/articleApi"
 import { useMessage } from "naive-ui"
 import type { FormInst, FormRules, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
 import { articleFileUpload } from "@/utils/ossUtil"
+import { ArticleStatusEnum } from "@/enum/ArticleStatusEnum"
 
 const message = useMessage()
 const emit = defineEmits(["onCloseArticleEditHandle"])
@@ -96,7 +97,7 @@ const onSavePublishHandle = (type: string) => {
     formRef.value?.validate(async err => {
         if (!err) {
             if (type === "publish") {
-                form.value.status = 2
+                form.value.status = ArticleStatusEnum["已发布"]
             }
             if (!!form.value.id) {
                 await articleApi.edit(form.value)
@@ -126,7 +127,7 @@ const formRules = reactive<FormRules>({
     intro: {required: true, trigger: "input", message: "请输入文章简介"},
     img: {required: true, trigger: "blur", message: "请上传文章首图"},
     sort: {required: true, trigger: ["blur", "change"], message: "请选择文章分类"},
-    tagList: {type: "array", required: true, trigger: ["blur", "change"], message: "请选择文章标签"}
+    tagList: {type: "array", required: false, trigger: ["blur", "change"], message: "请选择文章标签"}
 })
 </script>
 
