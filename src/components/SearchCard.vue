@@ -22,13 +22,25 @@
     border-radius: $card-box-radius;
     .search-card-content {
         flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        .n-form {
+            display: flex;
+            flex-wrap: wrap;
+            row-gap: 10px
+        }
+        .n-input {
+            width: 200px !important;
+        }
+        .n-select {
+            width: 200px !important;
+        }
+        .n-input--pair {
+            width: 360px !important;
+        }
     }
     .search-card-btn {
         display: flex;
         gap: 10px;
+        align-items: end;
     }
 }
 </style>

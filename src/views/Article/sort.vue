@@ -176,49 +176,41 @@ const removeFile = () => {
     addEditForm.value.img = ""
 }
 
-const topBoxRef = ref()
-const topBoxRefHeight = ref<string>("0px")
 onMounted(() => {
-    topBoxRefHeight.value = topBoxRef.value.clientHeight + "px"
     getList()
 })
 </script>
 
 <template>
     <div class="content-layout">
-        <div ref="topBoxRef" class="top-box-ref">
-            <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                    :show-feedback="false">
-                    <n-form-item label="类名">
-                        <n-input v-model:value="queryForm.name" placeholder="类名" clearable />
-                    </n-form-item>
-                </n-form>
-            </SearchCard>
-        </div>
-        <div>
-            <MainCard>
-                <c-n-data-table
-                    :columns="columns"
-                    :data="dataList"
-                    :top-box-height="topBoxRefHeight"
-                    :loading="sortListLoading"
-                    :pagination="{
-                        page: queryForm.page,
-                        pageSize: 20,
-                        itemCount: total,
-                        onChange: (page: number) => {
-                            queryForm.page = page
-                            getList()
-                        }
-                    }"
-                >
-                    <div>
-                        <n-button type="info" @click="onAddHandle">添加</n-button>
-                    </div>
-                </c-n-data-table>
-            </MainCard>
-        </div>
+        <DataTable
+            :columns="columns"
+            :data="dataList"
+            :loading="sortListLoading"
+            :pagination="{
+                page: queryForm.page,
+                pageSize: 20,
+                itemCount: total,
+                onChange: (page: number) => {
+                    queryForm.page = page
+                    getList()
+                }
+            }"
+        >
+            <template #searchSlot>
+                <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
+                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false">
+                        <n-form-item label="类名">
+                            <n-input v-model:value="queryForm.name" placeholder="类名" clearable />
+                        </n-form-item>
+                    </n-form>
+                </SearchCard>
+            </template>
+            <template #buttonSlot>
+                <n-button type="info" @click="onAddHandle">添加</n-button>
+            </template>
+        </DataTable>
     </div>
     <n-modal preset="card" v-model:show="showAddEditModal" :title="addEditModalTitle"
         :mask-closable="false" style="width: 600px;">

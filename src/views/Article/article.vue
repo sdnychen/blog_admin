@@ -3,8 +3,9 @@ import { h, ref, reactive, onMounted } from "vue"
 import { NTime, NButton, NImage, NTag, useDialog } from "naive-ui"
 import type { DataTableColumns } from "naive-ui"
 import articleApi from "@/api/apis/articleApi"
-import { ArticleStatusEnum, getType} from "@/enum/ArticleStatusEnum"
+import { ArticleStatusEnum, articleStatusList, getType} from "@/enum/ArticleStatusEnum"
 import DeletedEnum from "@/enum/DeletedEnum"
+import DataTable from "@/components/DataTable.vue"
 
 const dialog = useDialog()
 
@@ -12,34 +13,48 @@ type queryFormType = {
     page: number,
     title: string,
     status: number | null,
-    deleted: number,
-    publishTime: string | undefined,
-    createTime: string
+    publishTime: string[] | null | undefined,
+    createTime: string[] | null | undefined,
+    startPublishTime?: string,
+    endPublishTime?: string,
+    startCreateTime?: string,
+    endCreateTime?: string
 }
 
 const queryForm = ref<queryFormType>({
     page: 1,
     title: "",
     status: null,
-    deleted: 2,
-    publishTime: "",
-    createTime: ""
+    publishTime: null,
+    createTime: null
 })
 const queryFormInit = ref<queryFormType>({
     page: 1,
     title: "",
     status: null,
-    deleted: 2,
-    publishTime: "",
-    createTime: ""
+    publishTime: null,
+    createTime: null
 })
+
 const total = ref<number>(0)
 const dataList = ref<ArticleRequestType[]>([])
 const articleListLoading = ref<boolean>(false)
 
 const getList = async () => {
+    const queryParam: queryFormType = {...queryForm.value}
+    if (queryParam.publishTime?.length === 2) {
+        queryParam.startPublishTime = new Date(queryParam.publishTime[0]).toISOString()
+        queryParam.endPublishTime = new Date(queryParam.publishTime[1]).toISOString()
+    }
+    if (queryParam.createTime?.length === 2) {
+        queryParam.startCreateTime = queryParam.createTime[0]
+        queryParam.endCreateTime = queryParam.createTime[1]
+    }
+    queryParam.publishTime = void 0
+    queryParam.createTime = void 0
+
     articleListLoading.value = true
-    const { data } = await articleApi.list(queryForm.value)
+    const { data } = await articleApi.list(queryParam)
     articleListLoading.value = false
     dataList.value = data.list
     total.value = data.total
@@ -141,49 +156,54 @@ const onCloseArticleEditHandle = () => {
     articleEditVisibility.value = false
 }
 
-const topBoxRef = ref()
-const topBoxRefHeight = ref<string>("0px")
 onMounted(() => {
-    topBoxRefHeight.value = topBoxRef.value.clientHeight + "px"
     getList()
 })
 </script>
 
 <template>
     <div class="content-layout" style="position: relative;">
-        <div ref="topBoxRef" class="top-box-ref">
-            <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                    :show-feedback="false">
-                    <n-form-item label="文章标题">
-                        <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
-                    </n-form-item>
-                </n-form>
-            </SearchCard>
-        </div>
-        <div>
-            <MainCard>
-                <c-n-data-table
-                    :columns="columns"
-                    :data="dataList"
-                    :top-box-height="topBoxRefHeight"
-                    :loading="articleListLoading"
-                    :pagination="{
-                        page: queryForm.page,
-                        pageSize: 20,
-                        itemCount: total,
-                        onChange: (page: number) => {
-                            queryForm.page = page
-                            getList()
-                        }
-                    }"
-                >
-                    <div>
-                        <n-button type="info" @click="onOpenArticleEditHandle">新文章</n-button>
-                    </div>
-                </c-n-data-table>
-            </MainCard>
-        </div>
+        <DataTable
+            :columns="columns"
+            :data="dataList"
+            :loading="articleListLoading"
+            :pagination="{
+                page: queryForm.page,
+                pageSize: 20,
+                itemCount: total,
+                onChange: (page: number) => {
+                    queryForm.page = page
+                    getList()
+                }
+            }"
+        >
+            <template #searchSlot>
+                <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
+                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false">
+                        <n-form-item label="文章标题">
+                            <n-input v-model:value="queryForm.title" placeholder="请输入文章标题" clearable />
+                        </n-form-item>
+                        <n-form-item label="发布状态">
+                            <n-select
+                                v-model:value="queryForm.status"
+                                :options="articleStatusList()"
+                                placeholder="请选择发布状态"
+                                clearable />
+                        </n-form-item>
+                        <n-form-item label="发布时间">
+                            <n-date-picker v-model:value="queryForm.publishTime" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" clearable />
+                        </n-form-item>
+                        <n-form-item label="创建时间">
+                            <n-date-picker v-model:value="queryForm.createTime" type="datetimerange" clearable />
+                        </n-form-item>
+                    </n-form>
+                </SearchCard>
+            </template>
+            <template #buttonSlot>
+                <n-button type="info" @click="onOpenArticleEditHandle">新文章</n-button>
+            </template>
+        </DataTable>
         <ArticleEdit
             v-if="articleEditVisibility"
             :id="currArticleId"

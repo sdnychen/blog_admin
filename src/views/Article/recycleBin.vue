@@ -4,6 +4,7 @@ import { NTime, NButton, NImage, useDialog } from "naive-ui"
 import type { DataTableColumns } from "naive-ui"
 import articleApi from "@/api/apis/articleApi"
 import DeletedEnum from "@/enum/DeletedEnum"
+import { articleStatusList } from "@/enum/ArticleStatusEnum"
 
 const dialog = useDialog()
 
@@ -11,7 +12,6 @@ type queryFormType = {
     page: number,
     title: string,
     status: number | null,
-    deleted: number,
     publishTime: string | undefined,
     createTime: string
 }
@@ -20,7 +20,6 @@ const queryForm = ref<queryFormType>({
     page: 1,
     title: "",
     status: null,
-    deleted: 2,
     publishTime: "",
     createTime: ""
 })
@@ -28,7 +27,6 @@ const queryFormInit = ref<queryFormType>({
     page: 1,
     title: "",
     status: null,
-    deleted: 2,
     publishTime: "",
     createTime: ""
 })
@@ -102,45 +100,45 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
     }
 ])
 
-const topBoxRef = ref()
-const topBoxRefHeight = ref<string>("0px")
 onMounted(() => {
-    topBoxRefHeight.value = topBoxRef.value.clientHeight + "px"
     getList()
 })
 </script>
 
 <template>
     <div class="content-layout" style="position: relative;">
-        <div ref="topBoxRef" class="top-box-ref">
-            <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                    :show-feedback="false">
-                    <n-form-item label="文章标题">
-                        <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
-                    </n-form-item>
-                </n-form>
-            </SearchCard>
-        </div>
-        <div>
-            <MainCard>
-                <c-n-data-table
-                    :columns="columns"
-                    :data="dataList"
-                    :top-box-height="topBoxRefHeight"
-                    :loading="articleListLoading"
-                    :pagination="{
-                        page: queryForm.page,
-                        pageSize: 20,
-                        itemCount: total,
-                        onChange: (page: number) => {
-                            queryForm.page = page
-                            getList()
-                        }
-                    }"
-                />
-            </MainCard>
-        </div>
+        <DataTable
+            :columns="columns"
+            :data="dataList"
+            :loading="articleListLoading"
+            :pagination="{
+                page: queryForm.page,
+                pageSize: 20,
+                itemCount: total,
+                onChange: (page: number) => {
+                    queryForm.page = page
+                    getList()
+                }
+            }"
+        >
+            <template #searchSlot>
+                <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
+                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false">
+                        <n-form-item label="文章标题">
+                            <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
+                        </n-form-item>
+                        <n-form-item label="发布状态">
+                            <n-select
+                                v-model:value="queryForm.status"
+                                :options="articleStatusList()"
+                                placeholder="请选择发布状态"
+                                clearable />
+                        </n-form-item>
+                    </n-form>
+                </SearchCard>
+            </template>
+        </DataTable>
     </div>
 </template>
 
