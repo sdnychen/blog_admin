@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, watch, nextTick, onMounted } from "vue"
-import type { DropdownOption } from "naive-ui"
-import IconRander from "@/utils/IconRender"
-import { useRouter } from "vue-router"
+import { ref, reactive, watch, nextTick, onMounted } from 'vue'
+import type { DropdownOption } from 'naive-ui'
+import IconRander from '@/utils/IconRender'
+import { useRouter } from 'vue-router'
 import {
     Options,
     ChevronBack,
@@ -11,7 +11,7 @@ import {
     ArrowBack,
     ArrowForward,
     Close
-} from "@vicons/ionicons5"
+} from '@vicons/ionicons5'
 
 const router = useRouter()
 
@@ -32,9 +32,9 @@ const computedShowArrow = () => {
 
 const tabsArray = ref<tabItem[]>([
     {
-        title: "首页",
-        name: "Welcome",
-        path: "/home",
+        title: '首页',
+        name: 'Welcome',
+        path: '/home',
         closeable: false
     }
 ])
@@ -42,33 +42,33 @@ const tabsArray = ref<tabItem[]>([
 // 右击菜单项
 const itemMenuList = reactive<DropdownOption[]>([
     {
-        label: "刷新",
-        key: "reload",
+        label: '刷新',
+        key: 'reload',
         icon: IconRander(Reload)
     },
     {
-        type: "divider",
-        key: "d1"
+        type: 'divider',
+        key: 'd1'
     },
     {
-        label: "关闭其他",
-        key: "closeOther",
+        label: '关闭其他',
+        key: 'closeOther',
         icon: IconRander(Close)
     },
     {
-        label: "关闭左侧",
-        key: "closeLeft",
+        label: '关闭左侧',
+        key: 'closeLeft',
         icon: IconRander(ArrowBack)
     },
     {
-        label: "关闭右侧",
-        key: "closeRight",
+        label: '关闭右侧',
+        key: 'closeRight',
         icon: IconRander(ArrowForward)
     }
 ])
 
 // 当前路由
-const currentActiveTab = ref<string>("Welcome")
+const currentActiveTab = ref<string>('Welcome')
 // 切换标签
 const handleSwitchTab = (key: string) => {
     router.push({ name: key })
@@ -86,7 +86,7 @@ const closeTab = (item: tabItem, index: number) => {
     nextTick(() => {
         computedShowArrow()
     })
-    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+    sessionStorage.setItem('tabs', JSON.stringify(tabsArray.value))
 }
 
 // 显示隐藏菜单
@@ -107,57 +107,57 @@ const handleCloseMenu = () => {
 // 右击菜单功能
 const handleItemMenu = (key: string, item: tabItem, index: number) => {
     switch (key) {
-        case "reload":
-            console.log("reload")
+        case 'reload':
+            console.log('reload')
             break
-        case "closeOther":
+        case 'closeOther':
             tabsArray.value.splice(1, index - 1)
             tabsArray.value.splice(2, tabsArray.value.length)
             break
-        case "closeLeft":
+        case 'closeLeft':
             tabsArray.value.splice(1, index - 1)
             break
-        case "closeRight":
+        case 'closeRight':
             tabsArray.value.splice(index + 1, tabsArray.value.length)
             break
     }
     computedShowArrow()
     router.push(item.path)
     handleCloseMenu()
-    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+    sessionStorage.setItem('tabs', JSON.stringify(tabsArray.value))
 }
 
 // 操作按钮下拉
 const optionMenuList = reactive<DropdownOption[]>([
     {
-        label: "刷新页面",
-        key: "reload",
+        label: '刷新页面',
+        key: 'reload',
         icon: IconRander(Reload)
     },
     {
-        label: "关闭全部",
-        key: "closeAll",
+        label: '关闭全部',
+        key: 'closeAll',
         icon: IconRander(Close)
     }
 ])
 // 操作按钮功能
 const handleOptionMenu = (key: string) => {
     switch (key) {
-        case "reload":
+        case 'reload':
             location.reload()
             break
-        case "closeAll":
+        case 'closeAll':
             tabsArray.value.splice(1, tabsArray.value.length)
             break
     }
     computedShowArrow()
     router.push(tabsArray.value[0].path)
-    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+    sessionStorage.setItem('tabs', JSON.stringify(tabsArray.value))
 }
 
 // 左右箭头
 const contentScrollHandle = (type: string) => {
-    type === "left" ? content.value.scrollLeft -= 100 : content.value.scrollLeft += 100
+    type === 'left' ? content.value.scrollLeft -= 100 : content.value.scrollLeft += 100
 }
 
 // 检测页面是否已打开
@@ -166,8 +166,8 @@ const checkOpen = (name: string): Boolean => {
 }
 // 监听路由变化
 watch(() => router.currentRoute.value, (newValue, oldValue) => {
-    if (!oldValue && sessionStorage.getItem("tabs")) {
-        tabsArray.value = JSON.parse(sessionStorage.getItem("tabs") as string)
+    if (!oldValue && sessionStorage.getItem('tabs')) {
+        tabsArray.value = JSON.parse(sessionStorage.getItem('tabs') as string)
     }
     if (newValue.name === oldValue?.name) {
         return
@@ -182,7 +182,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
             closeable: true
         })
     }
-    sessionStorage.setItem("tabs", JSON.stringify(tabsArray.value))
+    sessionStorage.setItem('tabs', JSON.stringify(tabsArray.value))
     nextTick(() => {
         computedShowArrow()
         currentActiveTab.value = newValue.name as string
@@ -235,7 +235,7 @@ watch(() => screenWidth.value, () => {
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .tabs-bar {
     min-width: 100%;
     max-width: 100%;
@@ -247,20 +247,20 @@ watch(() => screenWidth.value, () => {
 }
 
 .tab-left-box {
-    width: calc(100% - $tabbar-height - $tab-item-gap);
+    width: calc(100% - $tab-bar-height - $tab-item-gap);
     height: 100%;
     display: flex;
 
     // 上一页和下一页按钮
     .previous-btn,
     .next-btn {
-        min-width: $tabbar-height;
-        max-width: $tabbar-height;
+        min-width: $tab-bar-height;
+        max-width: $tab-bar-height;
         height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: $tabbar-radius;
+        border-radius: $tab-bar-radius;
         background-color: #FFF;
     }
 
@@ -287,7 +287,7 @@ watch(() => screenWidth.value, () => {
             height: 100%;
             padding-left: 14px;
             padding-right: 14px;
-            border-radius: $tabbar-radius;
+            border-radius: $tab-bar-radius;
             font-size: 1.3rem;
             cursor: pointer;
         }
@@ -316,8 +316,8 @@ watch(() => screenWidth.value, () => {
     cursor: pointer;
     .tab-right-btn {
         background-color: #FFF;
-        border-radius: $tabbar-radius;
-        width: $tabbar-height;
+        border-radius: $tab-bar-radius;
+        width: $tab-bar-height;
         height: 100%;
         display: flex;
         align-items: center;

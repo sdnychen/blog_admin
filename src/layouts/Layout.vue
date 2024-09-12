@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import LayoutAsideEdgeMenu from "./LayoutAsideEdgeMenu.vue"
-import LayoutAsideMenu from "./LayoutAsideMenu.vue"
-import Header from "./Header.vue"
-import TabBar from "./TabBar.vue"
-import Footer from "./Footer.vue"
+import LayoutAsideEdgeMenu from './LayoutAsideEdgeMenu.vue'
+import LayoutAsideMenu from './LayoutAsideMenu.vue'
+import Header from './Header.vue'
+import TabBar from './TabBar.vue'
+import Footer from './Footer.vue'
 
 </script>
 
@@ -36,7 +36,7 @@ import Footer from "./Footer.vue"
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .layout {
     display: flex;
     width: 100vw;
@@ -83,7 +83,7 @@ import Footer from "./Footer.vue"
     }
 
     .tab-bar {
-        height: $tabbar-height;
+        height: $tab-bar-height;
         width: 100%;
     }
 
@@ -93,9 +93,9 @@ import Footer from "./Footer.vue"
     }
 
     .footer {
-        height: $fotter-height;
+        height: $footer-height;
         background-color: getColor(main-bg-color);
-        border-radius: $fotter-box-radius;
+        border-radius: $footer-box-radius;
     }
 }
 </style>

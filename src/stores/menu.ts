@@ -1,7 +1,7 @@
-import { defineStore } from "pinia"
-import { type RouteRecordRaw } from "vue-router"
-import { useUserStore } from "./user"
-import { useSettingStore } from "./setting"
+import { defineStore } from 'pinia'
+import { type RouteRecordRaw } from 'vue-router'
+import { useUserStore } from './user'
+import { useSettingStore } from './setting'
 
 /**
  * 判断一个路由是否有权限
@@ -12,13 +12,13 @@ import { useSettingStore } from "./setting"
 const hasAuth = (route: any, auth: Array<string>): boolean => {
     if (route?.meta?.auth) {
         // 根据二进制位运算判断权限的时候启用
-        if (typeof route.meta.auth === "string") {
-            const routerAuthArray = route.meta.auth.split(":")
+        if (typeof route.meta.auth === 'string') {
+            const routerAuthArray = route.meta.auth.split(':')
             return (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 16)) !== 0
         }
         let flag = false
         for (const routerAuth of route.meta.auth) {
-            const routerAuthArray = routerAuth.split(":")
+            const routerAuthArray = routerAuth.split(':')
             flag = (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 2)) !== 0 ? true : false
             if (flag) break
         }
@@ -55,7 +55,7 @@ const filterRouterByAuth = (routes: RouteRecordRaw[], auth: Array<string>) => {
     return list
 }
 
-export const useMenuStore = defineStore("menu", {
+export const useMenuStore = defineStore('menu', {
     state: () => {
         return {
             isGenerate: false,

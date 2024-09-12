@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import Editor from "@tinymce/tinymce-vue"
-import { reactive, defineModel } from "vue"
+import Editor from '@tinymce/tinymce-vue'
+import { reactive, defineModel } from 'vue'
 
 const content = defineModel()
 const init = reactive({
-    language: "zh_CN",
-    plugins: "lists link image table code codesample help wordcount",
-    toolbar: "undo redo |link image accordion | styles | bold italic underline strikethrough | align | bullist numlist",
+    language: 'zh_CN',
+    plugins: 'lists link image table code codesample help wordcount',
+    toolbar: 'undo redo |link image accordion | styles | bold italic underline strikethrough | align | bullist numlist',
     resize: false,
     branding: false
 })
@@ -22,7 +22,7 @@ const init = reactive({
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .editor-content-box {
     height: 100%;
 }

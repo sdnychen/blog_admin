@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { ref, onMounted, reactive } from "vue"
-import { PaperPlane } from "@vicons/ionicons5"
-import renderIcon from "@/utils/IconRender"
-import EditorArticle from "./Editor/EditorArticle.vue"
-import articleTagApi from "@/api/apis/articleTagApi"
-import articleSortApi from "@/api/apis/articleSortApi"
-import articleApi from "@/api/apis/articleApi"
-import { useMessage } from "naive-ui"
-import type { FormInst, FormRules, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
-import { articleFileUpload } from "@/utils/ossUtil"
-import { ArticleStatusEnum } from "@/enum/ArticleStatusEnum"
+import { ref, onMounted, reactive } from 'vue'
+import { PaperPlane } from '@vicons/ionicons5'
+import renderIcon from '@/utils/IconRender'
+import EditorArticle from './Editor/EditorArticle.vue'
+import articleTagApi from '@/api/apis/articleTagApi'
+import articleSortApi from '@/api/apis/articleSortApi'
+import articleApi from '@/api/apis/articleApi'
+import { useMessage } from 'naive-ui'
+import type { FormInst, FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import { articleFileUpload } from '@/utils/ossUtil'
+import { ArticleStatusEnum } from '@/enum/ArticleStatusEnum'
 
 const message = useMessage()
-const emit = defineEmits(["onCloseArticleEditHandle"])
+const emit = defineEmits(['onCloseArticleEditHandle'])
 const props = defineProps({
     type: {
         type: String,
@@ -36,14 +36,14 @@ type ArticleForm = {
 
 const form = ref<ArticleForm>({
     id: null,
-    title: "",
-    alias: "",
-    content: "",
-    intro: "",
-    img: "",
+    title: '',
+    alias: '',
+    content: '',
+    intro: '',
+    img: '',
     tagList: null,
     sort: null,
-    remark: "",
+    remark: '',
     status: 1
 })
 const tagList = ref<articleTagRequestType[]>()
@@ -59,12 +59,12 @@ const getArticle = async () => {
     }
 }
 // 获取标签下拉
-const getTagAllList = async (name: string = "") => {
+const getTagAllList = async (name: string = '') => {
     const { data } = await articleTagApi.allList({name})
     tagList.value = data
 }
 // 获取分类下拉
-const getSortAllList = async (name: string = "") => {
+const getSortAllList = async (name: string = '') => {
     const { data } = await articleSortApi.allList({name})
     sortList.value = data
 }
@@ -75,29 +75,29 @@ const fileUpload = async (option: UploadCustomRequestOptions) => {
     uploadLoading.value = false
 }
 const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[]}) => {
-    const re = new RegExp("^image/(png|jpeg)$", "g")
+    const re = new RegExp('^image/(png|jpeg)$', 'g')
     if (date.file.type && re.test(date.file.type)) {
         uploadLoading.value = true
         return true
     }
-    message.warning("头像文件格式仅支持png/jpg/jpeg")
+    message.warning('头像文件格式仅支持png/jpg/jpeg')
     return false
 }
 const removeFile = () => {
     imgFiles.value = []
-    form.value.img = ""
+    form.value.img = ''
 }
 
 const onCloseHandle = () => {
-    emit("onCloseArticleEditHandle")
+    emit('onCloseArticleEditHandle')
 }
 
 const formRef = ref<FormInst | null>()
 const onSavePublishHandle = (type: string) => {
     formRef.value?.validate(async err => {
         if (!err) {
-            if (type === "publish") {
-                form.value.status = ArticleStatusEnum["已发布"]
+            if (type === 'publish') {
+                form.value.status = ArticleStatusEnum['已发布']
             }
             if (!!form.value.id) {
                 await articleApi.edit(form.value)
@@ -105,13 +105,13 @@ const onSavePublishHandle = (type: string) => {
                 const { data } = await articleApi.add(form.value)
                 form.value.id = data.id
             }
-            type === "publish" && onCloseHandle()
+            type === 'publish' && onCloseHandle()
         }
     })
 }
 
 onMounted(() => {
-    if (props.type === "edit") {
+    if (props.type === 'edit') {
         getArticle()
     }
     getTagAllList()
@@ -120,14 +120,14 @@ onMounted(() => {
 
 const formRules = reactive<FormRules>({
     title: [
-        {required: true, trigger: "input", message: "请输入文章标题"},
-        {max: 50, trigger: ["input", "blur"], message: "文章标题最大长度50个字符"}
+        {required: true, trigger: 'input', message: '请输入文章标题'},
+        {max: 50, trigger: ['input', 'blur'], message: '文章标题最大长度50个字符'}
     ],
-    alias: {required: true, trigger: "input", message: "请输入文章别名"},
-    intro: {required: true, trigger: "input", message: "请输入文章简介"},
-    img: {required: true, trigger: "blur", message: "请上传文章首图"},
-    sort: {required: true, trigger: ["blur", "change"], message: "请选择文章分类"},
-    tagList: {type: "array", required: false, trigger: ["blur", "change"], message: "请选择文章标签"}
+    alias: {required: true, trigger: 'input', message: '请输入文章别名'},
+    intro: {required: true, trigger: 'input', message: '请输入文章简介'},
+    img: {required: true, trigger: 'blur', message: '请上传文章首图'},
+    sort: {required: true, trigger: ['blur', 'change'], message: '请选择文章分类'},
+    tagList: {type: 'array', required: false, trigger: ['blur', 'change'], message: '请选择文章标签'}
 })
 </script>
 
@@ -184,7 +184,7 @@ const formRules = reactive<FormRules>({
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 $padding: 12px;
 
 .article-edit-box {

@@ -9,7 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Article: typeof import('./src/components/Article.vue')['default']
     ArticleEdit: typeof import('./src/components/ArticleEdit.vue')['default']
-    CNDataTable: typeof import('./src/components/CNDataTable.vue')['default']
     ContentCard: typeof import('./src/components/ContentCard.vue')['default']
     DataTable: typeof import('./src/components/DataTable.vue')['default']
     EditorArticle: typeof import('./src/components/Editor/EditorArticle.vue')['default']

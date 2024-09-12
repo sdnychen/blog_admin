@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed } from "vue"
-import { useMenuStore } from "@/stores/menu"
-import { useRouter, type RouteRecordRaw } from "vue-router"
+import { computed } from 'vue'
+import { useMenuStore } from '@/stores/menu'
+import { useRouter, type RouteRecordRaw } from 'vue-router'
 
 const menuStore = useMenuStore()
 const router = useRouter()
@@ -12,7 +12,7 @@ const currentRoute = computed(() => {
 
 // 菜单列表（路由）
 const menuOptions = computed(() => {
-    return menuStore.routes.filter(item => item.name !== "NotFound")
+    return menuStore.routes.filter(item => item.name !== 'NotFound')
 })
 
 // 活动菜单
@@ -41,7 +41,7 @@ const navigatMenu = (route: RouteRecordRaw) => {
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .edge-menu-logo-box {
     display: flex;
     align-items: center;

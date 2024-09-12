@@ -1,9 +1,9 @@
-import { defineStore } from "pinia"
-import { sha256 } from "js-sha256"
-import BaseApi from "@/api/apis/baseApi"
-import { useMenuStore } from "./menu"
+import { defineStore } from 'pinia'
+import { sha256 } from 'js-sha256'
+import BaseApi from '@/api/apis/baseApi'
+import { useMenuStore } from './menu'
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
     state: () => {
         return {
             userInfo: null as UserInfo | null
@@ -50,8 +50,8 @@ export const useUserStore = defineStore("user", {
             const menuStore = useMenuStore()
             this.userInfo = null
             menuStore.isGenerate = false
-            sessionStorage.removeItem("tabs")
-            localStorage.removeItem("token")
+            sessionStorage.removeItem('tabs')
+            localStorage.removeItem('token')
         },
 
         // 获取权限

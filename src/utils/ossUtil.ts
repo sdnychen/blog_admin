@@ -1,13 +1,13 @@
-import OSS from "ali-oss"
-import baseApi from "@/api/apis/baseApi"
-import { sha256 } from "js-sha256"
-import type { SettledFileInfo } from "naive-ui/es/upload/src/interface"
+import OSS from 'ali-oss'
+import baseApi from '@/api/apis/baseApi'
+import { sha256 } from 'js-sha256'
+import type { SettledFileInfo } from 'naive-ui/es/upload/src/interface'
 
 const createOssClient = async () => {
     const { data } = await baseApi.sts()
     return new OSS({
         // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为oss-cn-hangzhou。
-        region: "oss-cn-hangzhou",
+        region: 'oss-cn-hangzhou',
         // 从STS服务获取的临时访问密钥（AccessKey ID和AccessKey Secret）。
         accessKeyId: data.accessKeyId,
         accessKeySecret: data.accessKeySecret,
@@ -36,7 +36,7 @@ const createOssClient = async () => {
  */
 export const avatarUpload = async (file: SettledFileInfo) => {
     const oss = await createOssClient()
-    const fileName = `avatar/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split(".").pop()}`
+    const fileName = `avatar/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)
 }
 
@@ -47,7 +47,7 @@ export const avatarUpload = async (file: SettledFileInfo) => {
  */
 export const sysFileUpload = async (file: SettledFileInfo) => {
     const oss = await createOssClient()
-    const fileName = `sys/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split(".").pop()}`
+    const fileName = `sys/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)
 }
 
@@ -58,6 +58,6 @@ export const sysFileUpload = async (file: SettledFileInfo) => {
  */
 export const articleFileUpload = async (file: SettledFileInfo) => {
     const oss = await createOssClient()
-    const fileName = `article/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split(".").pop()}`
+    const fileName = `article/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)
 }

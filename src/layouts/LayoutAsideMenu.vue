@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { h, watch, ref, nextTick } from "vue"
-import { RouterLink, type RouteRecordRaw } from "vue-router"
-import type { MenuInst, MenuOption } from "naive-ui"
-import { useMenuStore } from "@/stores/menu"
-import IconRander from "@/utils/IconRender"
-import { useRouter } from "vue-router"
+import { h, watch, ref, nextTick } from 'vue'
+import { RouterLink, type RouteRecordRaw } from 'vue-router'
+import type { MenuInst, MenuOption } from 'naive-ui'
+import { useMenuStore } from '@/stores/menu'
+import IconRander from '@/utils/IconRender'
+import { useRouter } from 'vue-router'
 
 const menuStore = useMenuStore()
 const router = useRouter()
@@ -12,7 +12,7 @@ const router = useRouter()
 const menuOptions = ref<MenuOption[]>([])
 
 // 当前菜单
-const currMenu = ref<string>("")
+const currMenu = ref<string>('')
 
 // 生成菜单
 const generateMenu = (routes: RouteRecordRaw[], activeMainMenu?: string | undefined): MenuOption[] => {
@@ -83,7 +83,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .logo-box {
     display: flex;
     align-items: center;

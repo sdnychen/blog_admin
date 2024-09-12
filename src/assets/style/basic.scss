@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: "SourceHanSans";
+    font-family: "SourceHanSans", serif;
 }
 
 html {
@@ -47,5 +47,5 @@ a {
 // 定义思源黑体
 @font-face {
     font-family: "SourceHanSans";
-    src: url("/font/SourceHanSansCN-VF.otf.woff2");
+    src: url("/font/SourceHanSansCN-VF.otf.woff2") format("woff2");
 }

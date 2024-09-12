@@ -121,7 +121,7 @@
         "operator-linebreak": "error",
         "quotes": [
             "error",
-            "double",
+            "single",
             {
                 "avoidEscape": false,
                 "allowTemplateLiterals": true

@@ -22,17 +22,17 @@ $menu-logo-box-height: 60px;
 $header-height: 60px; // header高度
 $header-box-radius: $box-radius; // 统一圆角
 
-// tabbar
-$tabbar-height: 30px; // tabbar高度，功能按钮的宽高
-$tabbar-radius: 4px; // 标签和按钮的圆角
+// tabBar
+$tab-bar-height: 30px; // tabBar高度，功能按钮的宽高
+$tab-bar-radius: 4px; // 标签和按钮的圆角
 $tab-item-gap: 10px;//标签间距和按钮间距
 
-// fotter
-$fotter-height: 60px;
-$fotter-box-radius: $box-radius;
+// footer
+$footer-height: 60px;
+$footer-box-radius: $box-radius;
 
 // content
-$content-height: calc(100vh - $header-height - $tabbar-height - $fotter-height - 4 * $layout-gap);
+$content-height: calc(100vh - $header-height - $tab-bar-height - $footer-height - 4 * $layout-gap);
 $content-box-radius: $box-radius;
 
 /*------------------↓公共组件↓------------------*/

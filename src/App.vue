@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { GlobalThemeOverrides } from "naive-ui"
-import { zhCN, dateZhCN } from "naive-ui"
+import type { GlobalThemeOverrides } from 'naive-ui'
+import { zhCN, dateZhCN } from 'naive-ui'
 
 const themeOverrides: GlobalThemeOverrides = {
     common: {
-        primaryColor: "#3291F5",
-        primaryColorHover: "#3291F5"
+        primaryColor: '#3291F5',
+        primaryColorHover: '#3291F5'
     }
 }
 </script>
@@ -24,6 +24,6 @@ const themeOverrides: GlobalThemeOverrides = {
     </n-config-provider>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss">
 @import url("assets/style/basic.scss");
 </style>

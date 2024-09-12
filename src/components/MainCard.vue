@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, useSlots } from "vue"
+import { ref, useSlots } from 'vue'
 
 const slots = useSlots()
 
@@ -18,7 +18,7 @@ const hasTitleSlot = ref(!!slots.title)
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .main-card-box {
     display: flex;
     flex-direction: column;

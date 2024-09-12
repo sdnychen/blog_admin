@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .search-card-box {
     display: flex;
     padding: $card-box-padding;

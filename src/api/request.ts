@@ -22,7 +22,7 @@ class server {
             return Promise.reject(err)
         })
         // 响应拦截器
-        this.instance.interceptors.response.use((response: AxiosResponse) => {
+        this.instance.interceptors.response.use(async (response: AxiosResponse) => {
             // 统一消息通知处理
             response.headers.authorization && localStorage.setItem("token", response.headers.authorization)
             const resolve = response.data
@@ -35,7 +35,7 @@ class server {
             if (resolve.code === 40103) {
                 const userStore = useUserStore()
                 userStore.logout()
-                router.replace({ name: "Login" })
+                await router.replace({ name: "Login" })
             }
 
             return resolve
@@ -54,6 +54,8 @@ class server {
 
     /**
      * GET请求
+     * @param url
+     * @param params
      * @param config
      */
     public get<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
@@ -62,6 +64,8 @@ class server {
 
     /**
      * POST请求
+     * @param url
+     * @param data
      * @param config
      */
     public post<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
@@ -70,6 +74,8 @@ class server {
 
     /**
      * PUT请求
+     * @param url
+     * @param data
      * @param config
      */
     public put<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {
@@ -78,6 +84,8 @@ class server {
 
     /**
      * DELETE请求
+     * @param url
+     * @param params
      * @param config
      */
     public delete<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Resulve<T>> {

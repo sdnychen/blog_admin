@@ -1,10 +1,10 @@
-import { createRouter, createWebHashHistory } from "vue-router"
-import type { RouteRecordRaw } from "vue-router"
-import { useUserStore } from "@/stores/user"
-import { useMenuStore } from "@/stores/menu"
+import { createRouter, createWebHashHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { useMenuStore } from '@/stores/menu'
 
-import constantRouter from "./constantRouter"
-import dynamicRouter from "./dynamicRouter"
+import constantRouter from './constantRouter'
+import dynamicRouter from './dynamicRouter'
 
 const routes: Array<RouteRecordRaw> = [
     ...constantRouter
@@ -20,9 +20,9 @@ const asyncRouter: RouteRecordRaw[] = dynamicRouter
 // 最后添加的路由
 const lastRouter: Array<RouteRecordRaw> = [
     {
-        path: "/:productName(.*)*",
-        name: "NotFound",
-        component: () => import("@/views/404.vue")
+        path: '/:productName(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/404.vue')
     }
 ]
 
@@ -31,7 +31,7 @@ router.beforeEach(async (to) => {
     const userStore = useUserStore()
     const menuStore = useMenuStore()
 
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem('token')) {
         if (userStore.userInfo) {
             if (!menuStore.isGenerate) {
                 // 已登录，还没挂在路由
@@ -42,8 +42,8 @@ router.beforeEach(async (to) => {
                 })
                 return to.fullPath
             }
-            if (to.name === "Login") {
-                return { name: "Home" }
+            if (to.name === 'Login') {
+                return { name: 'Home' }
             }
             return true
         } else {
@@ -51,13 +51,13 @@ router.beforeEach(async (to) => {
             if (check) {
                 return to.fullPath
             }
-            return { name: "Login" }
+            return { name: 'Login' }
         }
     } else {
-        if (to.name === "Login") {
+        if (to.name === 'Login') {
             return
         }
-        return { name: "Login" }
+        return { name: 'Login' }
     }
 })
 

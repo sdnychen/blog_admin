@@ -2,13 +2,13 @@
 </script>
 
 <template>
-    <div class="layout-fotter-box">
+    <div class="layout-footer-box">
         footer
     </div>
 </template>
 
-<style lang="scss" scope>
-.layout-fotter-box {
+<style lang="scss" scoped>
+.layout-footer-box {
     width: 100%;
 }
 </style>

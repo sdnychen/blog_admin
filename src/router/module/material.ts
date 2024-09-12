@@ -1,52 +1,52 @@
-import type { RouteRecordRaw } from "vue-router"
-import Layout from "@/layouts/Layout.vue"
-import EmptyLayout from "@/layouts/EmptyLayout.vue"
-import { markRaw } from "vue"
+import type { RouteRecordRaw } from 'vue-router'
+import Layout from '@/layouts/Layout.vue'
+import EmptyLayout from '@/layouts/EmptyLayout.vue'
+import { markRaw } from 'vue'
 import {
     FolderOutline,
     CloudOfflineOutline,
     CloudOutline
-} from "@vicons/ionicons5"
+} from '@vicons/ionicons5'
 
 const home: Array<RouteRecordRaw> = [
     {
-        path: "/material",
-        name: "Material",
+        path: '/material',
+        name: 'Material',
         component: Layout,
-        redirect: "/material/localMaterial",
+        redirect: '/material/localMaterial',
         meta: {
-            title: "素材",
-            auth: "9:3",
+            title: '素材',
+            auth: '9:3',
             icon: markRaw(FolderOutline)
         },
         children: [
             {
-                path: "localMaterial",
-                name: "LocalMaterial",
-                component: () => import("@/views/Home/home.vue"),
+                path: 'localMaterial',
+                name: 'LocalMaterial',
+                component: () => import('@/views/Home/home.vue'),
                 meta: {
-                    title: "本地",
-                    auth: "9:1",
+                    title: '本地',
+                    auth: '9:1',
                     icon: markRaw(CloudOfflineOutline)
                 }
             },
             {
-                path: "cloudMaterial",
-                name: "CloudMaterial",
+                path: 'cloudMaterial',
+                name: 'CloudMaterial',
                 component: EmptyLayout,
-                redirect: "/material/cloudMaterial/ossCloupMaterial",
+                redirect: '/material/cloudMaterial/ossCloupMaterial',
                 meta: {
-                    title: "云",
-                    auth: "9:2",
+                    title: '云',
+                    auth: '9:2',
                     icon: markRaw(CloudOutline)
                 },
                 children: [
                     {
-                        path: "ossCloupMaterial",
-                        name: "OSSCloupMaterial",
-                        component: () => import("@/views/Home/home.vue"),
+                        path: 'ossCloupMaterial',
+                        name: 'OSSCloupMaterial',
+                        component: () => import('@/views/Home/home.vue'),
                         meta: {
-                            title: "OSS"
+                            title: 'OSS'
                         }
                     }
                 ]

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue"
-import type { FormValidationError } from "naive-ui"
-import { Reload } from "@vicons/ionicons5"
-import BaseApi from "@/api/apis/baseApi"
-import { useRouter } from "vue-router"
-import { useUserStore } from "@/stores/user"
+import { ref, reactive, onMounted } from 'vue'
+import type { FormValidationError } from 'naive-ui'
+import { Reload } from '@vicons/ionicons5'
+import BaseApi from '@/api/apis/baseApi'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userStore = useUserStore()
 
 // 验证码图片
-const verifyImg = ref("")
+const verifyImg = ref('')
 // 验证码加载状态
 const loadingVerify = ref(false)
 
@@ -25,14 +25,14 @@ const getVerify = async () => {
 }
 
 const loginForm: LoginForm = reactive({
-    username: "",
-    password: "",
-    verify: ""
+    username: '',
+    password: '',
+    verify: ''
 })
 const rules = reactive({
-    username: { required: true, message: "请输入用户名", trigger: "blur" },
-    password: { required: true, message: "请输入密码", trigger: "blur" },
-    verify: { required: true, message: "请输入验证码", trigger: "blur" }
+    username: { required: true, message: '请输入用户名', trigger: 'blur' },
+    password: { required: true, message: '请输入密码', trigger: 'blur' },
+    verify: { required: true, message: '请输入验证码', trigger: 'blur' }
 })
 
 // 记住密码
@@ -47,16 +47,16 @@ const handleLogin = () => {
             if (res) {
                 if (remember.value) {
                     loginForm.verify = void 0
-                    localStorage.setItem("login_user", JSON.stringify(loginForm))
+                    localStorage.setItem('login_user', JSON.stringify(loginForm))
                 } else {
-                    localStorage.removeItem("login_user")
+                    localStorage.removeItem('login_user')
                 }
                 setTimeout(() => {
-                    router.push("/")
+                    router.push('/')
                 }, 300)
             } else {
                 loginFormRef.value.restoreValidation()
-                loginForm.verify = ""
+                loginForm.verify = ''
                 getVerify()
             }
         }
@@ -65,7 +65,7 @@ const handleLogin = () => {
 
 onMounted(() => {
     getVerify()
-    const user = JSON.parse(localStorage.getItem("login_user") as string)
+    const user = JSON.parse(localStorage.getItem('login_user') as string)
     if (user) {
         remember.value = true
         loginForm.username = user.username
@@ -118,7 +118,7 @@ onMounted(() => {
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .login-page {
     display: flex;
     width: 100vw;

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, reactive } from "vue"
-import { useRouter } from "vue-router"
-import { SettingsOutline, ExitOutline } from "@vicons/ionicons5"
-import { useUserStore } from "@/stores/user"
-import type { DropdownOption } from "naive-ui"
-import IconRander from "@/utils/IconRender"
+import { computed, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { SettingsOutline, ExitOutline } from '@vicons/ionicons5'
+import { useUserStore } from '@/stores/user'
+import type { DropdownOption } from 'naive-ui'
+import IconRander from '@/utils/IconRender'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -15,23 +15,23 @@ const breadcrumbList = computed(() => {
 
 // 退出登录
 const userMenuHandle = (key: string) => {
-    if (key === "setting") {
+    if (key === 'setting') {
         console.log(key)
-    } else if (key === "logout") {
+    } else if (key === 'logout') {
         userStore.logout()
-        router.replace({ name: "Login" })
+        router.replace({ name: 'Login' })
     }
 }
 
 const userMenuList = reactive<DropdownOption[]>([
     {
-        label: "个人设置",
-        key: "setting",
+        label: '个人设置',
+        key: 'setting',
         icon: IconRander(SettingsOutline)
     },
     {
-        label: "退出登录",
-        key: "logout",
+        label: '退出登录',
+        key: 'logout',
         icon: IconRander(ExitOutline)
     }
 ])
@@ -59,7 +59,7 @@ const userMenuList = reactive<DropdownOption[]>([
     </div>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .layout-header-box {
     display: flex;
     height: 100%;

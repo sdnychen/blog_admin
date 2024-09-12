@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { h, ref, reactive, onMounted } from "vue"
-import { NTime, NButton, useDialog, useMessage, NImage } from "naive-ui"
-import type { DataTableColumns, FormRules, FormInst, UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
-import articleSortApi from "@/api/apis/articleSortApi"
-import { sysFileUpload } from "@/utils/ossUtil"
+import { h, ref, reactive, onMounted } from 'vue'
+import { NTime, NButton, useDialog, useMessage, NImage } from 'naive-ui'
+import type { DataTableColumns, FormRules, FormInst, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import articleSortApi from '@/api/apis/articleSortApi'
+import { sysFileUpload } from '@/utils/ossUtil'
+import DataTable from '@/components/DataTable.vue'
+import SearchCard from '@/components/SearchCard.vue'
 
 const dialog = useDialog()
 const message = useMessage()
@@ -21,36 +23,36 @@ type addEditFormType = {
 
 const queryForm = ref<queryFormType>({
     page: 1,
-    name: ""
+    name: ''
 })
 const queryFormInit = ref<queryFormType>({
     page: 1,
-    name: ""
+    name: ''
 })
 const total = ref<number>(0)
 
 const addEditForm = ref<addEditFormType>({
-    name: "",
-    img: "",
-    remark: ""
+    name: '',
+    img: '',
+    remark: ''
 })
 const addEditFormInit = ref<addEditFormType>({
-    name: "",
-    img: "",
-    remark: ""
+    name: '',
+    img: '',
+    remark: ''
 })
 
 const addEditRules = reactive<FormRules>({
     name: [
-        {required: true, trigger: "blur", message: "请输入类名"},
-        {max: 20, trigger: ["input", "blur"], message: "类名最大长度20个字符"}
+        {required: true, trigger: 'blur', message: '请输入类名'},
+        {max: 20, trigger: ['input', 'blur'], message: '类名最大长度20个字符'}
     ],
-    img: {required: true, trigger: "blur", message: "请上传分类图片"}
+    img: {required: true, trigger: 'blur', message: '请上传分类图片'}
 })
 
 const dataList = ref<articleSortRequestType[]>([])
 const showAddEditModal = ref<boolean>(false)
-const addEditModalType = ref<string>("")
+const addEditModalType = ref<string>('')
 const addEditModalTitle = ref<string | null>(null)
 const sortListLoading = ref<boolean>(false)
 const imgFiles = ref<UploadFileInfo[]>([])
@@ -77,27 +79,27 @@ const resetHandle = () => {
 
 // 添加
 const onAddHandle = () => {
-    addEditModalType.value = "add"
-    addEditModalTitle.value = "添加分类"
+    addEditModalType.value = 'add'
+    addEditModalTitle.value = '添加分类'
     showAddEditModal.value = true
 }
 // 编辑
 const onEditHandle = async (id: string) => {
     const { data } = await articleSortApi.detail({id})
     addEditForm.value = data
-    imgFiles.value = data.img ? [{id: "imgId", name: new URL(data.img).pathname.split("/")[2], status: "finished", url: data.img}] : []
-    addEditModalType.value = "edit"
-    addEditModalTitle.value = "编辑分类"
+    imgFiles.value = data.img ? [{id: 'imgId', name: new URL(data.img).pathname.split('/')[2], status: 'finished', url: data.img}] : []
+    addEditModalType.value = 'edit'
+    addEditModalTitle.value = '编辑分类'
     showAddEditModal.value = true
 }
 
 // 删除
 const onDeleteHandle = (id: string) => {
     dialog.warning({
-        title: "删除警告",
-        content: "确定删除？",
-        positiveText: "确定",
-        negativeText: "取消",
+        title: '删除警告',
+        content: '确定删除？',
+        positiveText: '确定',
+        negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleSortApi.delete({id})
             if (success) {
@@ -108,21 +110,21 @@ const onDeleteHandle = (id: string) => {
 }
 
 const columns = reactive<DataTableColumns<articleSortRequestType>>([
-    {title: "类名", key: "name", fixed: "left", width: 140, ellipsis: {tooltip: true}},
+    {title: '类名', key: 'name', fixed: 'left', width: 140, ellipsis: {tooltip: true}},
     {
-        title: "图片", key: "img", align: "center", width: 60,
-        render: (row) => row.img ? h(NImage, {width: 30, height: 30, lazy: true, src: row.img, style: {borderRadius: "8px"}}) : "--"
+        title: '图片', key: 'img', align: 'center', width: 60,
+        render: (row) => row.img ? h(NImage, {width: 30, height: 30, lazy: true, src: row.img, style: {borderRadius: '8px'}}) : '--'
     },
     {
-        title: "创建时间", key: "createTime", width: 180,
+        title: '创建时间', key: 'createTime', width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    {title: "备注", key: "remark", minWidth: 180},
+    {title: '备注', key: 'remark', minWidth: 180},
     {
-        title: "操作", key: "operation", fixed: "right", width: 120,
+        title: '操作', key: 'operation', fixed: 'right', width: 120,
         render: (row) => [
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '删除')
         ]
     }
 ])
@@ -139,17 +141,17 @@ const onCloseModalHandle = () => {
 const onSubmitModalHandle = () => {
     addEditFormRef.value?.validate(async err => {
         if (!err) {
-            if (addEditModalType.value === "add") {
+            if (addEditModalType.value === 'add') {
                 const { success } = await articleSortApi.add(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
-            } else if (addEditModalType.value === "edit") {
+            } else if (addEditModalType.value === 'edit') {
                 const { success } = await articleSortApi.edit(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
             }
         }
@@ -163,17 +165,17 @@ const fileUpload = async (option: UploadCustomRequestOptions) => {
     uploadLoading.value = false
 }
 const beforeFileUpload = (date: {file: UploadFileInfo, fileList: UploadFileInfo[]}) => {
-    const re = new RegExp("^image/(png|jpeg)$", "g")
+    const re = new RegExp('^image/(png|jpeg)$', 'g')
     if (date.file.type && re.test(date.file.type)) {
         uploadLoading.value = true
         return true
     }
-    message.warning("图片文件格式仅支持png/jpg/jpeg")
+    message.warning('图片文件格式仅支持png/jpg/jpeg')
     return false
 }
 const removeFile = () => {
     imgFiles.value = []
-    addEditForm.value.img = ""
+    addEditForm.value.img = ''
 }
 
 onMounted(() => {
@@ -244,4 +246,4 @@ onMounted(() => {
     </n-modal>
 </template>
 
-<style lang="scss" scope></style>
+<style lang="scss" scoped></style>
