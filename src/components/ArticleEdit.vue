@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, reactive } from 'vue'
 import { PaperPlane } from '@vicons/ionicons5'
-import renderIcon from '@/utils/IconRender'
+import IconRender from '@/utils/IconRender'
 import EditorArticle from './Editor/EditorArticle.vue'
 import articleTagApi from '@/api/apis/articleTagApi'
 import articleSortApi from '@/api/apis/articleSortApi'
@@ -136,7 +136,7 @@ const formRules = reactive<FormRules>({
         <div class="article-edit-box-top">
             <n-button type="error" quaternary @click="onCloseHandle">关闭</n-button>
             <n-button :disabled="uploadLoading" @click="onSavePublishHandle('save')">保存</n-button>
-            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('publish')" type="info" :render-icon="renderIcon(PaperPlane)">发布</n-button>
+            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('publish')" type="info" :render-icon="IconRender(PaperPlane)">发布</n-button>
         </div>
         <n-divider />
         <div class="article-edit-box-content">

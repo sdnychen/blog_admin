@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-type Resulve<T = any> = {
+type Result<T = any> = {
     success: boolean,
     code: number,
     msg: string,

@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { SettingsOutline, ExitOutline } from '@vicons/ionicons5'
 import { useUserStore } from '@/stores/user'
 import type { DropdownOption } from 'naive-ui'
-import IconRander from '@/utils/IconRender'
+import IconRender from '@/utils/IconRender'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -27,12 +27,12 @@ const userMenuList = reactive<DropdownOption[]>([
     {
         label: '个人设置',
         key: 'setting',
-        icon: IconRander(SettingsOutline)
+        icon: IconRender(SettingsOutline)
     },
     {
         label: '退出登录',
         key: 'logout',
-        icon: IconRander(ExitOutline)
+        icon: IconRender(ExitOutline)
     }
 ])
 </script>

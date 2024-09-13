@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, nextTick, onMounted } from 'vue'
 import type { DropdownOption } from 'naive-ui'
-import IconRander from '@/utils/IconRender'
+import IconRender from '@/utils/IconRender'
 import { useRouter } from 'vue-router'
 import {
     Options,
@@ -44,7 +44,7 @@ const itemMenuList = reactive<DropdownOption[]>([
     {
         label: '刷新',
         key: 'reload',
-        icon: IconRander(Reload)
+        icon: IconRender(Reload)
     },
     {
         type: 'divider',
@@ -53,17 +53,17 @@ const itemMenuList = reactive<DropdownOption[]>([
     {
         label: '关闭其他',
         key: 'closeOther',
-        icon: IconRander(Close)
+        icon: IconRender(Close)
     },
     {
         label: '关闭左侧',
         key: 'closeLeft',
-        icon: IconRander(ArrowBack)
+        icon: IconRender(ArrowBack)
     },
     {
         label: '关闭右侧',
         key: 'closeRight',
-        icon: IconRander(ArrowForward)
+        icon: IconRender(ArrowForward)
     }
 ])
 
@@ -132,12 +132,12 @@ const optionMenuList = reactive<DropdownOption[]>([
     {
         label: '刷新页面',
         key: 'reload',
-        icon: IconRander(Reload)
+        icon: IconRender(Reload)
     },
     {
         label: '关闭全部',
         key: 'closeAll',
-        icon: IconRander(Close)
+        icon: IconRender(Close)
     }
 ])
 // 操作按钮功能

@@ -3,7 +3,7 @@ import { h, watch, ref, nextTick } from 'vue'
 import { RouterLink, type RouteRecordRaw } from 'vue-router'
 import type { MenuInst, MenuOption } from 'naive-ui'
 import { useMenuStore } from '@/stores/menu'
-import IconRander from '@/utils/IconRender'
+import IconRender from '@/utils/IconRender'
 import { useRouter } from 'vue-router'
 
 const menuStore = useMenuStore()
@@ -38,7 +38,7 @@ const generateMenu = (routes: RouteRecordRaw[], activeMainMenu?: string | undefi
                 { default: () => route.meta?.title }
             ),
             key: route.name as string,
-            icon: route.meta?.icon ? IconRander(route.meta.icon) : void 0,
+            icon: route.meta?.icon ? IconRender(route.meta.icon) : void 0,
             children: route.children?.length ? generateMenu(route.children) : void 0
         })
     })
