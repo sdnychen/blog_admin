@@ -100,9 +100,7 @@ const onDeleteHandle = (id: string) => {
         negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleTagApi.delete({id})
-            if (success) {
-                getList()
-            }
+            success && await getList()
         }
     })
 }

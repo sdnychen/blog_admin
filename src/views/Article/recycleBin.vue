@@ -5,6 +5,8 @@ import type { DataTableColumns } from 'naive-ui'
 import articleApi from '@/api/apis/articleApi'
 import DeletedEnum from '@/enum/DeletedEnum'
 import { articleStatusList } from '@/enum/ArticleStatusEnum'
+import DataTable from '@/components/DataTable.vue'
+import SearchCard from '@/components/SearchCard.vue'
 
 const dialog = useDialog()
 
@@ -59,7 +61,7 @@ const onRecoveryHandle = async (id: String) => {
         id: id,
         deleted: DeletedEnum['未删除']
     })
-    success && getList()
+    success && await getList()
 }
 // 彻底删除
 const onDeleteHandle = (id: String) => {
@@ -70,7 +72,7 @@ const onDeleteHandle = (id: String) => {
         negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleApi.delete({id})
-            success && getList()
+            success && await getList()
         }
     })
 }

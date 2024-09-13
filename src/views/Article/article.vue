@@ -6,8 +6,8 @@ import articleApi from '@/api/apis/articleApi'
 import { ArticleStatusEnum, articleStatusList, getType} from '@/enum/ArticleStatusEnum'
 import DeletedEnum from '@/enum/DeletedEnum'
 import DataTable from '@/components/DataTable.vue'
-import SearchCard from "@/components/SearchCard.vue";
-import ArticleEdit from "@/components/ArticleEdit.vue";
+import SearchCard from '@/components/SearchCard.vue'
+import ArticleEdit from '@/components/ArticleEdit.vue'
 
 const dialog = useDialog()
 

@@ -102,9 +102,7 @@ const onDeleteHandle = (id: string) => {
         negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleSortApi.delete({id})
-            if (success) {
-                getList()
-            }
+            success && await getList()
         }
     })
 }

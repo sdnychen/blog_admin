@@ -57,7 +57,7 @@ const handleLogin = () => {
             } else {
                 loginFormRef.value.restoreValidation()
                 loginForm.verify = ''
-                getVerify()
+                await getVerify()
             }
         }
     })

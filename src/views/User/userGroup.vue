@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, h } from "vue"
-import { NTime, NButton } from "naive-ui"
-import type { DataTableColumns, FormRules, FormInst, TransferOption } from "naive-ui"
-import userGroupApi from "@/api/apis/userGroupApi"
-import authApi from "@/api/apis/authApi"
-import userApi from "@/api/apis/userApi"
+import { reactive, ref, onMounted, h } from 'vue'
+import { NTime, NButton } from 'naive-ui'
+import type { DataTableColumns, FormRules, FormInst, TransferOption } from 'naive-ui'
+import userGroupApi from '@/api/apis/userGroupApi'
+import authApi from '@/api/apis/authApi'
+import userApi from '@/api/apis/userApi'
+import DataTable from '@/components/DataTable.vue'
+import SearchCard from '@/components/SearchCard.vue'
 
 type TableDataType = {
     id: string,
@@ -20,19 +22,19 @@ type addEditFormType = {
 
 const queryForm = ref({
     page: 1,
-    userGroupName: ""
+    userGroupName: ''
 })
 const queryFormInit = ref({
     page: 1,
-    userGroupName: ""
+    userGroupName: ''
 })
 const addEditForm = ref<addEditFormType>({
-    groupName: "",
-    remark: ""
+    groupName: '',
+    remark: ''
 })
 const addEditFormInit = ref<addEditFormType>({
-    groupName: "",
-    remark: ""
+    groupName: '',
+    remark: ''
 })
 
 const showAddEditModal = ref<boolean>(false)
@@ -110,16 +112,16 @@ const getUser = async (id: string) => {
 
 // 添加
 const onAddHandle = () => {
-    addEditModalType.value = "add"
-    addEditModalTitle.value = "添加用户组"
+    addEditModalType.value = 'add'
+    addEditModalTitle.value = '添加用户组'
     showAddEditModal.value = true
 }
 // 编辑
 const onEditHandle = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupDetail({id})
     addEditForm.value = data
-    addEditModalType.value = "edit"
-    addEditModalTitle.value = "编辑用户组"
+    addEditModalType.value = 'edit'
+    addEditModalTitle.value = '编辑用户组'
     showAddEditModal.value = true
 }
 // 向用户组添加用户
@@ -127,7 +129,7 @@ const onAddUserHandle = (user: TableDataType) => {
     getAllUser()
     getUser(user.id)
     currDrawerUserGroup.value = user
-    userAndAuthDrawerType.value = "user"
+    userAndAuthDrawerType.value = 'user'
     showUserAndAuthDrawer.value = true
 }
 // 授权
@@ -135,7 +137,7 @@ const onAuthHandle = (user: TableDataType) => {
     getAuthList()
     getUserGroupAuth(user.id)
     currDrawerUserGroup.value = user
-    userAndAuthDrawerType.value = "auth"
+    userAndAuthDrawerType.value = 'auth'
     showUserAndAuthDrawer.value = true
 }
 
@@ -151,8 +153,8 @@ const resetHandle = () => {
 }
 const addEditRules = reactive<FormRules>({
     groupName: [
-        {required: true, trigger: "blur", message: "请输入用户组名"},
-        {max: 20, trigger: ["input", "blur"], message: "用户组名最大长度20个字符"}
+        {required: true, trigger: 'blur', message: '请输入用户组名'},
+        {max: 20, trigger: ['input', 'blur'], message: '用户组名最大长度20个字符'}
     ]
 })
 
@@ -170,13 +172,13 @@ const onCloseModalHandle = () => {
 const onSubmitModalHandle = () => {
     addEditFormRef.value?.validate(async err => {
         if (!err) {
-            if (addEditModalType.value === "add") {
+            if (addEditModalType.value === 'add') {
                 const { success } = await userGroupApi.addUserGroup(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
                     getList()
                 }
-            } else if (addEditModalType.value === "edit") {
+            } else if (addEditModalType.value === 'edit') {
                 const { success } = await userGroupApi.editUserGroup(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
@@ -192,7 +194,7 @@ const onCloseDrawerHandle = () => {
 }
 // 抽屉提交
 const onSubmitDrawerHandle = async () => {
-    if (userAndAuthDrawerType.value === "user") {
+    if (userAndAuthDrawerType.value === 'user') {
         const { success } = await userGroupApi.updateUserList({
             id: currDrawerUserGroup.value?.id,
             userId: userValue.value
@@ -213,19 +215,19 @@ const onSubmitDrawerHandle = async () => {
 }
 
 const columns = reactive<DataTableColumns<TableDataType>>([
-    {title: "用户组名", key: "groupName", fixed: "left", width: 200, ellipsis: {tooltip: true} },
+    {title: '用户组名', key: 'groupName', fixed: 'left', width: 200, ellipsis: {tooltip: true} },
     {
-        title: "创建时间", key: "createTime", width: 180,
+        title: '创建时间', key: 'createTime', width: 180,
         render: (row) => h(NTime, {time: new Date(row.createTime)})
     },
-    {title: "备注", key: "remark", minWidth: 180, ellipsis: {tooltip: true}},
+    {title: '备注', key: 'remark', minWidth: 180, ellipsis: {tooltip: true}},
     {
-        title: "操作", key: "operation", fixed: "right", width: 200,
+        title: '操作', key: 'operation', fixed: 'right', width: 200,
         render: (row) => [
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onEditHandle(row.id)}, () => "修改"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAddUserHandle(row)}, () => "添加用户"),
-            h(NButton, {text: true, type: "info", style: {marginRight: "10px"}, onClick: () => onAuthHandle(row)}, () => "授权"),
-            h(NButton, {text: true, type: "error", onClick: () => onDeleteHandle(row.id)}, () => "删除")
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAddUserHandle(row)}, () => '添加用户'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAuthHandle(row)}, () => '授权'),
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '删除')
         ]
     }
 ])
