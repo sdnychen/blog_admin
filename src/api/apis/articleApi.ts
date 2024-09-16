@@ -4,47 +4,47 @@ const articleApi = {
     /**
      * 文章列表
      */
-    list: (params?: any) => api.get('/article/list', params),
+    list: (params: ArticleQueryParam) => api.get<ResponsePageData<ArticleDataType>>('/article/list', params),
 
     /**
      * 全部文章列表
      */
-    allList: (params?: any) => api.get('/article/allList', params),
+    allList: (params?: ArticleQueryParam) => api.get<ArticleDataType[]>('/article/allList', params),
 
     /**
      * 文章回收站列表
      */
-    recycleBinList: (params?: any) => api.get('/article/recycleBinList', params),
+    recycleBinList: (params: articleRecycleBinQueryParam) => api.get<ResponsePageData<ArticleDataType>>('/article/recycleBinList', params),
 
     /**
      * 获取文章详情
      */
-    detail: (params?: any) => api.get('/article/detail', params),
+    detail: (params: IDParam) => api.get<ArticleDataType>('/article/detail', params),
 
     /**
      * 文章添加
      */
-    add: (params?: any) => api.post('/article/add', params),
+    add: (params: ArticleDataType) => api.post<undefined>('/article/add', params),
 
     /**
      * 文章编辑
      */
-    edit: (params?: any) => api.put('/article/edit', params),
+    edit: (params: ArticleDataType) => api.put<undefined>('/article/edit', params),
 
     /**
      * 文章状态
      */
-    updateStatus: (params?: any) => api.put('/article/updateStatus', params),
+    updateStatus: (params: ArticleStatusUpdateParam) => api.put<undefined>('/article/updateStatus', params),
+
+    /**
+     * 文章删除恢复
+     */
+    deleteRecovery: (params: ArticleDeleteRecoveryParam) => api.delete<undefined>('/article/deleteRecovery', params),
 
     /**
      * 文章删恢复
      */
-    deleteRecovery: (params?: any) => api.delete('/article/deleteRecovery', params),
-
-    /**
-     * 文章删恢复
-     */
-    delete: (params?: any) => api.delete('/article/delete', params)
+    delete: (params: IDParam) => api.delete<undefined>('/article/delete', params)
 }
 
 export default articleApi

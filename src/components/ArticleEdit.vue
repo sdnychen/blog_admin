@@ -18,24 +18,13 @@ const props = defineProps({
         type: String,
         required: true
     },
-    id: String
+    id: {
+        type: String,
+        required: true
+    }
 })
 
-type ArticleForm = {
-    id: string | null,
-    title: string,
-    alias: string,
-    content: string,
-    intro: string,
-    img: string,
-    tagList: Array<string> | null,
-    sort: string | null,
-    remark: string,
-    status: number
-}
-
-const form = ref<ArticleForm>({
-    id: null,
+const form = ref<ArticleDataType>({
     title: '',
     alias: '',
     content: '',
@@ -46,8 +35,8 @@ const form = ref<ArticleForm>({
     remark: '',
     status: 1
 })
-const tagList = ref<articleTagRequestType[]>()
-const sortList = ref<articleSortRequestType[]>()
+const tagList = ref<articleTagDataType[]>()
+const sortList = ref<articleSortDataType[]>()
 const uploadLoading = ref<boolean>(false)
 const imgFiles = ref<UploadFileInfo[]>([])
 
@@ -100,7 +89,7 @@ const onSavePublishHandle = (type: string) => {
             if (type === 'publish') {
                 form.value.status = ArticleStatusEnum['已发布']
             }
-            if (!!form.value.id) {
+            if (form.value.id) {
                 await articleApi.edit(form.value)
             } else {
                 const { data } = await articleApi.add(form.value)
@@ -137,7 +126,7 @@ const formRules = reactive<FormRules>({
         <div class="article-edit-box-top">
             <n-button type="error" quaternary @click="onCloseHandle">关闭</n-button>
             <n-button :disabled="uploadLoading" @click="onSavePublishHandle('save')">保存</n-button>
-            <n-button :disabled="uploadLoading" @click="onSavePublishHandle('publish')" type="info" :render-icon="IconRender(PaperPlane)">发布</n-button>
+            <n-button :disabled="uploadLoading" type="info" :render-icon="IconRender(PaperPlane)" @click="onSavePublishHandle('publish')">发布</n-button>
         </div>
         <n-divider />
         <div class="article-edit-box-content">
@@ -156,28 +145,36 @@ const formRules = reactive<FormRules>({
                         别名将用于生成文章地址
                     </n-alert>
                     <n-form-item label="简介" path="intro">
-                        <n-input v-model:value="form.intro" type="textarea" placeholder="请输入文章简介" maxlength="100" show-count clearable />
+                        <n-input
+                            v-model:value="form.intro" type="textarea" placeholder="请输入文章简介" maxlength="100" show-count
+                            clearable
+                        />
                     </n-form-item>
                     <n-form-item label="首图" path="img">
                         <n-upload
-                            :custom-request="fileUpload"
                             v-model:file-list="imgFiles"
+                            :custom-request="fileUpload"
                             list-type="image-card"
                             accept=".jpg, .jpeg, .png"
                             :max="1"
                             @before-upload="beforeFileUpload"
                             @remove="removeFile"
-                        >
-                        </n-upload>
+                        />
                     </n-form-item>
                     <n-form-item label="分类" path="sort">
                         <n-select v-model:value="form.sort" label-field="name" value-field="id" placeholder="请选择分类" :options="sortList" />
                     </n-form-item>
                     <n-form-item label="标签" path="tagList">
-                        <n-select v-model:value="form.tagList" label-field="name" value-field="id" placeholder="请选择标签" multiple :options="tagList" />
+                        <n-select
+                            v-model:value="form.tagList" label-field="name" value-field="id" placeholder="请选择标签" multiple
+                            :options="tagList"
+                        />
                     </n-form-item>
                     <n-form-item label="备注" path="remark">
-                        <n-input v-model:value="form.remark" type="textarea" placeholder="请输入文章备注" maxlength="255" show-count clearable />
+                        <n-input
+                            v-model:value="form.remark" type="textarea" placeholder="请输入文章备注" maxlength="255" show-count
+                            clearable
+                        />
                     </n-form-item>
                 </n-form>
             </div>

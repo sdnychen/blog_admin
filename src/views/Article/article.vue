@@ -11,26 +11,14 @@ import ArticleEdit from '@/components/ArticleEdit.vue'
 
 const dialog = useDialog()
 
-type queryFormType = {
-    page: number,
-    title: string,
-    status: number | null,
-    publishTime: string[] | null | undefined,
-    createTime: string[] | null | undefined,
-    startPublishTime?: string,
-    endPublishTime?: string,
-    startCreateTime?: string,
-    endCreateTime?: string
-}
-
-const queryForm = ref<queryFormType>({
+const queryForm = ref<ArticleQueryParam>({
     page: 1,
     title: '',
     status: null,
     publishTime: null,
     createTime: null
 })
-const queryFormInit = ref<queryFormType>({
+const queryFormInit = ref<ArticleQueryParam>({
     page: 1,
     title: '',
     status: null,
@@ -39,11 +27,11 @@ const queryFormInit = ref<queryFormType>({
 })
 
 const total = ref<number>(0)
-const dataList = ref<ArticleRequestType[]>([])
+const dataList = ref<ArticleDataType[]>([])
 const articleListLoading = ref<boolean>(false)
 
 const getList = async () => {
-    const queryParam: queryFormType = {...queryForm.value}
+    const queryParam: ArticleQueryParam = {...queryForm.value}
     if (queryParam.publishTime?.length === 2) {
         queryParam.startPublishTime = new Date(queryParam.publishTime[0]).toISOString()
         queryParam.endPublishTime = new Date(queryParam.publishTime[1]).toISOString()
@@ -89,15 +77,15 @@ const onEditHandle = async (id: string) => {
     currArticleId.value = id
 }
 // 发布/取消发布
-const onChangeStatusHandle = async (row: ArticleRequestType) => {
+const onChangeStatusHandle = async (row: ArticleDataType) => {
     const {success} = await articleApi.updateStatus({
-        id: row.id,
+        id: row.id as string,
         status: row.status === ArticleStatusEnum['已发布'] ? ArticleStatusEnum['未发布'] : ArticleStatusEnum['已发布']
     })
     if (success) await getList()
 }
 // 删除
-const onDeleteHandle = (row: ArticleRequestType) => {
+const onDeleteHandle = (row: ArticleDataType) => {
     dialog.warning({
         title: '删除警告',
         content: '确定删除？',
@@ -105,7 +93,7 @@ const onDeleteHandle = (row: ArticleRequestType) => {
         negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleApi.deleteRecovery({
-                id: row.id,
+                id: row.id as string,
                 deleted: DeletedEnum['已删除']
             })
             if (success) await getList()
@@ -113,7 +101,7 @@ const onDeleteHandle = (row: ArticleRequestType) => {
     })
 }
 
-const columns = reactive<DataTableColumns<ArticleRequestType>>([
+const columns = reactive<DataTableColumns<ArticleDataType>>([
     {title: '标题', key: 'title', fixed: 'left', width: 200, ellipsis: {tooltip: true}},
     {
         title: '首图', key: 'img', align: 'center', width: 60,
@@ -128,17 +116,17 @@ const columns = reactive<DataTableColumns<ArticleRequestType>>([
     {title: '备注', key: 'remark', minWidth: 180},
     {
         title: '发布时间', key: 'createTime', width: 180,
-        render: (row) => row.status === ArticleStatusEnum['已发布'] ? h(NTime, {time: new Date(row.publishTime)}) : '--'
+        render: (row) => row.status === ArticleStatusEnum['已发布'] ? h(NTime, {time: new Date(row.publishTime as string)}) : '--'
     },
     {
         title: '创建时间', key: 'createTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
     },
     {
         title: '操作', key: 'operation', fixed: 'right', width: 180,
         render: (row) => {
             let btnArr = [
-                h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
+                h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id as string)}, () => '修改'),
                 h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onChangeStatusHandle(row)}, () => '发布'),
                 h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row)}, () => '删除')
             ]
@@ -181,8 +169,10 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false">
+                    <n-form
+                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false"
+                    >
                         <n-form-item label="文章标题">
                             <n-input v-model:value="queryForm.title" placeholder="请输入文章标题" clearable />
                         </n-form-item>
@@ -191,7 +181,8 @@ onMounted(() => {
                                 v-model:value="queryForm.status"
                                 :options="articleStatusList()"
                                 placeholder="请选择发布状态"
-                                clearable />
+                                clearable
+                            />
                         </n-form-item>
                         <n-form-item label="发布时间">
                             <n-date-picker v-model:value="queryForm.publishTime" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" clearable />
@@ -210,7 +201,7 @@ onMounted(() => {
             v-if="articleEditVisibility"
             :id="currArticleId"
             :type="articleEditType"
-            @onCloseArticleEditHandle="onCloseArticleEditHandle"
+            @on-close-article-edit-handle="onCloseArticleEditHandle"
         />
     </div>
 </template>

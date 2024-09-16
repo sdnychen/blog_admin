@@ -9,30 +9,16 @@ import SearchCard from '@/components/SearchCard.vue'
 
 const dialog = useDialog()
 
-type queryFormType = {
-    page: number,
-    title: string,
-    status: number | null,
-    publishTime: string | undefined,
-    createTime: string
-}
-
-const queryForm = ref<queryFormType>({
+const queryForm = ref<articleRecycleBinQueryParam>({
     page: 1,
     title: '',
-    status: null,
-    publishTime: '',
-    createTime: ''
 })
-const queryFormInit = ref<queryFormType>({
+const queryFormInit = ref<articleRecycleBinQueryParam>({
     page: 1,
     title: '',
-    status: null,
-    publishTime: '',
-    createTime: ''
 })
 const total = ref<number>(0)
-const dataList = ref<ArticleRequestType[]>([])
+const dataList = ref<ArticleDataType[]>([])
 const articleListLoading = ref<boolean>(false)
 
 const getList = async () => {
@@ -76,7 +62,7 @@ const onDeleteHandle = (id: string) => {
     })
 }
 
-const columns = reactive<DataTableColumns<ArticleRequestType>>([
+const columns = reactive<DataTableColumns<ArticleDataType>>([
     {title: '标题', key: 'title', fixed: 'left', width: 200, ellipsis: {tooltip: true}},
     {
         title: '首图', key: 'img', align: 'center', width: 60,

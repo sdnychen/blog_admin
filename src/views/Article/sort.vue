@@ -10,33 +10,22 @@ import SearchCard from '@/components/SearchCard.vue'
 const dialog = useDialog()
 const message = useMessage()
 
-type queryFormType = {
-    page: number,
-    name: string
-}
-
-type addEditFormType = {
-    name: string,
-    img: string,
-    remark: string
-}
-
-const queryForm = ref<queryFormType>({
+const queryForm = ref<articleSortQueryParam>({
     page: 1,
     name: ''
 })
-const queryFormInit = ref<queryFormType>({
+const queryFormInit = ref<articleSortQueryParam>({
     page: 1,
     name: ''
 })
 const total = ref<number>(0)
 
-const addEditForm = ref<addEditFormType>({
+const addEditForm = ref<articleSortDataType>({
     name: '',
     img: '',
     remark: ''
 })
-const addEditFormInit = ref<addEditFormType>({
+const addEditFormInit = ref<articleSortDataType>({
     name: '',
     img: '',
     remark: ''
@@ -50,7 +39,7 @@ const addEditRules = reactive<FormRules>({
     img: {required: true, trigger: 'blur', message: '请上传分类图片'}
 })
 
-const dataList = ref<articleSortRequestType[]>([])
+const dataList = ref<articleSortDataType[]>([])
 const showAddEditModal = ref<boolean>(false)
 const addEditModalType = ref<string>('')
 const addEditModalTitle = ref<string | null>(null)
@@ -107,7 +96,7 @@ const onDeleteHandle = (id: string) => {
     })
 }
 
-const columns = reactive<DataTableColumns<articleSortRequestType>>([
+const columns = reactive<DataTableColumns<articleSortDataType>>([
     {title: '类名', key: 'name', fixed: 'left', width: 140, ellipsis: {tooltip: true}},
     {
         title: '图片', key: 'img', align: 'center', width: 60,
@@ -115,14 +104,14 @@ const columns = reactive<DataTableColumns<articleSortRequestType>>([
     },
     {
         title: '创建时间', key: 'createTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
     },
     {title: '备注', key: 'remark', minWidth: 180},
     {
         title: '操作', key: 'operation', fixed: 'right', width: 120,
         render: (row) => [
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
-            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '删除')
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id as string)}, () => '修改'),
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id as string)}, () => '删除')
         ]
     }
 ])
@@ -199,8 +188,10 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false">
+                    <n-form
+                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false"
+                    >
                         <n-form-item label="类名">
                             <n-input v-model:value="queryForm.name" placeholder="类名" clearable />
                         </n-form-item>
@@ -212,32 +203,35 @@ onMounted(() => {
             </template>
         </DataTable>
     </div>
-    <n-modal preset="card" v-model:show="showAddEditModal" :title="addEditModalTitle"
-        :mask-closable="false" style="width: 600px;">
+    <n-modal
+        v-model:show="showAddEditModal" preset="card" :title="addEditModalTitle"
+        :mask-closable="false" style="width: 600px;"
+    >
         <n-form ref="addEditFormRef" :model="addEditForm" :rules="addEditRules">
             <n-form-item label="类名" path="name">
                 <n-input v-model:value="addEditForm.name" placeholder="输入类名" />
             </n-form-item>
             <n-form-item label="图片" path="img">
                 <n-upload
-                    :custom-request="fileUpload"
                     v-model:file-list="imgFiles"
+                    :custom-request="fileUpload"
                     list-type="image-card"
                     accept=".jpg, .jpeg, .png"
                     :max="1"
                     @before-upload="beforeFileUpload"
                     @remove="removeFile"
-                >
-                </n-upload>
+                />
             </n-form-item>
             <n-form-item label="备注" path="remark">
-                <n-input v-model:value="addEditForm.remark" type="textarea" maxlength="255" show-count
-                    placeholder="备注" />
+                <n-input
+                    v-model:value="addEditForm.remark" type="textarea" maxlength="255" show-count
+                    placeholder="备注"
+                />
             </n-form-item>
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitModalHandle" :disabled="uploadLoading">提交</n-button>
+                <n-button type="info" :disabled="uploadLoading" @click="onSubmitModalHandle">提交</n-button>
                 <n-button @click="onCloseModalHandle">取消</n-button>
             </div>
         </template>
