@@ -73,7 +73,7 @@ const resetHandle = () => {
     getList()
 }
 
-const currArticleId = ref<String>('')
+const currArticleId = ref<string>('')
 const articleEditVisibility = ref<boolean>(false)
 const articleEditType = ref<string>('add')
 
@@ -83,7 +83,7 @@ const onOpenArticleEditHandle = () => {
     articleEditVisibility.value = true
 }
 // 编辑
-const onEditHandle = async (id: String) => {
+const onEditHandle = async (id: string) => {
     articleEditType.value = 'edit'
     articleEditVisibility.value = true
     currArticleId.value = id
@@ -94,7 +94,7 @@ const onChangeStatusHandle = async (row: ArticleRequestType) => {
         id: row.id,
         status: row.status === ArticleStatusEnum['已发布'] ? ArticleStatusEnum['未发布'] : ArticleStatusEnum['已发布']
     })
-    success && getList()
+    if (success) await getList()
 }
 // 删除
 const onDeleteHandle = (row: ArticleRequestType) => {
@@ -108,7 +108,7 @@ const onDeleteHandle = (row: ArticleRequestType) => {
                 id: row.id,
                 deleted: DeletedEnum['已删除']
             })
-            success && getList()
+            if (success) await getList()
         }
     })
 }

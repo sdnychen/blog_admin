@@ -19,7 +19,7 @@ const hasAuth = (route: any, auth: Array<string>): boolean => {
         let flag = false
         for (const routerAuth of route.meta.auth) {
             const routerAuthArray = routerAuth.split(':')
-            flag = (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 2)) !== 0 ? true : false
+            flag = (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 2)) !== 0
             if (flag) break
         }
         return flag

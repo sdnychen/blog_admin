@@ -1,65 +1,65 @@
-import { request } from "@/api"
+import { api } from '@/api'
 
 const userApi = {
     /**
      * 用户列表
      */
-    getUserList: (params: any) => request.get<responsePageData>("/user/list", params),
+    getUserList: (params: UserQueryForm) => api.get<ResponsePageData<UserTableDataType>>('/user/list', params),
 
     /**
      * 全部用户列表
      */
-    getAllUserList: (params?: any) => request.get("/user/allList", params),
+    getAllUserList: (params?: UserQueryForm) => api.get<UserTableDataType[]>('/user/allList', params),
 
     /**
      * 用户添加
      */
-    addUser: (params: any) => request.post("/user/add", params),
+    addUser: (params: UserAddEditForm) => api.post<undefined>('/user/add', params),
 
     /**
      * 用户编辑
      */
-    editUser: (params: any) => request.put("/user/edit", params),
+    editUser: (params: UserTableDataType) => api.put<undefined>('/user/edit', params),
 
     /**
      * 用户启用禁用状态改变
      */
-    updateStatus: (params: any) => request.put("/user/updateStatus", params),
+    updateStatus: (params: UserStatusUpdateRequest) => api.put<undefined>('/user/updateStatus', params),
 
     /**
      * 用户删除
      */
-    deleteUser: (params: any) => request.delete("/user/delete", params),
+    deleteUser: (params: UserDeleteRequest) => api.delete<undefined>('/user/delete', params),
 
     /**
      * 用户详情
      */
-    getUserDetail: (params: any) => request.get("/user/detail", params),
+    getUserDetail: (params: UserDetailRequest) => api.get<UserAddEditForm>('/user/detail', params),
 
     /**
      * 获取用户权限
      */
-    getUserAuthList: (params: any) => request.get("/user/auth", params),
+    getUserAuthList: (params: UserAuthRequest) => api.get<AuthResponse[]>('/user/auth', params),
 
     /**
      * 更新用户权限
      */
-    updateUserAuthList: (params: any) => request.post("/user/updateAuth", params),
+    updateUserAuthList: (params: UpdateUserAuthRequest) => api.post<undefined>('/user/updateAuth', params),
 
     /**
-     * 获取用户加入的用户
+     * 获取用户组中的用户
      */
-    getUserInUserGroup: (params: any) => request.get("/user/userInUserGroup", params),
+    getUserInUserGroup: (params: UserOfUserGroup) => api.get<UserTableDataType[]>('/user/userInUserGroup', params),
 
     /**
      * 更新用户的用户组
      */
-    updateUserGroupList: (params: any) => request.post("/user/updateUserGroup", params),
+    updateUserGroupList: (params: UpdateUserGroupRequest) => api.post<undefined>('/user/updateUserGroup', params),
 
     /**
      * 重置密码
      */
-    resetPassword: (params: any) => request.post("/user/resetPassword", params)
+    resetPassword: (params: ResetPasswordRequest) => api.post<undefined>('/user/resetPassword', params)
 }
 
 export default userApi

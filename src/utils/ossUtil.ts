@@ -1,7 +1,7 @@
 import OSS from 'ali-oss'
 import baseApi from '@/api/apis/baseApi'
 import { sha256 } from 'js-sha256'
-import type { SettledFileInfo } from 'naive-ui/es/upload/src/interface'
+import type { UploadFileInfo } from 'naive-ui'
 
 const createOssClient = async () => {
     const { data } = await baseApi.sts()
@@ -30,33 +30,33 @@ const createOssClient = async () => {
 }
 
 /**
- * 头像上传
+ * 用户头像
  * @param file naive上传组件返回的file对象
  * @returns oss返回结果
  */
-export const avatarUpload = async (file: SettledFileInfo) => {
+export const avatarUpload = async (file: UploadFileInfo) => {
     const oss = await createOssClient()
     const fileName = `avatar/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)
 }
 
 /**
- * 图片上传
+ * 普通文件
  * @param file naive上传组件返回的file对象
  * @returns oss返回结果
  */
-export const sysFileUpload = async (file: SettledFileInfo) => {
+export const sysFileUpload = async (file: UploadFileInfo) => {
     const oss = await createOssClient()
     const fileName = `sys/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)
 }
 
 /**
- * 文章文件上传
+ * 文章文件
  * @param file naive上传组件返回的file对象
  * @returns oss返回结果
  */
-export const articleFileUpload = async (file: SettledFileInfo) => {
+export const articleFileUpload = async (file: UploadFileInfo) => {
     const oss = await createOssClient()
     const fileName = `article/${sha256(JSON.stringify(file)).slice(0, 5)}_${new Date().getTime()}.${file.name.split('.').pop()}`
     return oss.put(fileName, file.file)

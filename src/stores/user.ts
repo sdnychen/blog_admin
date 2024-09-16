@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         // 登录
         login(loginForm: LoginForm) {
-            return new Promise(async (resolve, reject) => {
+            return new Promise( (resolve, reject) => {
                 BaseApi.login({
                     ...loginForm,
                     password: sha256(loginForm.password)

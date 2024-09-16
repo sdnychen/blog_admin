@@ -1,39 +1,4 @@
-/* eslint-disable no-unused-vars */
-type Result<T = any> = {
-    success: boolean,
-    code: number,
-    msg: string,
-    data: T
-}
-
-// 权限
-type authRequestType = {
-    id: string,
-    authName: string,
-    remark: string
-}
-
-// 用户组
-type userGroupRequestType = {
-    id: string,
-    groupName: string,
-    createTime: string,
-    remark: string
-}
-
-// 用户
-type userRequestType = {
-    id: string,
-    username: string,
-    email: string,
-    mobile: string,
-    avatar: string,
-    status: string,
-    createTime: string,
-    remark: string
-}
-
-type ArticleRequestType = {
+interface ArticleRequestType {
     id: string,
     title: string,
     alias: string,
@@ -46,7 +11,7 @@ type ArticleRequestType = {
 }
 
 // 文章标签
-type articleTagRequestType = {
+interface articleTagRequestType {
     id: string,
     name: string,
     color: string,
@@ -55,7 +20,7 @@ type articleTagRequestType = {
 }
 
 // 文章分类
-type articleSortRequestType = {
+interface articleSortRequestType {
     id: string,
     name: string,
     img: string,

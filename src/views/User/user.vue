@@ -10,45 +10,26 @@ import UserStatusEnum from '@/enum/UserStatusEnum'
 import { mobileRegExp, emailRegExp } from '@/utils/regExp'
 import { sha256 } from 'js-sha256'
 import { useUserStore } from '@/stores/user'
+import DataTable from '@/components/DataTable.vue'
+import SearchCard from '@/components/SearchCard.vue'
 
 const message = useMessage()
 const dialog = useDialog()
 const userStore = useUserStore()
 
-type TableDataType = {
-    id: string,
-    username: string,
-    email: string,
-    mobile: string,
-    avatar: string,
-    status: number,
-    createTime: string
-    remark: string
-}
-
-type addEditFormType = {
-    username: string,
-    mobile: string,
-    email: string,
-    avatar: string,
-    password: string,
-    checkPassword: string | undefined,
-    remark: string
-}
-
-const queryForm = ref({
+const queryForm = ref<UserQueryForm>({
     page: 1,
     username: '',
     mobile: '',
     email: ''
 })
-const queryFormInit = ref({
+const queryFormInit = ref<UserQueryForm>({
     page: 1,
     username: '',
     mobile: '',
     email: ''
 })
-const addEditForm = ref<addEditFormType>({
+const addEditForm = ref<UserAddEditForm>({
     username: '',
     mobile: '',
     email: '',
@@ -57,7 +38,7 @@ const addEditForm = ref<addEditFormType>({
     checkPassword: '',
     remark: ''
 })
-const addEditFormInit = ref<addEditFormType>({
+const addEditFormInit = ref<UserAddEditForm>({
     username: '',
     mobile: '',
     email: '',
@@ -77,13 +58,13 @@ const avatarFiles = ref<UploadFileInfo[]>([])
 const userListLoading = ref<boolean>(false)
 const uploadLoading = ref<boolean>(false)
 
-const userGroupValue = ref<Array<string | number>>([])
+const userGroupValue = ref<Array<string>>([])
 const userGroupOptions = ref<TransferOption[]>([])
-const authValue = ref<Array<string | number>>([])
+const authValue = ref<Array<string>>([])
 const authOptions = ref<TransferOption[]>([])
-const currUser = ref<TableDataType | null>(null)
+const currUser = ref<UserTableDataType>()
 
-const dataList = ref<TableDataType[]>([])
+const dataList = ref<UserTableDataType[]>([])
 const total = ref<number>(0)
 // 用户列表
 const getList = async () => {
@@ -95,10 +76,10 @@ const getList = async () => {
 }
 
 // 状态改变
-const statusChangeHandle = async (row: TableDataType, index: number) => {
+const statusChangeHandle = async (row: UserTableDataType, index: number) => {
     dataList.value[index].status = row.status === UserStatusEnum['启用'] ? UserStatusEnum['禁用'] : UserStatusEnum['启用']
     await userApi.updateStatus({id: row.id, status: row.status})
-    getList()
+    await getList()
 }
 // 删除
 const onDeleteHandle = (id: string) => {
@@ -110,7 +91,7 @@ const onDeleteHandle = (id: string) => {
         onPositiveClick: async () => {
             const { success } = await userApi.deleteUser({id})
             if (success) {
-                getList()
+                await getList()
             }
         }
     })
@@ -120,7 +101,7 @@ const onDeleteHandle = (id: string) => {
 const getAuthList = async () => {
     const { data } = await authApi.getAllList()
     authOptions.value = []
-    data.forEach((item: authRequestType) => {
+    data.forEach((item: AuthResponse) => {
         authOptions.value.push({
             label: item.authName,
             value: item.id,
@@ -132,7 +113,7 @@ const getAuthList = async () => {
 const getAllUserGroup = async () => {
     const { data } = await userGroupApi.getAllUserGroupList()
     userGroupOptions.value = []
-    data.forEach((item: userGroupRequestType) => {
+    data.forEach((item: UserGroupTableDataType) => {
         userGroupOptions.value.push({
             label: item.groupName,
             value: item.id,
@@ -145,7 +126,7 @@ const getAllUserGroup = async () => {
 const getUserAuth = async (id: string) => {
     const { data } = await userApi.getUserAuthList({id})
     authValue.value = []
-    data.forEach((item: authRequestType) => {
+    data.forEach((item: AuthResponse) => {
         authValue.value.push(item.id)
     })
 }
@@ -153,7 +134,7 @@ const getUserAuth = async (id: string) => {
 const getUserGroup = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupByUser({id})
     userGroupValue.value = []
-    data.forEach((item: userGroupRequestType) => {
+    data.forEach((item: UserGroupTableDataType) => {
         userGroupValue.value.push(item.id)
     })
 }
@@ -174,7 +155,7 @@ const onEditHandle = async (id: string) => {
     showAddEditModal.value = true
 }
 // 添加到用户组
-const onAddUserGroupHandle = (user: TableDataType) => {
+const onAddUserGroupHandle = (user: UserTableDataType) => {
     getAllUserGroup()
     getUserGroup(user.id)
     currUser.value = user
@@ -182,7 +163,7 @@ const onAddUserGroupHandle = (user: TableDataType) => {
     showUserGroupAndAuthDrawer.value = true
 }
 // 授权
-const onAuthHandle = (user: TableDataType) => {
+const onAuthHandle = (user: UserTableDataType) => {
     getAuthList()
     getUserAuth(user.id)
     currUser.value = user
@@ -190,7 +171,7 @@ const onAuthHandle = (user: TableDataType) => {
     showUserGroupAndAuthDrawer.value = true
 }
 // 重置密码
-const onResetPasswordHandle = (user: TableDataType) => {
+const onResetPasswordHandle = (user: UserTableDataType) => {
     currUser.value = user
     addEditModalType.value = 'reset'
     addEditModalTitle.value = '重置密码'
@@ -275,17 +256,17 @@ const onSubmitModalHandle = () => {
                 const { success } = await userApi.addUser(dataForm)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
             } else if (addEditModalType.value === 'edit') {
                 const { success } = await userApi.editUser(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
             } else if (addEditModalType.value === 'reset') {
                 const dataForm = {
-                    id: currUser.value?.id,
+                    id: currUser.value?.id as string,
                     newPassword: sha256(addEditForm.value.password)
                 }
                 const { success } = await userApi.resetPassword(dataForm)
@@ -304,7 +285,7 @@ const onCloseDrawerHandle = () => {
 const onSubmitDrawerHandle = async () => {
     if (userGroupAndAuthDrawerType.value === 'userGroup') {
         const { success } = await userApi.updateUserGroupList({
-            id: currUser.value?.id,
+            id: currUser.value?.id as string,
             userGroupList: userGroupValue.value
         })
         if (success) {
@@ -312,7 +293,7 @@ const onSubmitDrawerHandle = async () => {
         }
     } else {
         const { success } = await userApi.updateUserAuthList({
-            id: currUser.value?.id,
+            id: currUser.value?.id as string,
             authList: authValue.value
         })
         if (success) {
@@ -322,7 +303,7 @@ const onSubmitDrawerHandle = async () => {
     onCloseDrawerHandle()
 }
 
-const columns = reactive<DataTableColumns<TableDataType>>([
+const columns = reactive<DataTableColumns<UserTableDataType>>([
     {title: '用户名', key: 'username', fixed: 'left', width: 200, ellipsis: {tooltip: true} },
     {title: '手机号', key: 'mobile', width: 120 },
     {title: '邮箱', key: 'email', width: 200, ellipsis: {tooltip: true} },
@@ -394,13 +375,15 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                 </SearchCard>
             </template>
             <template #buttonSlot>
-                <n-button type="info" @click="onAddHandle">添加</n-button>
+                <n-button type="info" @click="onAddHandle">
+                    添加
+                </n-button>
             </template>
         </DataTable>
     </div>
     <n-modal
-        preset="card"
         v-model:show="showAddEditModal"
+        preset="card"
         :title="addEditModalTitle"
         :mask-closable="false"
         style="width: 600px;"
@@ -427,15 +410,14 @@ const columns = reactive<DataTableColumns<TableDataType>>([
             </n-form-item>
             <n-form-item v-if="addEditModalType !== 'reset'" label="头像">
                 <n-upload
-                    :custom-request="fileUpload"
                     v-model:file-list="avatarFiles"
+                    :custom-request="fileUpload"
                     list-type="image-card"
                     accept=".jpg, .jpeg, .png"
                     :max="1"
                     @before-upload="beforeFileUpload"
                     @remove="removeFile"
-                >
-                </n-upload>
+                />
             </n-form-item>
             <n-form-item v-if="addEditModalType !== 'reset'" label="备注" path="remark">
                 <n-input
@@ -449,8 +431,12 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitModalHandle" :disabled="uploadLoading">提交</n-button>
-                <n-button @click="onCloseModalHandle">取消</n-button>
+                <n-button type="info" :disabled="uploadLoading" @click="onSubmitModalHandle">
+                    提交
+                </n-button>
+                <n-button @click="onCloseModalHandle">
+                    取消
+                </n-button>
             </div>
         </template>
     </n-modal>
@@ -461,7 +447,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         :mask-closable="false"
     >
         <n-drawer-content :title="userGroupAndAuthDrawerType === 'userGroup' ? '添加到用户组' : '用户授权'">
-            <div class="drawer-content currUser">
+            <div class="drawer-content curr-user">
                 <div class="sub-title">
                     用户
                 </div>
@@ -504,17 +490,19 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     target-filterable
                 />
             </div>
-        <template #footer>
-            <div class="drawer-footer">
-                <n-button type="info" @click="onSubmitDrawerHandle">提交</n-button>
-                <n-button @click="onCloseDrawerHandle">取消</n-button>
-            </div>
-        </template>
+            <template #footer>
+                <div class="drawer-footer">
+                    <n-button type="info" @click="onSubmitDrawerHandle">提交</n-button>
+                    <n-button @click="onCloseDrawerHandle">
+                        取消
+                    </n-button>
+                </div>
+            </template>
         </n-drawer-content>
     </n-drawer>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .n-drawer {
     .drawer-content {
         margin-bottom: 20px
@@ -523,7 +511,7 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         font-weight: 500;
         margin-bottom: 6px
     }
-    .currUser {
+    .curr-user {
         .user {
             padding: 2px 6px;
             border: 1px solid #ccc

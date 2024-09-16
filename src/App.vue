@@ -13,8 +13,8 @@ const themeOverrides: GlobalThemeOverrides = {
 <template>
     <n-config-provider
         :theme-overrides="themeOverrides"
-        :locale = zhCN
-        :dateLocale = dateZhCN
+        :locale="zhCN"
+        :date-locale="dateZhCN"
     >
         <n-dialog-provider>
             <n-message-provider>

@@ -10,13 +10,13 @@ const topBarHeight = ref<string>('0px')
 
 onMounted(() => {
     topBoxRefHeight.value = topBoxRef.value.clientHeight + 'px'
-    topBarHeight.value = !!useSlots().buttonSlot ? topBarRef.value.clientHeight + 'px' : '0px'
+    topBarHeight.value = useSlots().buttonSlot ? topBarRef.value.clientHeight + 'px' : '0px'
 })
 </script>
 
 <template>
     <div ref="topBoxRef" class="top-box-ref">
-        <slot name="searchSlot"/>
+        <slot name="searchSlot" />
     </div>
     <div>
         <MainCard>

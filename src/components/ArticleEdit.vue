@@ -51,11 +51,12 @@ const sortList = ref<articleSortRequestType[]>()
 const uploadLoading = ref<boolean>(false)
 const imgFiles = ref<UploadFileInfo[]>([])
 
-// 获取文章
+// 获取文章详情
 const getArticle = async () => {
     const { success, data } = await articleApi.detail({id: props.id})
     if (success) {
         form.value = data
+        imgFiles.value = data.img ? [{id: 'imgId', name: new URL(data.img).pathname.split('/')[2], status: 'finished', url: data.img}] : []
     }
 }
 // 获取标签下拉
@@ -224,6 +225,13 @@ $padding: 12px;
         padding-left: $padding;
         border-left: 1px solid #dadada;
         overflow-y: auto;
+    }
+}
+:deep(.n-upload-file-list) {
+    display: block;
+    .n-upload-file {
+        width: 100%;
+      height: 140px;
     }
 }
 </style>

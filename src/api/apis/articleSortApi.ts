@@ -1,35 +1,35 @@
-import { request } from "@/api"
+import { api } from '@/api'
 
 const articleSortApi = {
     /**
      * 文章分类列表
      */
-    list: (params?: any) => request.get("/articleSort/list", params),
+    list: (params?: any) => api.get('/articleSort/list', params),
 
     /**
      * 全部文章分类列表
      */
-    allList: (params?: any) => request.get("/articleSort/allList", params),
+    allList: (params?: any) => api.get('/articleSort/allList', params),
 
     /**
      * 获取文章详情
      */
-    detail: (params?: any) => request.get("/articleSort/detail", params),
+    detail: (params?: any) => api.get('/articleSort/detail', params),
 
     /**
      * 文章分类添加
      */
-    add: (params?: any) => request.post("/articleSort/add", params),
+    add: (params?: any) => api.post('/articleSort/add', params),
 
     /**
      * 文章分类编辑
      */
-    edit: (params?: any) => request.put("/articleSort/edit", params),
+    edit: (params?: any) => api.put('/articleSort/edit', params),
 
     /**
      * 文章分类删除
      */
-    delete: (params?: any) => request.delete("/articleSort/delete", params)
+    delete: (params?: any) => api.delete('/articleSort/delete', params)
 }
 
 export default articleSortApi

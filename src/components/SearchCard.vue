@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+defineEmits(['search-handle', 'reset-handle'])
 
 </script>
 
@@ -22,18 +23,18 @@
     border-radius: $card-box-radius;
     .search-card-content {
         flex: 1;
-        .n-form {
+        :deep(.n-form) {
             display: flex;
             flex-wrap: wrap;
             row-gap: 10px
         }
-        .n-input {
+        :deep(.n-input) {
             width: 200px !important;
         }
-        .n-select {
+        :deep(.n-select) {
             width: 200px !important;
         }
-        .n-input--pair {
+        :deep(.n-input--pair) {
             width: 360px !important;
         }
     }

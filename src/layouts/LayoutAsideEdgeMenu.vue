@@ -19,7 +19,7 @@ const menuOptions = computed(() => {
 const activeMenu = currentRoute
 
 // 切换导航
-const navigatMenu = (route: RouteRecordRaw) => {
+const navigateMenu = (route: RouteRecordRaw) => {
     router.push(route.path)
 }
 </script>
@@ -31,9 +31,11 @@ const navigatMenu = (route: RouteRecordRaw) => {
         </div>
 
         <n-scrollbar class="edge-menu-box">
-            <div v-for="item in menuOptions" :key="item.name"
+            <div
+                v-for="item in menuOptions" :key="item.name"
                 :class="['edge-menu-item', activeMenu === item.path ? 'edge-menu-active' : '']"
-                @click="navigatMenu(item)">
+                @click="navigateMenu(item)"
+            >
                 <NIcon v-if="item.meta?.icon" :component="item.meta.icon" size="20" />
                 <div class="edge-menu-label">{{ item.meta?.title }}</div>
             </div>

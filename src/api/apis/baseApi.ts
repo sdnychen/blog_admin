@@ -1,32 +1,32 @@
-import { request } from "@/api"
+import { api } from '@/api'
 
 const baseApi = {
     /**
      * 获取验证码
      */
     getVerifyImg: () => {
-        return request.get<string>("/verifyCode")
+        return api.get<string>('/verifyCode')
     },
 
     /**
      * 登录
      */
-    login: (params: any) => {
-        return request.post("/login", params)
+    login: (params: LoginForm) => {
+        return api.post<LoginInfo>('/login', params)
     },
 
     /**
      * 登录检测
      */
     check: () => {
-        return request.post("/check")
+        return api.post<LoginInfo>('/check')
     },
 
     /**
      * sts授权
      */
     sts: () => {
-        return request.get("/sts")
+        return api.get<StsRequest>('/sts')
     }
 }
 

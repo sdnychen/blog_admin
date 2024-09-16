@@ -1,10 +1,10 @@
-import { request } from "@/api"
+import { api } from '@/api'
 
 const authApi = {
     /**
      * 全部权限列表
      */
-    getAllList: () => request.get("/auth/allList")
+    getAllList: () => api.get<AuthResponse[]>('/auth/allList')
 }
 
 export default authApi

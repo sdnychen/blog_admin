@@ -77,8 +77,10 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
             </span>
         </div>
         <n-scrollbar>
-            <n-menu ref="menuRef" :collapsed="false" :collapsed-width="64" :collapsed-icon-size="22" :indent="20"
-                :value="currMenu" :options="menuOptions" :on-update:value="changeMenu" />
+            <n-menu
+                ref="menuRef" :collapsed="false" :collapsed-width="64" :collapsed-icon-size="22" :indent="20"
+                :value="currMenu" :options="menuOptions" :on-update:value="changeMenu"
+            />
         </n-scrollbar>
     </div>
 </template>

@@ -81,14 +81,18 @@ onMounted(() => {
         <div class="login-right">
             <div class="login-form-box">
                 <div class="title">登录</div>
-                <n-form ref="loginFormRef" :label-width="80" :model="loginForm" :rules="rules">
+                <n-form ref="loginFormRef" :label-width="80" :model="loginForm" :rules="rules" @keydown.enter="handleLogin">
                     <n-form-item label="用户名" path="username">
-                        <n-input v-model:value="loginForm.username" placeholder="请输入用户名"
-                            :input-props="{ autocomplete: 'username' }" />
+                        <n-input
+                            v-model:value="loginForm.username" placeholder="请输入用户名"
+                            :input-props="{ autocomplete: 'username' }"
+                        />
                     </n-form-item>
                     <n-form-item label="密码" path="password">
-                        <n-input v-model:value="loginForm.password" type="password" show-password-on="mousedown"
-                            placeholder="请输入密码" :input-props="{ autocomplete: 'current-password' }" />
+                        <n-input
+                            v-model:value="loginForm.password" type="password" show-password-on="mousedown"
+                            placeholder="请输入密码" :input-props="{ autocomplete: 'current-password' }"
+                        />
                     </n-form-item>
                     <n-form-item label="验证码" path="verify">
                         <n-input v-model:value="loginForm.verify" placeholder="请输入验证码" />
@@ -96,8 +100,10 @@ onMounted(() => {
                             <n-spin size="small" />
                         </div>
                         <div v-else-if="verifyImg" class="verify-box">
-                            <img class="verify-img" :src="`data:image/png;base64,${verifyImg}`" alt="验证码图片"
-                                @click="getVerify">
+                            <img
+                                class="verify-img" :src="`data:image/png;base64,${verifyImg}`" alt="验证码图片"
+                                @click="getVerify"
+                            >
                         </div>
                         <div v-else class="verify-box" @click="getVerify">
                             <span>加载失败</span>
@@ -106,13 +112,10 @@ onMounted(() => {
                     </n-form-item>
                 </n-form>
                 <div class="remember-password">
-                    <n-checkbox v-model:checked="remember">
-                        记住密码
-                    </n-checkbox>
+                    <n-checkbox v-model:checked="remember">记住密码</n-checkbox>
                 </div>
                 <div class="login-btn" @click="handleLogin">登录</div>
-                <div class="back-register">
-                </div>
+                <div class="back-register" />
             </div>
         </div>
     </div>

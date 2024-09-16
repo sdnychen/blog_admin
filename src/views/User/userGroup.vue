@@ -8,31 +8,19 @@ import userApi from '@/api/apis/userApi'
 import DataTable from '@/components/DataTable.vue'
 import SearchCard from '@/components/SearchCard.vue'
 
-type TableDataType = {
-    id: string,
-    groupName: string,
-    createTime: string
-    remark: string
-}
-
-type addEditFormType = {
-    groupName: string,
-    remark: string
-}
-
-const queryForm = ref({
+const queryForm = ref<UserGroupQueryForm>({
     page: 1,
     userGroupName: ''
 })
-const queryFormInit = ref({
+const queryFormInit = ref<UserGroupQueryForm>({
     page: 1,
     userGroupName: ''
 })
-const addEditForm = ref<addEditFormType>({
+const addEditForm = ref<UserGroupAddEditForm>({
     groupName: '',
     remark: ''
 })
-const addEditFormInit = ref<addEditFormType>({
+const addEditFormInit = ref<UserGroupAddEditForm>({
     groupName: '',
     remark: ''
 })
@@ -48,9 +36,9 @@ const userValue = ref<Array<string | number>>([])
 const userOptions = ref<TransferOption[]>([])
 const authValue = ref<Array<string | number>>([])
 const authOptions = ref<TransferOption[]>([])
-const currDrawerUserGroup = ref<TableDataType | null>(null)
+const currDrawerUserGroup = ref<UserGroupTableDataType>()
 
-const dataList = ref<TableDataType[]>([])
+const dataList = ref<UserGroupTableDataType[]>([])
 const total = ref<number>(0)
 // 用户组列表
 const getList = async () => {
@@ -65,7 +53,7 @@ const getList = async () => {
 const onDeleteHandle = async (id: string) => {
     const { success } = await userGroupApi.deleteUserGroup({id})
     if (success) {
-        getList()
+        await getList()
     }
 }
 
@@ -73,7 +61,7 @@ const onDeleteHandle = async (id: string) => {
 const getAuthList = async () => {
     const { data } = await authApi.getAllList()
     authOptions.value = []
-    data.forEach((item: authRequestType) => {
+    data.forEach((item: AuthResponse) => {
         authOptions.value.push({
             label: item.authName,
             value: item.id,
@@ -85,7 +73,7 @@ const getAuthList = async () => {
 const getAllUser = async () => {
     const { data } = await userApi.getAllUserList()
     userOptions.value = []
-    data.forEach((item: userRequestType) => {
+    data.forEach((item: UserTableDataType) => {
         userOptions.value.push({
             label: item.username,
             value: item.id,
@@ -97,7 +85,7 @@ const getAllUser = async () => {
 const getUserGroupAuth = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupAuthList({id})
     authValue.value = []
-    data.forEach((item: authRequestType) => {
+    data.forEach((item: AuthResponse) => {
         authValue.value.push(item.id)
     })
 }
@@ -105,7 +93,7 @@ const getUserGroupAuth = async (id: string) => {
 const getUser = async (id: string) => {
     const { data } = await userApi.getUserInUserGroup({id})
     userValue.value = []
-    data.forEach((item: userRequestType) => {
+    data.forEach((item: UserTableDataType) => {
         userValue.value.push(item.id)
     })
 }
@@ -125,7 +113,7 @@ const onEditHandle = async (id: string) => {
     showAddEditModal.value = true
 }
 // 向用户组添加用户
-const onAddUserHandle = (user: TableDataType) => {
+const onAddUserHandle = (user: UserGroupTableDataType) => {
     getAllUser()
     getUser(user.id)
     currDrawerUserGroup.value = user
@@ -133,7 +121,7 @@ const onAddUserHandle = (user: TableDataType) => {
     showUserAndAuthDrawer.value = true
 }
 // 授权
-const onAuthHandle = (user: TableDataType) => {
+const onAuthHandle = (user: UserGroupTableDataType) => {
     getAuthList()
     getUserGroupAuth(user.id)
     currDrawerUserGroup.value = user
@@ -176,13 +164,13 @@ const onSubmitModalHandle = () => {
                 const { success } = await userGroupApi.addUserGroup(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
             } else if (addEditModalType.value === 'edit') {
                 const { success } = await userGroupApi.editUserGroup(addEditForm.value)
                 if (success) {
                     onCloseModalHandle()
-                    getList()
+                    await getList()
                 }
             }
         }
@@ -214,7 +202,7 @@ const onSubmitDrawerHandle = async () => {
     onCloseDrawerHandle()
 }
 
-const columns = reactive<DataTableColumns<TableDataType>>([
+const columns = reactive<DataTableColumns<UserGroupTableDataType>>([
     {title: '用户组名', key: 'groupName', fixed: 'left', width: 200, ellipsis: {tooltip: true} },
     {
         title: '创建时间', key: 'createTime', width: 180,
@@ -266,13 +254,15 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                 </SearchCard>
             </template>
             <template #buttonSlot>
-                <n-button type="info" @click="onAddHandle">添加</n-button>
+                <n-button type="info" @click="onAddHandle">
+                    添加
+                </n-button>
             </template>
         </DataTable>
     </div>
     <n-modal
-        preset="card"
         v-model:show="showAddEditModal"
+        preset="card"
         :title="addEditModalTitle"
         :mask-closable="false"
         style="width: 600px;"
@@ -297,8 +287,12 @@ const columns = reactive<DataTableColumns<TableDataType>>([
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitModalHandle">提交</n-button>
-                <n-button @click="onCloseModalHandle">取消</n-button>
+                <n-button type="info" @click="onSubmitModalHandle">
+                    提交
+                </n-button>
+                <n-button @click="onCloseModalHandle">
+                    取消
+                </n-button>
             </div>
         </template>
     </n-modal>
@@ -352,12 +346,16 @@ const columns = reactive<DataTableColumns<TableDataType>>([
                     target-filterable
                 />
             </div>
-        <template #footer>
-            <div class="drawer-footer">
-                <n-button type="info" @click="onSubmitDrawerHandle">提交</n-button>
-                <n-button @click="onCloseDrawerHandle">取消</n-button>
-            </div>
-        </template>
+            <template #footer>
+                <div class="drawer-footer">
+                    <n-button type="info" @click="onSubmitDrawerHandle">
+                        提交
+                    </n-button>
+                    <n-button @click="onCloseDrawerHandle">
+                        取消
+                    </n-button>
+                </div>
+            </template>
         </n-drawer-content>
     </n-drawer>
 </template>

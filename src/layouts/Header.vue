@@ -47,9 +47,9 @@ const userMenuList = reactive<DropdownOption[]>([
                 </n-breadcrumb-item>
             </n-breadcrumb>
         </div>
-        <div class="layout-header layout-header-center"></div>
+        <div class="layout-header layout-header-center" />
         <div class="layout-header layout-header-right">
-            <div class="layout-header-button-box"></div>
+            <div class="layout-header-button-box" />
             <div class="layout-header-avatar-box">
                 <n-dropdown trigger="hover" :options="userMenuList" @select="userMenuHandle">
                     <n-avatar round size="medium" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />

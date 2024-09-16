@@ -26,7 +26,7 @@ const init = reactive({
 .editor-content-box {
     height: 100%;
 }
-.tox-tinymce {
+:deep(.tox-tinymce) {
     height: 100% !important;
 }
 </style>

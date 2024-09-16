@@ -4,7 +4,6 @@ import { NTime, NButton, NImage, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import articleApi from '@/api/apis/articleApi'
 import DeletedEnum from '@/enum/DeletedEnum'
-import { articleStatusList } from '@/enum/ArticleStatusEnum'
 import DataTable from '@/components/DataTable.vue'
 import SearchCard from '@/components/SearchCard.vue'
 
@@ -56,15 +55,15 @@ const resetHandle = () => {
 }
 
 // 还原恢复
-const onRecoveryHandle = async (id: String) => {
+const onRecoveryHandle = async (id: string) => {
     const { success } = await articleApi.deleteRecovery({
         id: id,
         deleted: DeletedEnum['未删除']
     })
-    success && await getList()
+    if (success) await getList()
 }
 // 彻底删除
-const onDeleteHandle = (id: String) => {
+const onDeleteHandle = (id: string) => {
     dialog.warning({
         title: '永久删除警告',
         content: '永久删除后不可恢复，确定永久删除？',
@@ -72,7 +71,7 @@ const onDeleteHandle = (id: String) => {
         negativeText: '取消',
         onPositiveClick: async () => {
             const { success } = await articleApi.delete({id})
-            success && await getList()
+            if (success) await getList()
         }
     })
 }
@@ -125,17 +124,12 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false">
+                    <n-form
+                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        :show-feedback="false"
+                    >
                         <n-form-item label="文章标题">
                             <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
-                        </n-form-item>
-                        <n-form-item label="发布状态">
-                            <n-select
-                                v-model:value="queryForm.status"
-                                :options="articleStatusList()"
-                                placeholder="请选择发布状态"
-                                clearable />
                         </n-form-item>
                     </n-form>
                 </SearchCard>

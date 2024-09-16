@@ -18,13 +18,13 @@ class server {
         this.instance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
             request.headers.Authorization = localStorage.getItem('token')
             return request
-        }, (err: any) => {
+        }, (err: unknown) => {
             return Promise.reject(err)
         })
         // 响应拦截器
         this.instance.interceptors.response.use(async (response: AxiosResponse) => {
             // 统一消息通知处理
-            response.headers.authorization && localStorage.setItem('token', response.headers.authorization)
+            if (response.headers.authorization) localStorage.setItem('token', response.headers.authorization)
             const resolve = response.data
             if (resolve.success && resolve.msg) {
                 message.success(resolve.msg)
@@ -39,7 +39,7 @@ class server {
             }
 
             return resolve
-        }, (err: any) => {
+        }, (err: unknown) => {
             return Promise.reject(err)
         })
     }
@@ -58,7 +58,7 @@ class server {
      * @param params
      * @param config
      */
-    public get<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Result<T>> {
+    public get<T>(url: string, params?: object, config?: AxiosRequestConfig): Promise<Result<T>> {
         return this.instance.get(url, {...config, params})
     }
 
@@ -68,7 +68,7 @@ class server {
      * @param data
      * @param config
      */
-    public post<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Result<T>> {
+    public post<T>(url: string, data?: object, config?: AxiosRequestConfig): Promise<Result<T>> {
         return this.instance.post(url, data, config)
     }
 
@@ -78,7 +78,7 @@ class server {
      * @param data
      * @param config
      */
-    public put<T = any>(url: string, data?: Object, config?: AxiosRequestConfig): Promise<Result<T>> {
+    public put<T>(url: string, data?: object, config?: AxiosRequestConfig): Promise<Result<T>> {
         return this.instance.put(url, data, config)
     }
 
@@ -88,7 +88,7 @@ class server {
      * @param params
      * @param config
      */
-    public delete<T = any>(url: string, params?: Object, config?: AxiosRequestConfig): Promise<Result<T>> {
+    public delete<T>(url: string, params?: object, config?: AxiosRequestConfig): Promise<Result<T>> {
         return this.instance.delete(url, {...config, params})
     }
 }

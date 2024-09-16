@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { h, ref, reactive, onMounted } from 'vue'
-import { NTime, NButton, useDialog } from 'naive-ui'
+import { NTime, NButton, useDialog, useMessage } from 'naive-ui'
 import type { DataTableColumns, FormRules, FormInst } from 'naive-ui'
 import articleTagApi from '@/api/apis/articleTagApi'
 import SearchCard from '@/components/SearchCard.vue'
 import DataTable from '@/components/DataTable.vue'
 
 const dialog = useDialog()
+const message = useMessage()
 
 type queryFormType = {
     page: number,
@@ -59,8 +60,9 @@ const tagListLoading = ref<boolean>(false)
 
 const getList = async () => {
     tagListLoading.value = true
-    const { data } = await articleTagApi.list(queryForm.value)
+    const { data, success } = await articleTagApi.list(queryForm.value)
     tagListLoading.value = false
+    if (!success) return
     dataList.value = data.list
     total.value = data.total
 }
@@ -105,13 +107,17 @@ const onDeleteHandle = (id: string) => {
     })
 }
 
+// 复制颜色
+const colorCopy = async (color: string) => {
+    await navigator.clipboard.writeText(color).catch(() => message.error('复制失败'))
+    message.success('复制成功')
+}
+
 const columns = reactive<DataTableColumns<articleTagRequestType>>([
     {title: '标签名', key: 'name', fixed: 'left', width: 140, ellipsis: {tooltip: true}},
     {
         title: '颜色', key: 'color', align: 'center', width: 100,
-        render: (row) => h('div', {class: 'color-preview-box', style: {backgroundColor: row.color}, onClick: () => {
-            navigator.clipboard.writeText(row.color)
-        }})
+        render: (row) => h('div', {class: 'color-preview-box', style: {backgroundColor: row.color}, onClick: () => colorCopy(row.color)})
     },
     {
         title: '创建时间', key: 'createTime', width: 180,
@@ -206,7 +212,7 @@ onMounted(() => {
         </n-form>
         <template #footer>
             <div class="modal-footer">
-                <n-button type="info" @click="onSubmitModalHandle">提交1</n-button>
+                <n-button type="info" @click="onSubmitModalHandle">提交</n-button>
                 <n-button @click="onCloseModalHandle">取消</n-button>
             </div>
         </template>
@@ -214,7 +220,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.color-preview-box {
+:deep(.color-preview-box) {
     width: 40px;
     height: 22px;
     border-radius: 4px;

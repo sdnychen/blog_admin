@@ -19,12 +19,12 @@ interface tabItem {
     title: string,
     name: string,
     path: string,
-    closeable: Boolean
+    closeable: boolean
 }
 
 // 获取tab-content元素
 const content = ref<any>(null)
-const showArrow = ref<Boolean>(false)
+const showArrow = ref<boolean>(false)
 // 计算是否显示两侧左右按钮
 const computedShowArrow = () => {
     showArrow.value = content.value?.scrollWidth > content.value?.clientWidth
@@ -90,7 +90,7 @@ const closeTab = (item: tabItem, index: number) => {
 }
 
 // 显示隐藏菜单
-const showDropdownRef = ref<Boolean>(false)
+const showDropdownRef = ref<boolean>(false)
 // 当前点击的菜单
 const rightClickTab = ref<string | null>(null)
 // 右击菜单事件
@@ -161,7 +161,7 @@ const contentScrollHandle = (type: string) => {
 }
 
 // 检测页面是否已打开
-const checkOpen = (name: string): Boolean => {
+const checkOpen = (name: string): boolean => {
     return tabsArray.value.some(item => item.name === name)
 }
 // 监听路由变化
@@ -205,13 +205,17 @@ watch(() => screenWidth.value, () => {
     <div class="tabs-bar">
         <div class="tab-left-box">
             <div v-if="showArrow" class="previous-btn" @click="contentScrollHandle('left')">
-                <NIcon :component="ChevronBack" size="20"/>
+                <NIcon :component="ChevronBack" size="20" />
             </div>
-            <div class="tab-content" ref="content">
-                <div v-for="(item, index) in tabsArray" :key="item.name"
-                    @contextmenu="handleContextMenu($event, item.name)" class="tab-item">
-                    <n-dropdown :options="itemMenuList" :show="showDropdownRef && rightClickTab === item.name"
-                        @select="handleItemMenu($event, item, index)" @clickoutside="handleCloseMenu">
+            <div ref="content" class="tab-content">
+                <div
+                    v-for="(item, index) in tabsArray" :key="item.name"
+                    class="tab-item" @contextmenu="handleContextMenu($event, item.name)"
+                >
+                    <n-dropdown
+                        :options="itemMenuList" :show="showDropdownRef && rightClickTab === item.name"
+                        @select="handleItemMenu($event, item, index)" @clickoutside="handleCloseMenu"
+                    >
                         <div :class="['tab-item-content', currentActiveTab === item.name ? 'active' : '']">
                             <div class="title" @click="handleSwitchTab(item.name)">{{ item.title }}</div>
                             <div class="icon" @click="closeTab(item, index)">
