@@ -49,6 +49,10 @@ interface StsRequest {
     securityToken: string
 }
 
-interface QueryFormBase {
+interface QueryParam {
     page: number
+}
+
+interface IDParam {
+    id: string
 }

@@ -16,11 +16,11 @@ const queryFormInit = ref<UserGroupQueryForm>({
     page: 1,
     userGroupName: ''
 })
-const addEditForm = ref<UserGroupAddEditForm>({
+const addEditForm = ref<UserGroupDataType>({
     groupName: '',
     remark: ''
 })
-const addEditFormInit = ref<UserGroupAddEditForm>({
+const addEditFormInit = ref<UserGroupDataType>({
     groupName: '',
     remark: ''
 })
@@ -32,13 +32,13 @@ const addEditModalTitle = ref<string | null>(null)
 const userAndAuthDrawerType = ref<string | null>(null)
 const userGroupListLoading = ref<boolean>(false)
 
-const userValue = ref<Array<string | number>>([])
+const userValue = ref<Array<string>>([])
 const userOptions = ref<TransferOption[]>([])
-const authValue = ref<Array<string | number>>([])
+const authValue = ref<Array<string>>([])
 const authOptions = ref<TransferOption[]>([])
-const currDrawerUserGroup = ref<UserGroupTableDataType>()
+const currDrawerUserGroup = ref<UserGroupDataType>()
 
-const dataList = ref<UserGroupTableDataType[]>([])
+const dataList = ref<UserGroupDataType[]>([])
 const total = ref<number>(0)
 // 用户组列表
 const getList = async () => {
@@ -73,10 +73,10 @@ const getAuthList = async () => {
 const getAllUser = async () => {
     const { data } = await userApi.getAllUserList()
     userOptions.value = []
-    data.forEach((item: UserTableDataType) => {
+    data.forEach((item: UserDataType) => {
         userOptions.value.push({
             label: item.username,
-            value: item.id,
+            value: item.id as string,
             disabled: false
         })
     })
@@ -93,8 +93,8 @@ const getUserGroupAuth = async (id: string) => {
 const getUser = async (id: string) => {
     const { data } = await userApi.getUserInUserGroup({id})
     userValue.value = []
-    data.forEach((item: UserTableDataType) => {
-        userValue.value.push(item.id)
+    data.forEach((item: UserDataType) => {
+        userValue.value.push(item.id as string)
     })
 }
 
@@ -113,17 +113,17 @@ const onEditHandle = async (id: string) => {
     showAddEditModal.value = true
 }
 // 向用户组添加用户
-const onAddUserHandle = (user: UserGroupTableDataType) => {
+const onAddUserHandle = (user: UserGroupDataType) => {
     getAllUser()
-    getUser(user.id)
+    getUser(user.id as string)
     currDrawerUserGroup.value = user
     userAndAuthDrawerType.value = 'user'
     showUserAndAuthDrawer.value = true
 }
 // 授权
-const onAuthHandle = (user: UserGroupTableDataType) => {
+const onAuthHandle = (user: UserGroupDataType) => {
     getAuthList()
-    getUserGroupAuth(user.id)
+    getUserGroupAuth(user.id as string)
     currDrawerUserGroup.value = user
     userAndAuthDrawerType.value = 'auth'
     showUserAndAuthDrawer.value = true
@@ -184,7 +184,7 @@ const onCloseDrawerHandle = () => {
 const onSubmitDrawerHandle = async () => {
     if (userAndAuthDrawerType.value === 'user') {
         const { success } = await userGroupApi.updateUserList({
-            id: currDrawerUserGroup.value?.id,
+            id: currDrawerUserGroup.value?.id as string,
             userId: userValue.value
         })
         if (success) {
@@ -192,7 +192,7 @@ const onSubmitDrawerHandle = async () => {
         }
     } else {
         const { success } = await userGroupApi.updateUserGroupAuthList({
-            id: currDrawerUserGroup.value?.id,
+            id: currDrawerUserGroup.value?.id as string,
             authList: authValue.value
         })
         if (success) {
@@ -202,20 +202,20 @@ const onSubmitDrawerHandle = async () => {
     onCloseDrawerHandle()
 }
 
-const columns = reactive<DataTableColumns<UserGroupTableDataType>>([
+const columns = reactive<DataTableColumns<UserGroupDataType>>([
     {title: '用户组名', key: 'groupName', fixed: 'left', width: 200, ellipsis: {tooltip: true} },
     {
         title: '创建时间', key: 'createTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
     },
     {title: '备注', key: 'remark', minWidth: 180, ellipsis: {tooltip: true}},
     {
         title: '操作', key: 'operation', fixed: 'right', width: 200,
         render: (row) => [
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id as string)}, () => '修改'),
             h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAddUserHandle(row)}, () => '添加用户'),
             h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAuthHandle(row)}, () => '授权'),
-            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '删除')
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id as string)}, () => '删除')
         ]
     }
 ])
@@ -360,7 +360,7 @@ const columns = reactive<DataTableColumns<UserGroupTableDataType>>([
     </n-drawer>
 </template>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .content-layout {
     display: flex;
     flex-direction: column;

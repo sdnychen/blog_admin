@@ -17,19 +17,19 @@ const message = useMessage()
 const dialog = useDialog()
 const userStore = useUserStore()
 
-const queryForm = ref<UserQueryForm>({
+const queryForm = ref<UserQueryParam>({
     page: 1,
     username: '',
     mobile: '',
     email: ''
 })
-const queryFormInit = ref<UserQueryForm>({
+const queryFormInit = ref<UserQueryParam>({
     page: 1,
     username: '',
     mobile: '',
     email: ''
 })
-const addEditForm = ref<UserAddEditForm>({
+const addEditForm = ref<UserDataType>({
     username: '',
     mobile: '',
     email: '',
@@ -38,7 +38,7 @@ const addEditForm = ref<UserAddEditForm>({
     checkPassword: '',
     remark: ''
 })
-const addEditFormInit = ref<UserAddEditForm>({
+const addEditFormInit = ref<UserDataType>({
     username: '',
     mobile: '',
     email: '',
@@ -62,9 +62,9 @@ const userGroupValue = ref<Array<string>>([])
 const userGroupOptions = ref<TransferOption[]>([])
 const authValue = ref<Array<string>>([])
 const authOptions = ref<TransferOption[]>([])
-const currUser = ref<UserTableDataType>()
+const currUser = ref<UserDataType>()
 
-const dataList = ref<UserTableDataType[]>([])
+const dataList = ref<UserDataType[]>([])
 const total = ref<number>(0)
 // 用户列表
 const getList = async () => {
@@ -76,9 +76,9 @@ const getList = async () => {
 }
 
 // 状态改变
-const statusChangeHandle = async (row: UserTableDataType, index: number) => {
+const statusChangeHandle = async (row: UserDataType, index: number) => {
     dataList.value[index].status = row.status === UserStatusEnum['启用'] ? UserStatusEnum['禁用'] : UserStatusEnum['启用']
-    await userApi.updateStatus({id: row.id, status: row.status})
+    await userApi.updateStatus({id: row.id as string, status: row.status as number})
     await getList()
 }
 // 删除
@@ -113,10 +113,10 @@ const getAuthList = async () => {
 const getAllUserGroup = async () => {
     const { data } = await userGroupApi.getAllUserGroupList()
     userGroupOptions.value = []
-    data.forEach((item: UserGroupTableDataType) => {
+    data.forEach((item: UserGroupDataType) => {
         userGroupOptions.value.push({
             label: item.groupName,
-            value: item.id,
+            value: item.id as string,
             disabled: false
         })
     })
@@ -134,8 +134,8 @@ const getUserAuth = async (id: string) => {
 const getUserGroup = async (id: string) => {
     const { data } = await userGroupApi.getUserGroupByUser({id})
     userGroupValue.value = []
-    data.forEach((item: UserGroupTableDataType) => {
-        userGroupValue.value.push(item.id)
+    data.forEach((item: UserGroupDataType) => {
+        userGroupValue.value.push(item.id as string)
     })
 }
 
@@ -155,23 +155,23 @@ const onEditHandle = async (id: string) => {
     showAddEditModal.value = true
 }
 // 添加到用户组
-const onAddUserGroupHandle = (user: UserTableDataType) => {
+const onAddUserGroupHandle = (user: UserDataType) => {
     getAllUserGroup()
-    getUserGroup(user.id)
+    getUserGroup(user.id as string)
     currUser.value = user
     userGroupAndAuthDrawerType.value = 'userGroup'
     showUserGroupAndAuthDrawer.value = true
 }
 // 授权
-const onAuthHandle = (user: UserTableDataType) => {
+const onAuthHandle = (user: UserDataType) => {
     getAuthList()
-    getUserAuth(user.id)
+    getUserAuth(user.id as string)
     currUser.value = user
     userGroupAndAuthDrawerType.value = 'auth'
     showUserGroupAndAuthDrawer.value = true
 }
 // 重置密码
-const onResetPasswordHandle = (user: UserTableDataType) => {
+const onResetPasswordHandle = (user: UserDataType) => {
     currUser.value = user
     addEditModalType.value = 'reset'
     addEditModalTitle.value = '重置密码'
@@ -303,7 +303,7 @@ const onSubmitDrawerHandle = async () => {
     onCloseDrawerHandle()
 }
 
-const columns = reactive<DataTableColumns<UserTableDataType>>([
+const columns = reactive<DataTableColumns<UserDataType>>([
     {title: '用户名', key: 'username', fixed: 'left', width: 200, ellipsis: {tooltip: true} },
     {title: '手机号', key: 'mobile', width: 120 },
     {title: '邮箱', key: 'email', width: 200, ellipsis: {tooltip: true} },
@@ -313,7 +313,7 @@ const columns = reactive<DataTableColumns<UserTableDataType>>([
     },
     {
         title: '创建时间', key: 'createTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
     },
     {title: '备注', key: 'remark', minWidth: 180, ellipsis: {tooltip: true}},
     {
@@ -323,14 +323,14 @@ const columns = reactive<DataTableColumns<UserTableDataType>>([
     {
         title: '操作', key: 'operation', fixed: 'right', width: 300,
         render: (row) => [
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id)}, () => '修改'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onEditHandle(row.id as string)}, () => '修改'),
             h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAddUserGroupHandle(row)}, () => '添加到用户组'),
             h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onAuthHandle(row)}, () => '授权'),
             h(NButton, {text: true, type: 'info', style: {
                 display: userStore.userInfo?.id === '1' ? 'inline-flex' : 'none',
                 marginRight: '10px'
             }, onClick: () => onResetPasswordHandle(row)}, () => '重置密码'),
-            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '删除')
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id as string)}, () => '删除')
         ]
     }
 ])
