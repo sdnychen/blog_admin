@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, h } from 'vue'
+import { reactive, ref, onMounted, h, useTemplateRef } from 'vue'
 import { NSwitch, NTime, NImage, NButton, useMessage, useDialog } from 'naive-ui'
 import type { DataTableColumns, UploadFileInfo, UploadCustomRequestOptions, FormRules, FormInst, TransferOption } from 'naive-ui'
 import userApi from '@/api/apis/userApi'
@@ -236,7 +236,7 @@ const removeFile = () => {
     addEditForm.value.avatar = ''
 }
 
-const addEditFormRef = ref<FormInst | null>()
+const addEditFormRef = useTemplateRef<FormInst>('addEditFormRef')
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
@@ -354,14 +354,7 @@ const columns = reactive<DataTableColumns<UserDataType>>([
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form
-                        ref="formRef"
-                        inline
-                        :model="queryForm"
-                        label-width="auto"
-                        label-placement="left"
-                        :show-feedback="false"
-                    >
+                    <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="用户名">
                             <n-input v-model:value="queryForm.username" placeholder="用户名" clearable />
                         </n-form-item>
@@ -461,7 +454,6 @@ const columns = reactive<DataTableColumns<UserDataType>>([
                 </div>
                 <n-transfer
                     v-if="userGroupAndAuthDrawerType === 'userGroup'"
-                    ref="userGroupTransfer"
                     v-model:value="userGroupValue"
                     :options="userGroupOptions"
                     source-title="全部用户组"
@@ -476,7 +468,6 @@ const columns = reactive<DataTableColumns<UserDataType>>([
                 />
                 <n-transfer
                     v-else
-                    ref="authTransfer"
                     v-model:value="authValue"
                     :options="authOptions"
                     source-title="全部权限"

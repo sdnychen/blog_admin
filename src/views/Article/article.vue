@@ -170,7 +170,7 @@ onMounted(() => {
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
                     <n-form
-                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
+                        inline :model="queryForm" label-width="auto" label-placement="left"
                         :show-feedback="false"
                     >
                         <n-form-item label="文章标题">

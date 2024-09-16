@@ -6,6 +6,14 @@ import { useMenuStore } from '@/stores/menu'
 import constantRouter from './constantRouter'
 import dynamicRouter from './dynamicRouter'
 
+declare module 'vue-router' {
+    interface RouteMeta {
+        title: string,
+        auth?: string | string[],
+        icon?: object,
+    }
+}
+
 const routes: Array<RouteRecordRaw> = [
     ...constantRouter
 ]

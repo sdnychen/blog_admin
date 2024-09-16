@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, ref, reactive, onMounted } from 'vue'
+import { h, ref, reactive, onMounted, useTemplateRef } from 'vue'
 import { NTime, NButton, useDialog, useMessage } from 'naive-ui'
 import type { DataTableColumns, FormRules, FormInst } from 'naive-ui'
 import articleTagApi from '@/api/apis/articleTagApi'
@@ -9,11 +9,11 @@ import DataTable from '@/components/DataTable.vue'
 const dialog = useDialog()
 const message = useMessage()
 
-const queryForm = ref<articleTagQueryParam>({
+const queryForm = ref<articleTagSortQueryParam>({
     page: 1,
     name: ''
 })
-const queryFormInit = ref<articleTagQueryParam>({
+const queryFormInit = ref<articleTagSortQueryParam>({
     page: 1,
     name: ''
 })
@@ -122,7 +122,7 @@ const columns = reactive<DataTableColumns<articleTagDataType>>([
     }
 ])
 
-const addEditFormRef = ref<FormInst | null>()
+const addEditFormRef = useTemplateRef<FormInst>('addEditFormRef')
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
@@ -172,10 +172,7 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form
-                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false"
-                    >
+                    <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="标签名">
                             <n-input v-model:value="queryForm.name" placeholder="标签名" clearable />
                         </n-form-item>

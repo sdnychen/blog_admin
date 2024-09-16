@@ -2,7 +2,7 @@
 import Editor from '@tinymce/tinymce-vue'
 import { reactive, defineModel } from 'vue'
 
-const content = defineModel()
+const content = defineModel({type: String})
 const init = reactive({
     language: 'zh_CN',
     plugins: 'lists link image table code codesample help wordcount',

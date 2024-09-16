@@ -5,10 +5,10 @@ import home from './module/home'
 import content from './module/content'
 import material from './module/material'
 import comment from './module/comment'
-import menber from './module/member'
+import member from './module/member'
 import user from './module/user'
 import menu from './module/menu'
-import blogroll from './module/blogroll'
+import blogRoll from './module/blogroll'
 import ad from './module/ad'
 import setting from './module/setting'
 
@@ -18,10 +18,10 @@ const dynamicRouter: Array<RouteRecordRaw> = [
     ...content,
     ...material,
     ...comment,
-    ...menber,
+    ...member,
     ...user,
     ...menu,
-    ...blogroll,
+    ...blogRoll,
     ...ad,
     ...setting
 ]

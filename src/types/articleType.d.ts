@@ -35,8 +35,8 @@ interface ArticleDeleteRecoveryParam extends IDParam {
     deleted: number
 }
 
-// 文章标签查询
-interface articleTagQueryParam extends QueryParam {
+// 文章标签/分类查询
+interface articleTagSortQueryParam extends QueryParam{
     name: string
 }
 // 文章标签
@@ -48,10 +48,6 @@ interface articleTagDataType {
     remark: string
 }
 
-// 文章分类查询
-interface articleSortQueryParam extends QueryParam {
-    name: string
-}
 // 文章分类
 interface articleSortDataType {
     id?: string,

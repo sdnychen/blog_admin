@@ -8,10 +8,6 @@ interface ImportMeta {
     readonly env: ImportMetaEnv
 }
 
-interface RouteMeta {
-    title: string
-}
-
 // 登录表单
 interface LoginForm {
     username: string,

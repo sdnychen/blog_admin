@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, useTemplateRef } from 'vue'
 import type { FormValidationError } from 'naive-ui'
 import { Reload } from '@vicons/ionicons5'
 import BaseApi from '@/api/apis/baseApi'
@@ -39,7 +39,7 @@ const rules = reactive({
 const remember = ref(false)
 
 // 登录
-const loginFormRef = ref()
+const loginFormRef = useTemplateRef('loginFormRef')
 const handleLogin = () => {
     loginFormRef.value.validate(async (res: Array<FormValidationError>) => {
         if (!res) {

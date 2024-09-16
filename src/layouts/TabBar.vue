@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, watch, nextTick, onMounted } from 'vue'
+import { ref, reactive, watch, nextTick, onMounted, useTemplateRef } from 'vue'
 import type { DropdownOption } from 'naive-ui'
 import IconRender from '@/utils/IconRender'
 import { useRouter } from 'vue-router'
@@ -23,11 +23,12 @@ interface tabItem {
 }
 
 // 获取tab-content元素
-const content = ref<any>(null)
+const contentRef = useTemplateRef<HTMLInputElement>('content_ref')
 const showArrow = ref<boolean>(false)
 // 计算是否显示两侧左右按钮
 const computedShowArrow = () => {
-    showArrow.value = content.value?.scrollWidth > content.value?.clientWidth
+    if (!contentRef.value) return
+    showArrow.value = contentRef.value?.scrollWidth > contentRef.value?.clientWidth
 }
 
 const tabsArray = ref<tabItem[]>([
@@ -157,7 +158,8 @@ const handleOptionMenu = (key: string) => {
 
 // 左右箭头
 const contentScrollHandle = (type: string) => {
-    type === 'left' ? content.value.scrollLeft -= 100 : content.value.scrollLeft += 100
+    if (!contentRef.value) return
+    type === 'left' ? contentRef.value.scrollLeft -= 100 : contentRef.value.scrollLeft += 100
 }
 
 // 检测页面是否已打开
@@ -207,7 +209,7 @@ watch(() => screenWidth.value, () => {
             <div v-if="showArrow" class="previous-btn" @click="contentScrollHandle('left')">
                 <NIcon :component="ChevronBack" size="20" />
             </div>
-            <div ref="content" class="tab-content">
+            <div ref="content_ref" class="tab-content">
                 <div
                     v-for="(item, index) in tabsArray" :key="item.name"
                     class="tab-item" @contextmenu="handleContextMenu($event, item.name)"

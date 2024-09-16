@@ -37,7 +37,7 @@ const navigateMenu = (route: RouteRecordRaw) => {
                 @click="navigateMenu(item)"
             >
                 <NIcon v-if="item.meta?.icon" :component="item.meta.icon" size="20" />
-                <div class="edge-menu-label">{{ item.meta?.title }}</div>
+                <div class="edge-menu-label" v-text="item.meta?.title" />
             </div>
         </n-scrollbar>
     </div>

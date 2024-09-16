@@ -72,17 +72,17 @@ const columns = reactive<DataTableColumns<ArticleDataType>>([
     {title: '备注', key: 'remark', minWidth: 180},
     {
         title: '创建时间', key: 'createTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.createTime)})
+        render: (row) => h(NTime, {time: new Date(row.createTime as string)})
     },
     {
         title: '删除时间', key: 'deleteTime', width: 180,
-        render: (row) => h(NTime, {time: new Date(row.deleteTime)})
+        render: (row) => h(NTime, {time: new Date(row.deleteTime as string)})
     },
     {
         title: '操作', key: 'operation', fixed: 'right', width: 140,
         render: (row) => [
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onRecoveryHandle(row.id)}, () => '恢复'),
-            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id)}, () => '彻底删除')
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onRecoveryHandle(row.id as string)}, () => '恢复'),
+            h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id as string)}, () => '彻底删除')
         ]
     }
 ])
@@ -110,10 +110,7 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form
-                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false"
-                    >
+                    <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="文章标题">
                             <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
                         </n-form-item>

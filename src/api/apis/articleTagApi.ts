@@ -4,12 +4,12 @@ const articleTagApi = {
     /**
      * 文章标签列表
      */
-    list: (params: articleTagQueryParam) => api.get<ResponsePageData<articleTagDataType>>('/articleTag/list', params),
+    list: (params: articleTagSortQueryParam) => api.get<ResponsePageData<articleTagDataType>>('/articleTag/list', params),
 
     /**
      * 全部文章标签列表
      */
-    allList: (params?: articleTagQueryParam) => api.get<articleTagDataType[]>('/articleTag/allList', params),
+    allList: (params?: articleTagSortQueryParam) => api.get<articleTagDataType[]>('/articleTag/allList', params),
 
     /**
      * 获取文章详情

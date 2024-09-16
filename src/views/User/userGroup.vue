@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, h } from 'vue'
+import { reactive, ref, onMounted, h, useTemplateRef } from 'vue'
 import { NTime, NButton } from 'naive-ui'
 import type { DataTableColumns, FormRules, FormInst, TransferOption } from 'naive-ui'
 import userGroupApi from '@/api/apis/userGroupApi'
@@ -150,7 +150,7 @@ onMounted(() => {
     getList()
 })
 
-const addEditFormRef = ref<FormInst | null>()
+const addEditFormRef = useTemplateRef<FormInst>()
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
@@ -239,14 +239,7 @@ const columns = reactive<DataTableColumns<UserGroupDataType>>([
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form
-                        ref="formRef"
-                        inline
-                        :model="queryForm"
-                        label-width="auto"
-                        label-placement="left"
-                        :show-feedback="false"
-                    >
+                    <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="用户名">
                             <n-input v-model:value="queryForm.userGroupName" placeholder="用户组名" clearable />
                         </n-form-item>
@@ -317,7 +310,6 @@ const columns = reactive<DataTableColumns<UserGroupDataType>>([
                 </div>
                 <n-transfer
                     v-if="userAndAuthDrawerType === 'user'"
-                    ref="userGroupTransfer"
                     v-model:value="userValue"
                     :options="userOptions"
                     source-title="全部用户"
@@ -332,7 +324,6 @@ const columns = reactive<DataTableColumns<UserGroupDataType>>([
                 />
                 <n-transfer
                     v-else
-                    ref="authTransfer"
                     v-model:value="authValue"
                     :options="authOptions"
                     source-title="全部权限"

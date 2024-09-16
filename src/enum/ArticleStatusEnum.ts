@@ -12,7 +12,7 @@ enum ArticleStatusTypeEnum {
 
 export const articleStatusList = () => {
     const list: Array<SelectOption | SelectGroupOption> = []
-    for (let item in ArticleStatusEnum) {
+    for (const item in ArticleStatusEnum) {
         if (!isNaN(Number(item))) continue
         list.push({
             label: item,

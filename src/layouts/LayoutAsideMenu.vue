@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, watch, ref, nextTick } from 'vue'
+import { h, watch, ref, nextTick, useTemplateRef } from 'vue'
 import { RouterLink, type RouteRecordRaw } from 'vue-router'
 import type { MenuInst, MenuOption } from 'naive-ui'
 import { useMenuStore } from '@/stores/menu'
@@ -51,7 +51,7 @@ const changeMenu = (key: string) => {
 }
 
 // MenuRef
-const menuRef = ref<MenuInst | null>(null)
+const menuRef = useTemplateRef<MenuInst>('menu_ref')
 // 展开菜单
 const expandMenu = () => {
     menuRef.value?.showOption(currMenu.value)
@@ -60,7 +60,7 @@ const expandMenu = () => {
 // 监听路由变化
 watch(() => router.currentRoute.value, (newValue, oldValue) => {
     if (newValue.matched[0].path !== oldValue?.matched[0]?.path) {
-        menuOptions.value = generateMenu(menuStore.routes, newValue.matched[0].path) as any
+        menuOptions.value = generateMenu(menuStore.routes, newValue.matched[0].path)
     }
     currMenu.value = newValue.name as string
     nextTick(() => {
@@ -78,7 +78,7 @@ watch(() => router.currentRoute.value, (newValue, oldValue) => {
         </div>
         <n-scrollbar>
             <n-menu
-                ref="menuRef" :collapsed="false" :collapsed-width="64" :collapsed-icon-size="22" :indent="20"
+                ref="menu_ref" :collapsed="false" :collapsed-width="64" :collapsed-icon-size="22" :indent="20"
                 :value="currMenu" :options="menuOptions" :on-update:value="changeMenu"
             />
         </n-scrollbar>

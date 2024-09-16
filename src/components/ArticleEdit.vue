@@ -93,7 +93,7 @@ const onSavePublishHandle = (type: string) => {
                 await articleApi.edit(form.value)
             } else {
                 const { data } = await articleApi.add(form.value)
-                form.value.id = data.id
+                form.value.id = data.id as string
             }
             type === 'publish' && onCloseHandle()
         }

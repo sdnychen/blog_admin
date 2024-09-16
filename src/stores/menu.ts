@@ -9,17 +9,17 @@ import { useSettingStore } from './setting'
  * @param auth 权限
  * @returns 是否有权限
  */
-const hasAuth = (route: any, auth: Array<string>): boolean => {
-    if (route?.meta?.auth) {
+const hasAuth = (route: RouteRecordRaw, auth: Array<string>): boolean => {
+    if (route.meta?.auth) {
         // 根据二进制位运算判断权限的时候启用
         if (typeof route.meta.auth === 'string') {
-            const routerAuthArray = route.meta.auth.split(':')
-            return (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 16)) !== 0
+            const routerAuthArray: string[] = route.meta.auth.split(':')
+            return (parseInt(auth[parseInt(routerAuthArray[0])], 2) & parseInt(routerAuthArray[1], 16)) !== 0
         }
         let flag = false
-        for (const routerAuth of route.meta.auth) {
+        for (const routerAuth of route.meta?.auth as string[]) {
             const routerAuthArray = routerAuth.split(':')
-            flag = (parseInt(auth[routerAuthArray[0]], 2) & parseInt(routerAuthArray[1], 2)) !== 0
+            flag = (parseInt(auth[parseInt(routerAuthArray[0])], 2) & parseInt(routerAuthArray[1], 2)) !== 0
             if (flag) break
         }
         return flag

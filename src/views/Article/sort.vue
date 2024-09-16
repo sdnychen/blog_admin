@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, ref, reactive, onMounted } from 'vue'
+import { h, ref, reactive, onMounted, useTemplateRef } from 'vue'
 import { NTime, NButton, useDialog, useMessage, NImage } from 'naive-ui'
 import type { DataTableColumns, FormRules, FormInst, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import articleSortApi from '@/api/apis/articleSortApi'
@@ -10,11 +10,11 @@ import SearchCard from '@/components/SearchCard.vue'
 const dialog = useDialog()
 const message = useMessage()
 
-const queryForm = ref<articleSortQueryParam>({
+const queryForm = ref<articleTagSortQueryParam>({
     page: 1,
     name: ''
 })
-const queryFormInit = ref<articleSortQueryParam>({
+const queryFormInit = ref<articleTagSortQueryParam>({
     page: 1,
     name: ''
 })
@@ -116,7 +116,7 @@ const columns = reactive<DataTableColumns<articleSortDataType>>([
     }
 ])
 
-const addEditFormRef = ref<FormInst | null>()
+const addEditFormRef = useTemplateRef<FormInst>('addEditFormRef')
 // 弹窗关闭
 const onCloseModalHandle = () => {
     showAddEditModal.value = false
@@ -188,10 +188,7 @@ onMounted(() => {
         >
             <template #searchSlot>
                 <SearchCard @search-handle="searchHandle" @reset-handle="resetHandle">
-                    <n-form
-                        ref="formRef" inline :model="queryForm" label-width="auto" label-placement="left"
-                        :show-feedback="false"
-                    >
+                    <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="类名">
                             <n-input v-model:value="queryForm.name" placeholder="类名" clearable />
                         </n-form-item>

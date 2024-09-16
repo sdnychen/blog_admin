@@ -24,7 +24,7 @@ const articleApi = {
     /**
      * 文章添加
      */
-    add: (params: ArticleDataType) => api.post<undefined>('/article/add', params),
+    add: (params: ArticleDataType) => api.post<IDParam>('/article/add', params),
 
     /**
      * 文章编辑
