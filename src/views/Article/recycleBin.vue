@@ -6,24 +6,41 @@ import articleApi from '@/api/apis/articleApi'
 import DeletedEnum from '@/enum/DeletedEnum'
 import DataTable from '@/components/DataTable.vue'
 import SearchCard from '@/components/SearchCard.vue'
+import DatePicker from "@/components/DatePicker.vue";
 
 const dialog = useDialog()
 
-const queryForm = ref<articleRecycleBinQueryParam>({
+const queryForm = ref<ArticleQueryParam>({
     page: 1,
     title: '',
+    createTime: null,
+    deleteTime: null
 })
-const queryFormInit = ref<articleRecycleBinQueryParam>({
+const queryFormInit = ref<ArticleQueryParam>({
     page: 1,
     title: '',
+    createTime: null,
+    deleteTime: null
 })
 const total = ref<number>(0)
 const dataList = ref<ArticleDataType[]>([])
 const articleListLoading = ref<boolean>(false)
 
 const getList = async () => {
+    const queryParam: ArticleQueryParam = {...queryForm.value}
+    if (queryParam.deleteTime?.length === 2) {
+        queryParam.startDeleteTime = queryParam.deleteTime[0]
+        queryParam.endDeleteTime = queryParam.deleteTime[1]
+    }
+    if (queryParam.createTime?.length === 2) {
+        queryParam.startCreateTime = queryParam.createTime[0]
+        queryParam.endCreateTime = queryParam.createTime[1]
+    }
+    queryParam.deleteTime = void 0
+    queryParam.createTime = void 0
+
     articleListLoading.value = true
-    const { data } = await articleApi.recycleBinList(queryForm.value)
+    const { data } = await articleApi.recycleBinList(queryParam)
     articleListLoading.value = false
     dataList.value = data.list
     total.value = data.total
@@ -113,6 +130,12 @@ onMounted(() => {
                     <n-form inline :model="queryForm" label-width="auto" label-placement="left" :show-feedback="false">
                         <n-form-item label="文章标题">
                             <n-input v-model:value="queryForm.title" placeholder="文章标题" clearable />
+                        </n-form-item>
+                        <n-form-item label="删除时间">
+                            <DatePicker v-model:formatted-value="queryForm.deleteTime" type="datetimerange" />
+                        </n-form-item>
+                        <n-form-item label="创建时间">
+                            <DatePicker v-model:formatted-value="queryForm.createTime" type="datetimerange" />
                         </n-form-item>
                     </n-form>
                 </SearchCard>

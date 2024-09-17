@@ -1,16 +1,19 @@
 // 文章查询
 interface ArticleQueryParam extends QueryParam {
     title: string,
-    status: number | null,
+    status?: number | null,
     publishTime?: string[] | null,
     updateTime?: string[] | null,
     createTime?: string[] | null,
+    deleteTime?: string[] | null,
     startPublishTime?: string,
     endPublishTime?: string,
     startUpdateTime?: string,
     endUpdateTime?: string,
     startCreateTime?: string,
-    endCreateTime?: string
+    endCreateTime?: string,
+    startDeleteTime?: string,
+    endDeleteTime?: string
 }
 // 文章数据
 interface ArticleDataType {
@@ -59,9 +62,4 @@ interface articleSortDataType {
     img: string,
     createTime?: string
     remark: string
-}
-
-// 回收站查询
-interface articleRecycleBinQueryParam extends QueryParam {
-    title: string,
 }
