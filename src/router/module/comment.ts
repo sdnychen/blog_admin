@@ -13,7 +13,7 @@ const home: Array<RouteRecordRaw> = [
         redirect: '/comment/comment',
         meta: {
             title: '评论',
-            auth: '4:1',
+            auth: '4:3',
             icon: markRaw(ChatboxEllipsesOutline)
         },
         children: [
@@ -23,6 +23,17 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import('@/views/Home/home.vue'),
                 meta: {
                     title: '评论管理',
+                    auth: '4:1',
+                    icon: markRaw(ChatboxEllipsesOutline)
+                }
+            },
+            {
+                path: 'setting',
+                name: 'CommentSetting',
+                component: () => import('@/views/Home/home.vue'),
+                meta: {
+                    title: '评论设置',
+                    auth: '4:2',
                     icon: markRaw(ChatboxEllipsesOutline)
                 }
             }

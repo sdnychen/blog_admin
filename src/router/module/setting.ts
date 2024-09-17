@@ -1,11 +1,11 @@
 import type { RouteRecordRaw } from 'vue-router'
 import Layout from '@/layouts/Layout.vue'
-import EmptyLayout from '@/layouts/EmptyLayout.vue'
+// import EmptyLayout from '@/layouts/EmptyLayout.vue'
 import { markRaw } from 'vue'
 import {
     SettingsOutline,
     InformationCircleOutline,
-    BuildOutline,
+    JournalOutline,
     ColorPaletteOutline,
     DocumentTextOutline
 } from '@vicons/ionicons5'
@@ -33,32 +33,32 @@ const home: Array<RouteRecordRaw> = [
                 }
             },
             {
-                path: 'configInfo',
-                name: 'ConfigInfoSetting',
-                component: EmptyLayout,
+                path: 'asideInfo',
+                name: 'AsideSetting',
+                component: () => import('@/views/Home/home.vue'),
                 meta: {
-                    title: '配置信息',
+                    title: '侧边栏',
                     auth: '5:2',
-                    icon: markRaw(BuildOutline)
-                },
-                children: [
-                    {
-                        path: 'commentConfig',
-                        name: 'CommentConfig',
-                        component: () => import('@/views/Home/home.vue'),
-                        meta: {
-                            title: '评论'
-                        }
-                    },
-                    {
-                        path: 'asideConfig',
-                        name: 'AsideConfig',
-                        component: () => import('@/views/Home/home.vue'),
-                        meta: {
-                            title: '侧边栏'
-                        }
-                    }
-                ]
+                    icon: markRaw(JournalOutline)
+                }
+                // children: [
+                //     {
+                //         path: 'commentConfig',
+                //         name: 'CommentConfig',
+                //         component: () => import('@/views/Home/home.vue'),
+                //         meta: {
+                //             title: '评论'
+                //         }
+                //     },
+                //     {
+                //         path: 'asideConfig',
+                //         name: 'AsideConfig',
+                //         component: () => import('@/views/Home/home.vue'),
+                //         meta: {
+                //             title: '侧边栏'
+                //         }
+                //     }
+                // ]
             },
             {
                 path: 'themeStyle',
