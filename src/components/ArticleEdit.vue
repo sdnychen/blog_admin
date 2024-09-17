@@ -33,7 +33,7 @@ const form = ref<ArticleDataType>({
     tagList: null,
     sort: null,
     remark: '',
-    status: 1
+    status: ArticleStatusEnum['未发布']
 })
 const tagList = ref<articleTagDataType[]>()
 const sortList = ref<articleSortDataType[]>()

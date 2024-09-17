@@ -8,6 +8,7 @@ import DeletedEnum from '@/enum/DeletedEnum'
 import DataTable from '@/components/DataTable.vue'
 import SearchCard from '@/components/SearchCard.vue'
 import ArticleEdit from '@/components/ArticleEdit.vue'
+import DatePicker from "@/components/DatePicker.vue";
 
 const dialog = useDialog()
 
@@ -16,6 +17,7 @@ const queryForm = ref<ArticleQueryParam>({
     title: '',
     status: null,
     publishTime: null,
+    updateTime: null,
     createTime: null
 })
 const queryFormInit = ref<ArticleQueryParam>({
@@ -23,6 +25,7 @@ const queryFormInit = ref<ArticleQueryParam>({
     title: '',
     status: null,
     publishTime: null,
+    updateTime: null,
     createTime: null
 })
 
@@ -33,14 +36,19 @@ const articleListLoading = ref<boolean>(false)
 const getList = async () => {
     const queryParam: ArticleQueryParam = {...queryForm.value}
     if (queryParam.publishTime?.length === 2) {
-        queryParam.startPublishTime = new Date(queryParam.publishTime[0]).toISOString()
-        queryParam.endPublishTime = new Date(queryParam.publishTime[1]).toISOString()
+        queryParam.startPublishTime = queryParam.publishTime[0]
+        queryParam.endPublishTime = queryParam.publishTime[1]
+    }
+    if (queryParam.updateTime?.length === 2) {
+        queryParam.startUpdateTime = queryParam.updateTime[0]
+        queryParam.endUpdateTime = queryParam.updateTime[1]
     }
     if (queryParam.createTime?.length === 2) {
         queryParam.startCreateTime = queryParam.createTime[0]
         queryParam.endCreateTime = queryParam.createTime[1]
     }
     queryParam.publishTime = void 0
+    queryParam.updateTime = void 0
     queryParam.createTime = void 0
 
     articleListLoading.value = true
@@ -82,7 +90,7 @@ const onChangeStatusHandle = async (row: ArticleDataType) => {
         id: row.id as string,
         status: row.status === ArticleStatusEnum['已发布'] ? ArticleStatusEnum['未发布'] : ArticleStatusEnum['已发布']
     })
-    if (success) await getList()
+    success && await getList()
 }
 // 删除
 const onDeleteHandle = (row: ArticleDataType) => {
@@ -114,6 +122,10 @@ const columns = reactive<DataTableColumns<ArticleDataType>>([
         render: (row) => h(NTag, {type: getType(row.status), bordered: false}, ArticleStatusEnum[row.status])
     },
     {title: '备注', key: 'remark', minWidth: 180},
+    {
+        title: '更新时间', key: 'updateTime', width: 180,
+        render: (row) => h(NTime, {time: new Date(row.updateTime as string)})
+    },
     {
         title: '发布时间', key: 'createTime', width: 180,
         render: (row) => row.status === ArticleStatusEnum['已发布'] ? h(NTime, {time: new Date(row.publishTime as string)}) : '--'
@@ -185,10 +197,13 @@ onMounted(() => {
                             />
                         </n-form-item>
                         <n-form-item label="发布时间">
-                            <n-date-picker v-model:value="queryForm.publishTime" type="datetimerange" value-format="yyyy-MM-dd HH:mm:ss" clearable />
+                            <DatePicker v-model:formatted-value="queryForm.publishTime" type="datetimerange" />
+                        </n-form-item>
+                        <n-form-item label="更新时间">
+                            <DatePicker v-model:formatted-value="queryForm.updateTime" type="datetimerange" />
                         </n-form-item>
                         <n-form-item label="创建时间">
-                            <n-date-picker v-model:value="queryForm.createTime" type="datetimerange" clearable />
+                            <DatePicker v-model:formatted-value="queryForm.createTime" type="datetimerange" />
                         </n-form-item>
                     </n-form>
                 </SearchCard>

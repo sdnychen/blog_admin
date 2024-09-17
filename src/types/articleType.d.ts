@@ -3,9 +3,12 @@ interface ArticleQueryParam extends QueryParam {
     title: string,
     status: number | null,
     publishTime?: string[] | null,
+    updateTime?: string[] | null,
     createTime?: string[] | null,
     startPublishTime?: string,
     endPublishTime?: string,
+    startUpdateTime?: string,
+    endUpdateTime?: string,
     startCreateTime?: string,
     endCreateTime?: string
 }
@@ -37,6 +40,7 @@ interface ArticleDeleteRecoveryParam extends IDParam {
 
 // 文章标签/分类查询
 interface articleTagSortQueryParam extends QueryParam{
+    page?: number,
     name: string
 }
 // 文章标签

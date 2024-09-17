@@ -11,6 +11,7 @@ declare module 'vue' {
     ArticleEdit: typeof import('./src/components/ArticleEdit.vue')['default']
     ContentCard: typeof import('./src/components/ContentCard.vue')['default']
     DataTable: typeof import('./src/components/DataTable.vue')['default']
+    DatePicker: typeof import('./src/components/DatePicker.vue')['default']
     EditorArticle: typeof import('./src/components/Editor/EditorArticle.vue')['default']
     MainCard: typeof import('./src/components/MainCard.vue')['default']
     NAlert: typeof import('naive-ui')['NAlert']

@@ -54,7 +54,7 @@ export default [
             'vue/singleline-html-element-content-newline': 'off',
 
             // -------------------- temp --------------------
-            // '@typescript-eslint/no-explicit-any': 'off'
+            '@typescript-eslint/no-explicit-any': 'off'
         }
     }
 ]
