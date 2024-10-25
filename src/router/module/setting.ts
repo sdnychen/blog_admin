@@ -17,7 +17,7 @@ const home: Array<RouteRecordRaw> = [
         component: Layout,
         redirect: '/setting/baseInfo',
         meta: {
-            title: '设置',
+            title: '系统设置',
             auth: '5:F',
             icon: markRaw(SettingsOutline)
         },

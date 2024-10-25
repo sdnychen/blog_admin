@@ -10,12 +10,12 @@ import {
 
 const home: Array<RouteRecordRaw> = [
     {
-        path: '/content',
-        name: 'Content',
+        path: '/post',
+        name: 'post',
         component: Layout,
-        redirect: '/content/article',
+        redirect: '/post/article',
         meta: {
-            title: '内容',
+            title: '帖子',
             auth: '3:3',
             icon: markRaw(FileTrayFullOutline)
         },
@@ -24,7 +24,7 @@ const home: Array<RouteRecordRaw> = [
                 path: 'article',
                 name: 'Article',
                 component: EmptyLayout,
-                redirect: '/content/article/article',
+                redirect: '/post/article/article',
                 meta: {
                     title: '文章',
                     auth: '3:1',
@@ -66,10 +66,10 @@ const home: Array<RouteRecordRaw> = [
                 ]
             },
             {
-                path: 'moments',
-                name: 'Moments',
+                path: 'moment',
+                name: 'Moment',
                 component: EmptyLayout,
-                redirect: '/content/moments/moments',
+                redirect: '/post/moment/moment',
                 meta: {
                     title: '动态',
                     auth: '3:2',
@@ -77,16 +77,16 @@ const home: Array<RouteRecordRaw> = [
                 },
                 children: [
                     {
-                        path: 'moments',
-                        name: 'MomentsManage',
+                        path: 'moment',
+                        name: 'MomentManage',
                         component: () => import('@/views/Home/home.vue'),
                         meta: {
                             title: '动态管理'
                         }
                     },
                     {
-                        path: 'momentsDrafts',
-                        name: 'MomentsDrafts',
+                        path: 'momentDrafts',
+                        name: 'MomentDrafts',
                         component: () => import('@/views/Home/home.vue'),
                         meta: {
                             title: '动态草稿箱'

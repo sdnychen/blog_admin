@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 // import Layout from "@/layouts/Layout.vue"
 
 import home from './module/home'
-import content from './module/content'
+import post from './module/post'
 import material from './module/material'
 import comment from './module/comment'
 import member from './module/member'
@@ -15,7 +15,7 @@ import setting from './module/setting'
 // 动态路由
 const dynamicRouter: Array<RouteRecordRaw> = [
     ...home,
-    ...content,
+    ...post,
     ...material,
     ...comment,
     ...member,

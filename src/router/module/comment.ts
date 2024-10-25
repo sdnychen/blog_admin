@@ -2,7 +2,8 @@ import type { RouteRecordRaw } from 'vue-router'
 import Layout from '@/layouts/Layout.vue'
 import { markRaw } from 'vue'
 import {
-    ChatboxEllipsesOutline
+    ApertureOutline,
+    ChatboxEllipsesOutline, ReceiptOutline, BuildOutline
 } from '@vicons/ionicons5'
 
 const home: Array<RouteRecordRaw> = [
@@ -10,21 +11,31 @@ const home: Array<RouteRecordRaw> = [
         path: '/comment',
         name: 'Comment',
         component: Layout,
-        redirect: '/comment/comment',
+        redirect: '/comment/article',
         meta: {
             title: '评论',
-            auth: '4:3',
+            auth: '4:7',
             icon: markRaw(ChatboxEllipsesOutline)
         },
         children: [
             {
-                path: 'comment',
-                name: 'CommentManage',
-                component: () => import('@/views/Home/home.vue'),
+                path: 'article',
+                name: 'ArticleCommentManage',
+                component: () => import('@/views/Comment/comment.vue'),
                 meta: {
-                    title: '评论管理',
+                    title: '文章评论',
                     auth: '4:1',
-                    icon: markRaw(ChatboxEllipsesOutline)
+                    icon: markRaw(ReceiptOutline)
+                }
+            },
+            {
+                path: 'moment',
+                name: 'MomentCommentManage',
+                component: () => import('@/views/Comment/comment.vue'),
+                meta: {
+                    title: '动态评论',
+                    auth: '4:2',
+                    icon: markRaw(ApertureOutline)
                 }
             },
             {
@@ -33,8 +44,8 @@ const home: Array<RouteRecordRaw> = [
                 component: () => import('@/views/Home/home.vue'),
                 meta: {
                     title: '评论设置',
-                    auth: '4:2',
-                    icon: markRaw(ChatboxEllipsesOutline)
+                    auth: '4:4',
+                    icon: markRaw(BuildOutline)
                 }
             }
         ]

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Editor from '@tinymce/tinymce-vue'
-import { reactive, defineModel } from 'vue'
+import { reactive } from 'vue'
 
 const content = defineModel({type: String})
 const init = reactive({

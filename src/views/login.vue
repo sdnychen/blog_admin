@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, useTemplateRef } from 'vue'
-import type { FormValidationError } from 'naive-ui'
+import type { FormInst } from 'naive-ui'
 import { Reload } from '@vicons/ionicons5'
 import BaseApi from '@/api/apis/baseApi'
 import { useRouter } from 'vue-router'
@@ -39,26 +39,25 @@ const rules = reactive({
 const remember = ref(false)
 
 // 登录
-const loginFormRef = useTemplateRef('loginFormRef')
+const loginFormRef = useTemplateRef<FormInst>('loginFormRef')
 const handleLogin = () => {
-    loginFormRef.value.validate(async (res: Array<FormValidationError>) => {
-        if (!res) {
-            const res = await userStore.login(loginForm)
-            if (res) {
-                if (remember.value) {
-                    loginForm.verify = void 0
-                    localStorage.setItem('login_user', JSON.stringify(loginForm))
-                } else {
-                    localStorage.removeItem('login_user')
-                }
-                setTimeout(() => {
-                    router.push('/')
-                }, 300)
+    loginFormRef.value?.validate(async err => {
+        if (err) return
+        const res = await userStore.login(loginForm)
+        if (res) {
+            if (remember.value) {
+                loginForm.verify = void 0
+                localStorage.setItem('login_user', JSON.stringify(loginForm))
             } else {
-                loginFormRef.value.restoreValidation()
-                loginForm.verify = ''
-                await getVerify()
+                localStorage.removeItem('login_user')
             }
+            setTimeout(() => {
+                router.push('/')
+            }, 300)
+        } else {
+            loginFormRef.value?.restoreValidation()
+            loginForm.verify = ''
+            await getVerify()
         }
     })
 }
