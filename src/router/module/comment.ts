@@ -21,7 +21,7 @@ const home: Array<RouteRecordRaw> = [
             {
                 path: 'article',
                 name: 'ArticleCommentManage',
-                component: () => import('@/views/Comment/comment.vue'),
+                component: () => import('@/views/Comment/articleComment.vue'),
                 meta: {
                     title: '文章评论',
                     auth: '4:1',
@@ -31,7 +31,7 @@ const home: Array<RouteRecordRaw> = [
             {
                 path: 'moment',
                 name: 'MomentCommentManage',
-                component: () => import('@/views/Comment/comment.vue'),
+                component: () => import('@/views/Comment/articleComment.vue'),
                 meta: {
                     title: '动态评论',
                     auth: '4:2',

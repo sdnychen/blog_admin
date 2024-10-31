@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, useSlots } from 'vue'
+import {computed, useSlots} from 'vue'
 
 const slots = useSlots()
 
-const hasTitleSlot = ref(!!slots.title)
+const hasTitleSlot = computed(() => !!slots.title)
 </script>
 
 <template>

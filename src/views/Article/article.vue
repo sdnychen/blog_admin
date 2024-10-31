@@ -14,7 +14,7 @@ const dialog = useDialog()
 
 const queryForm = ref<ArticleQueryParam>({
     page: 1,
-    title: '',
+    title: null,
     status: null,
     publishTime: null,
     updateTime: null,
@@ -22,7 +22,7 @@ const queryForm = ref<ArticleQueryParam>({
 })
 const queryFormInit = ref<ArticleQueryParam>({
     page: 1,
-    title: '',
+    title: null,
     status: null,
     publishTime: null,
     updateTime: null,

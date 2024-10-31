@@ -8,9 +8,13 @@ const topBoxRefHeight = ref<string>('0px')
 const topBarRef = ref()
 const topBarHeight = ref<string>('0px')
 
+const tabsBarRef = ref()
+const tabsBarHeight = ref<string>('0px')
+
 onMounted(() => {
     topBoxRefHeight.value = topBoxRef.value.clientHeight + 'px'
     topBarHeight.value = useSlots().buttonSlot ? topBarRef.value.clientHeight + 'px' : '0px'
+    tabsBarHeight.value = useSlots().tabsSlot ? tabsBarRef.value.clientHeight + 'px' : '0px'
 })
 </script>
 
@@ -20,8 +24,11 @@ onMounted(() => {
     </div>
     <div>
         <MainCard>
-            <div ref="topBarRef" :class="!!useSlots().buttonSlot ? 'data-table-top_bar' : ''">
+            <div ref="topBarRef" :class="useSlots().buttonSlot ? 'data-table-top_bar' : ''">
                 <slot name="buttonSlot" />
+            </div>
+            <div ref="tabsBarRef">
+                <slot name="tabsSlot" />
             </div>
             <div>
                 <n-data-table
@@ -41,6 +48,6 @@ onMounted(() => {
     padding-bottom: 10px;
 }
 .n-data-table {
-    height: calc($content-height - v-bind(topBoxRefHeight) - 2 * $card-box-padding - $layout-gap - v-bind(topBarHeight));
+    height: calc($content-height - v-bind(topBoxRefHeight) - 2 * $card-box-padding - $layout-gap - v-bind(topBarHeight) - v-bind(tabsBarHeight));
 }
 </style>
