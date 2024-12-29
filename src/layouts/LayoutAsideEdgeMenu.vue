@@ -1,27 +1,31 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import { useMenuStore } from '@/stores/menu'
 import { useRouter, type RouteRecordRaw } from 'vue-router'
 
 const menuStore = useMenuStore()
 const router = useRouter()
 
-const currentRoute = computed(() => {
-    return router.currentRoute.value.matched[0].path
-})
+const currentRoute = computed(() => router.currentRoute.value.matched[0].path)
 
 // 菜单列表（路由）
-const menuOptions = computed(() => {
-    return menuStore.routes.filter(item => item.name !== 'NotFound')
-})
+const menuOptions = computed(() => menuStore.routes.filter(item => item.meta.show !== false))
 
 // 活动菜单
-const activeMenu = currentRoute
+const activeMenu = ref(null)
 
 // 切换导航
 const navigateMenu = (route: RouteRecordRaw) => {
-    router.push(route.path)
+    // 切换菜单自动切换导航
+    // router.push(route.path)
+    activeMenu.value = route.path
+    menuStore.subMenuOptions = menuStore.generateSubMenu(null, route.path)
 }
+
+onMounted(() => {
+    activeMenu.value = currentRoute.value
+    menuStore.subMenuOptions = menuStore.generateSubMenu(null, activeMenu.value)
+})
 </script>
 
 <template>

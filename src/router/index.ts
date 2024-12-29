@@ -30,7 +30,10 @@ const lastRouter: Array<RouteRecordRaw> = [
     {
         path: '/:productName(.*)*',
         name: 'NotFound',
-        component: () => import('@/views/404.vue')
+        component: () => import('@/views/404.vue'),
+        meta: {
+            show: false
+        }
     }
 ]
 
@@ -51,7 +54,7 @@ router.beforeEach(async (to) => {
                 return to.fullPath
             }
             if (to.name === 'Login') {
-                return { name: 'Home' }
+                return { name: 'Main' }
             }
             return true
         } else {

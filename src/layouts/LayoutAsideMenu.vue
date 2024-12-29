@@ -1,72 +1,44 @@
 <script lang="ts" setup>
-import { h, watch, ref, nextTick, useTemplateRef } from 'vue'
-import { RouterLink, type RouteRecordRaw } from 'vue-router'
-import type { MenuInst, MenuOption } from 'naive-ui'
+import { ref, computed, onMounted } from 'vue'
 import { useMenuStore } from '@/stores/menu'
-import IconRender from '@/utils/IconRender'
 import { useRouter } from 'vue-router'
+import type { MenuInst } from "naive-ui";
 
 const menuStore = useMenuStore()
 const router = useRouter()
 
-const menuOptions = ref<MenuOption[]>([])
+const menuOptions = computed(() => menuStore.subMenuOptions)
 
 // 当前菜单
 const currMenu = ref<string>('')
 
-// 生成菜单
-const generateMenu = (routes: RouteRecordRaw[], activeMainMenu?: string | undefined): MenuOption[] => {
-    if (activeMainMenu) {
-        let t: RouteRecordRaw[] = []
-        routes.forEach(item => {
-            if (item.path === activeMainMenu) {
-                t = item.children as RouteRecordRaw[]
-            }
-        })
-        routes = t
-    }
-    const menuList: MenuOption[] = []
-    routes.forEach((route: RouteRecordRaw) => {
-        menuList.push({
-            label: () => h(
-                RouterLink,
-                {
-                    to: {
-                        name: route.name
-                    }
-                },
-                { default: () => route.meta?.title }
-            ),
-            key: route.name as string,
-            icon: route.meta?.icon ? IconRender(route.meta.icon) : void 0,
-            children: route.children?.length ? generateMenu(route.children) : void 0
-        })
-    })
-    return menuList
-}
-
 // 切换菜单
 const changeMenu = (key: string) => {
     router.push({ name: key })
+    currMenu.value = key
 }
 
 // MenuRef
 const menuRef = useTemplateRef<MenuInst>('menu_ref')
-// 展开菜单
-const expandMenu = () => {
-    menuRef.value?.showOption(currMenu.value)
-}
+
+onMounted(() => {
+    currMenu.value = router.currentRoute.value.name
+    nextTick(() => {
+        // 展开菜单
+        menuRef.value?.showOption(currMenu.value)
+    })
+})
 
 // 监听路由变化
-watch(() => router.currentRoute.value, (newValue, oldValue) => {
-    if (newValue.matched[0].path !== oldValue?.matched[0]?.path) {
-        menuOptions.value = generateMenu(menuStore.routes, newValue.matched[0].path)
-    }
-    currMenu.value = newValue.name as string
-    nextTick(() => {
-        expandMenu()
-    })
-}, { immediate: true })
+// watch(() => router.currentRoute.value, (newValue, oldValue) => {
+//     if (newValue.matched[0].path !== oldValue?.matched[0]?.path) {
+//         menuOptions.value = generateMenu(menuStore.routes, newValue.matched[0].path)
+//     }
+//     currMenu.value = newValue.name as string
+//     nextTick(() => {
+//         expandMenu()
+//     })
+// }, { immediate: true })
 </script>
 
 <template>

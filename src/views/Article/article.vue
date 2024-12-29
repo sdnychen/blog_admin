@@ -7,10 +7,11 @@ import { ArticleStatusEnum, articleStatusList, getType} from '@/enum/ArticleStat
 import DeletedEnum from '@/enum/DeletedEnum'
 import DataTable from '@/components/DataTable.vue'
 import SearchCard from '@/components/SearchCard.vue'
-import ArticleEdit from '@/components/ArticleEdit.vue'
 import DatePicker from "@/components/DatePicker.vue";
+import { useRouter } from "vue-router";
 
 const dialog = useDialog()
+const router = useRouter()
 
 const queryForm = ref<ArticleQueryParam>({
     page: 1,
@@ -69,20 +70,13 @@ const resetHandle = () => {
     getList()
 }
 
-const currArticleId = ref<string>('')
-const articleEditVisibility = ref<boolean>(false)
-const articleEditType = ref<string>('add')
-
 // 添加
 const onOpenArticleEditHandle = () => {
-    articleEditType.value = 'add'
-    articleEditVisibility.value = true
+    router.push({name: 'ArticleCreate'})
 }
 // 编辑
-const onEditHandle = async (id: string) => {
-    articleEditType.value = 'edit'
-    articleEditVisibility.value = true
-    currArticleId.value = id
+const onEditHandle = (id: string) => {
+    router.push({name: 'ArticleEdit', params: {id, a: 1}})
 }
 // 发布/取消发布
 const onChangeStatusHandle = async (row: ArticleDataType) => {
@@ -152,12 +146,6 @@ const columns = reactive<DataTableColumns<ArticleDataType>>([
     }
 ])
 
-// 编辑窗口
-const onCloseArticleEditHandle = () => {
-    getList()
-    articleEditVisibility.value = false
-}
-
 onMounted(() => {
     getList()
 })
@@ -212,12 +200,6 @@ onMounted(() => {
                 <n-button type="info" @click="onOpenArticleEditHandle">新文章</n-button>
             </template>
         </DataTable>
-        <ArticleEdit
-            v-if="articleEditVisibility"
-            :id="currArticleId"
-            :type="articleEditType"
-            @on-close-article-edit-handle="onCloseArticleEditHandle"
-        />
     </div>
 </template>
 

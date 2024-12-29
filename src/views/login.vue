@@ -45,11 +45,10 @@ const handleLogin = () => {
         if (err) return
         const res = await userStore.login(loginForm)
         if (res) {
+            localStorage.removeItem('login_user')
             if (remember.value) {
                 loginForm.verify = void 0
                 localStorage.setItem('login_user', JSON.stringify(loginForm))
-            } else {
-                localStorage.removeItem('login_user')
             }
             setTimeout(() => {
                 router.push('/')

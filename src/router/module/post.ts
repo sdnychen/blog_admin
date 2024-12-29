@@ -40,6 +40,24 @@ const home: Array<RouteRecordRaw> = [
                         }
                     },
                     {
+                        path: 'create',
+                        name: 'ArticleCreate',
+                        component: () => import('@/views/Article/create.vue'),
+                        meta: {
+                            title: '文章新增',
+                            show: false
+                        }
+                    },
+                    {
+                        path: 'edit',
+                        name: 'ArticleEdit',
+                        component: () => import('@/views/Article/details.vue'),
+                        meta: {
+                            title: '文章详情',
+                            show: false
+                        }
+                    },
+                    {
                         path: 'sort',
                         name: 'SortManage',
                         component: () => import('@/views/Article/sort.vue'),

@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import { type RouteRecordRaw } from 'vue-router'
+import {type RouteRecordRaw, RouterLink} from 'vue-router'
 import { useUserStore } from './user'
 import { useSettingStore } from './setting'
+import type { MenuOption } from "naive-ui";
+import IconRender from "@/utils/IconRender";
 
 /**
  * 判断一个路由是否有权限
@@ -59,7 +61,8 @@ export const useMenuStore = defineStore('menu', {
     state: () => {
         return {
             isGenerate: false,
-            routes: [] as RouteRecordRaw[]
+            routes: [] as RouteRecordRaw[],
+            subMenuOptions: []
         }
     },
     actions: {
@@ -82,6 +85,38 @@ export const useMenuStore = defineStore('menu', {
             this.routes = accessRouter
             this.isGenerate = true
             return accessRouter
+        },
+
+        /**
+         * 生成子菜单
+         * @param routes 路由列表
+         * @param activeMainMenu 活动的主菜单（生成哪个主菜单下的子菜单）
+         * */
+        generateSubMenu (routes: RouteRecordRaw[], activeMainMenu?: string | undefined): MenuOption[] {
+            if (!routes) routes = this.routes
+            if (activeMainMenu) {
+                let t: RouteRecordRaw[] = []
+                routes.forEach(item => {
+                    if (item.path === activeMainMenu) {
+                        t = item.children as RouteRecordRaw[]
+                    }
+                })
+                routes = t
+            }
+            const menuList: MenuOption[] = []
+            routes.filter(item => item.meta.show !== false).forEach((route: RouteRecordRaw) => {
+                menuList.push({
+                    label: () => h(
+                        RouterLink,
+                        { to: { name: route.name } },
+                        { default: () => route.meta?.title }
+                    ),
+                    key: route.name as string,
+                    icon: route.meta?.icon ? IconRender(route.meta.icon) : void 0,
+                    children: route.children?.length ? this.generateSubMenu(route.children) : void 0
+                })
+            })
+            return menuList
         }
     }
 })

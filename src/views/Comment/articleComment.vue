@@ -100,8 +100,8 @@ const columns = reactive<DataTableColumns<CommentArticleDataType>>([
     {
         title: '操作', key: 'operation', fixed: 'right', width: 140,
         render: (row) => [
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onReviewHandle(row.id as string, 1)}, () => '通过'),
-            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, onClick: () => onReviewHandle(row.id as string, 2)}, () => '拒绝'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, disabled: row.status !== 0, onClick: () => onReviewHandle(row.id as string, 1)}, () => '通过'),
+            h(NButton, {text: true, type: 'info', style: {marginRight: '10px'}, disabled: row.status !== 0, onClick: () => onReviewHandle(row.id as string, 2)}, () => '拒绝'),
             h(NButton, {text: true, type: 'error', onClick: () => onDeleteHandle(row.id as string)}, () => '删除')
         ]
     }

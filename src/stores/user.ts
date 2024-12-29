@@ -22,8 +22,8 @@ export const useUserStore = defineStore('user', {
                         resolve(true)
                     }
                     reject(false)
-                }).catch(err => {
-                    reject(err)
+                }).catch(() => {
+                    reject(false)
                 })
             })
         },
