@@ -7,7 +7,7 @@ import {
     Options,
     ChevronBack,
     ChevronForward,
-    Reload,
+    // Reload,
     ArrowBack,
     ArrowForward,
     Close
@@ -37,34 +37,6 @@ const tabsArray = ref<tabItem[]>([
         name: 'Welcome',
         path: '/home',
         closeable: false
-    }
-])
-
-// 右击菜单项
-const itemMenuList = reactive<DropdownOption[]>([
-    {
-        label: '刷新',
-        key: 'reload',
-        icon: IconRender(Reload)
-    },
-    {
-        type: 'divider',
-        key: 'd1'
-    },
-    {
-        label: '关闭其他',
-        key: 'closeOther',
-        icon: IconRender(Close)
-    },
-    {
-        label: '关闭左侧',
-        key: 'closeLeft',
-        icon: IconRender(ArrowBack)
-    },
-    {
-        label: '关闭右侧',
-        key: 'closeRight',
-        icon: IconRender(ArrowForward)
     }
 ])
 
@@ -105,11 +77,38 @@ const handleCloseMenu = () => {
     showDropdownRef.value = false
     rightClickTab.value = null
 }
+
+// 右击菜单项
+const itemMenuList = reactive<DropdownOption[]>([
+    // {
+    //     label: '刷新',
+    //     key: 'reload',
+    //     icon: IconRender(Reload)
+    // },
+    // {
+    //     type: 'divider',
+    //     key: 'd1'
+    // },
+    {
+        label: '关闭其他',
+        key: 'closeOther',
+        icon: IconRender(Close)
+    },
+    {
+        label: '关闭左侧',
+        key: 'closeLeft',
+        icon: IconRender(ArrowBack)
+    },
+    {
+        label: '关闭右侧',
+        key: 'closeRight',
+        icon: IconRender(ArrowForward)
+    }
+])
 // 右击菜单功能
 const handleItemMenu = (key: string, item: tabItem, index: number) => {
     switch (key) {
         case 'reload':
-            console.log('reload')
             break
         case 'closeOther':
             tabsArray.value.splice(1, index - 1)
@@ -130,11 +129,11 @@ const handleItemMenu = (key: string, item: tabItem, index: number) => {
 
 // 操作按钮下拉
 const optionMenuList = reactive<DropdownOption[]>([
-    {
-        label: '刷新页面',
-        key: 'reload',
-        icon: IconRender(Reload)
-    },
+    // {
+    //     label: '刷新页面',
+    //     key: 'reload',
+    //     icon: IconRender(Reload)
+    // },
     {
         label: '关闭全部',
         key: 'closeAll',

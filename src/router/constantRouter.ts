@@ -26,4 +26,15 @@ const staticRouter: Array<RouteRecordRaw> = [
     }
 ]
 
-export default staticRouter
+const otherRouter: Array<RouteRecordRaw> = [
+    {
+        path: '/:productName(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/404.vue'),
+        meta: {
+            show: false
+        }
+    }
+]
+
+export default [...staticRouter, ...otherRouter]

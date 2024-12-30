@@ -28,17 +28,6 @@ onMounted(() => {
         menuRef.value?.showOption(currMenu.value)
     })
 })
-
-// 监听路由变化
-// watch(() => router.currentRoute.value, (newValue, oldValue) => {
-//     if (newValue.matched[0].path !== oldValue?.matched[0]?.path) {
-//         menuOptions.value = generateMenu(menuStore.routes, newValue.matched[0].path)
-//     }
-//     currMenu.value = newValue.name as string
-//     nextTick(() => {
-//         expandMenu()
-//     })
-// }, { immediate: true })
 </script>
 
 <template>

@@ -1,41 +1,25 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useMenuStore } from '@/stores/menu'
 
-import constantRouter from './constantRouter'
+import staticRouter from './constantRouter'
 import dynamicRouter from './dynamicRouter'
 
+// 定义meta类型
 declare module 'vue-router' {
     interface RouteMeta {
         title: string,
         auth?: string | string[],
         icon?: object,
+        show?: boolean,
+        keepAlive?: boolean
     }
 }
 
-const routes: Array<RouteRecordRaw> = [
-    ...constantRouter
-]
-
 const router = createRouter({
     history: createWebHashHistory(),
-    routes
+    routes: staticRouter
 })
-
-const asyncRouter: RouteRecordRaw[] = dynamicRouter
-
-// 最后添加的路由
-const lastRouter: Array<RouteRecordRaw> = [
-    {
-        path: '/:productName(.*)*',
-        name: 'NotFound',
-        component: () => import('@/views/404.vue'),
-        meta: {
-            show: false
-        }
-    }
-]
 
 // 全局前置守卫
 router.beforeEach(async (to) => {
@@ -46,8 +30,7 @@ router.beforeEach(async (to) => {
         if (userStore.userInfo) {
             if (!menuStore.isGenerate) {
                 // 已登录，还没挂在路由
-                const accessRouter = menuStore.generateRouter(asyncRouter)
-                accessRouter.push(...lastRouter)
+                const accessRouter = menuStore.generateRouter(dynamicRouter)
                 accessRouter.forEach(item => {
                     router.addRoute(item)
                 })

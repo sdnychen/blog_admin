@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import { useMenuStore } from "@/stores/menu";
+
 import LayoutAsideEdgeMenu from './LayoutAsideEdgeMenu.vue'
 import LayoutAsideMenu from './LayoutAsideMenu.vue'
 import Header from './Header.vue'
 import TabBar from './TabBar.vue'
 import Footer from './Footer.vue'
 
+const menuStore = useMenuStore();
 </script>
 
 <template>
@@ -27,7 +30,11 @@ import Footer from './Footer.vue'
                 <TabBar />
             </div>
             <div class="content">
-                <RouterView />
+                <RouterView v-slot="{ Component }">
+                    <KeepAlive :exclude="menuStore.keepAliveExcludeList">
+                        <component :is="Component" />
+                    </KeepAlive>
+                </RouterView>
             </div>
             <div class="footer">
                 <Footer />

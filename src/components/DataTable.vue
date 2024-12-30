@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+defineOptions({
+    inheritAttrs: false
+})
 import { ref, onMounted, useSlots } from 'vue'
 import MainCard from '@/components/MainCard.vue'
 

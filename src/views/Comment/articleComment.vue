@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, ref, reactive, onMounted } from 'vue'
+import {h, ref, reactive, onMounted, onActivated} from 'vue'
 import {NTime, NButton, useDialog, NTag} from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import commentArticleApi from '@/api/apis/commentArticleApi'
@@ -109,6 +109,9 @@ const columns = reactive<DataTableColumns<CommentArticleDataType>>([
 
 onMounted(() => {
     getList()
+})
+onActivated(() => {
+    console.log('onActivated')
 })
 </script>
 

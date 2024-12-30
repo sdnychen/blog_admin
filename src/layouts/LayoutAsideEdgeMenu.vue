@@ -16,8 +16,6 @@ const activeMenu = ref(null)
 
 // 切换导航
 const navigateMenu = (route: RouteRecordRaw) => {
-    // 切换菜单自动切换导航
-    // router.push(route.path)
     activeMenu.value = route.path
     menuStore.subMenuOptions = menuStore.generateSubMenu(null, route.path)
 }

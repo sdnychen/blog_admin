@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { h, ref, reactive, onMounted, useTemplateRef } from 'vue'
+import {h, ref, reactive, onMounted, useTemplateRef, onActivated} from 'vue'
 import { NTime, NButton, useDialog, useMessage } from 'naive-ui'
 import type { DataTableColumns, FormRules, FormInst } from 'naive-ui'
 import articleTagApi from '@/api/apis/articleTagApi'
@@ -150,7 +150,11 @@ const onSubmitModalHandle = () => {
 }
 
 onMounted(() => {
+    console.log('onMounted')
     getList()
+})
+onActivated(() => {
+    console.log('onActivated')
 })
 </script>
 
